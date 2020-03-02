@@ -2,33 +2,23 @@
 {% load static %}
 
 {% block 'body' %}
-    <canvas id="canvas" class="centered">
-        Ваш браузер не поддерживает canvas :/
-    </canvas>
-    <div class="text-center">
-        <button class="btn btn-success" onclick="canvasGrid.addColumn()">Добавить колонку</button> <br>
-        <button class="btn btn-success" onclick="canvasGrid.addRow()">Добавить строчку</button> <br>
+    <div class="centered" style="max-width: 80vw; max-height: 70vh; overflow: scroll;">
+        <canvas id="canvas">
+            Ваш браузер не поддерживает canvas :/
+        </canvas>
     </div>
-{% endblock %}
-
-{% block 'head' %}
-    <style>
-        #canvas {
-            width: 70vw;
-            height: 70vh;
-        }
-    </style>
 {% endblock %}
 
 {% block 'scripts' %}
     <script src="{% static 'scripts/grid.js' %}"></script>
     <script src="{% static 'scripts/canvasGrid.js' %}"></script>
+    <script src="{% static 'scripts/canvasGridDrawer.js' %}"></script>
     <script>
         const canvas = document.getElementById("canvas");
-        const canvasGrid = new CanvasGrid(20, 4, canvas);
+        const canvasGrid = new CanvasGrid(100, 7 * 8, 50, 25, canvas);
 
         window.onresize = () => {
-            canvasGrid.onresize();
+            canvas.onresize();
         }
 
         function renderLoop() {

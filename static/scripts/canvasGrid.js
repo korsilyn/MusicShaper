@@ -2,34 +2,27 @@ class CanvasGrid extends Grid {
     /**
      * @param {number} width 
      * @param {number} height 
+     * @param {number} cellWidth 
+     * @param {number} cellHeight 
      * @param {HTMLCanvasElement} canvas 
      */
-    constructor(width, height, canvas) {
+    constructor(width, height, cellWidth, cellHeight, canvas) {
         super(width, height);
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
         this.canvas = canvas;
-        this.canvas.onresize = this.onresize;
+
         this.ctx = this.canvas.getContext('2d');
-        this.cellsToRender = 'all';
 
-        this.onresize();
-
-        this.canvas.onmousedown = (event) => {
-            this.onmousedown(event);
+        this.canvas.onresize = () => {
+            this.canvas.width = this.cellWidth * this.width;
+            this.canvas.height = this.cellHeight * this.height;
+            this.cellsToRender = 'all';
         }
 
-        this.canvas.onmousemove = (event) => {
-            this.onmousemove(event);
-        }
-    }
+        this.canvas.onresize();
 
-    onresize() {
-        this.canvas.width = this.canvas.clientWidth;
-        this.canvas.height = this.canvas.clientHeight;
-
-        this.cellWidth = Math.floor(canvas.width / this.width);
-        this.cellHeight = Math.floor(canvas.height / this.height);
-
-        this.cellsToRender = 'all';
+        this.drawer = new CanvasGridDrawer(this);
     }
 
     /**
@@ -55,30 +48,11 @@ class CanvasGrid extends Grid {
      * @returns {void}
      */
     setCell(x, y, value) {
-        if (super.setCell(x, y, value)) {
+        let r;
+        if (r = super.setCell(x, y, value)) {
             this.cellsToRender.push({ x, y });
         }
-    }
-
-    /**
-     * @param {MouseEvent} event
-     * @returns {void} 
-     */
-    onmousedown(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        const gx = Math.trunc((event.clientX - rect.left) / this.cellWidth);
-        const gy = Math.trunc((event.clientY - rect.top) / this.cellHeight);
-        this.setCell(gx, gy, true);
-    }
-
-    /**
-     * @param {MouseEvent} event
-     * @returns {void} 
-     */
-    onmousemove(event) {
-        if (event.which == 1) {
-            this.canvas.onmousedown(event);
-        }
+        return r;
     }
 
     /**
@@ -90,7 +64,7 @@ class CanvasGrid extends Grid {
         }
 
         this.ctx.fillStyle = 'black';
-        this.ctx.lineWidth = 0.32;
+        this.ctx.lineWidth = 0.5;
 
         if (this.cellsToRender == 'all') {
             this.renderAll();
@@ -110,6 +84,9 @@ class CanvasGrid extends Grid {
     renderEmptyCell(x, y) {
         let rx = x * this.cellWidth;
         let ry = y * this.cellHeight;
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(rx, ry, this.cellWidth, this.cellHeight);
+        this.ctx.fillStyle = 'black';
         this.ctx.strokeRect(rx, ry, this.cellWidth, this.cellHeight);
     }
 
