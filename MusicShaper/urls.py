@@ -19,4 +19,5 @@ from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('editor/', views.editor, name='editor'),
 ]

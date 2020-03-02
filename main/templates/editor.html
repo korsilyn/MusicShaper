@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'body' %}
+    <canvas id="canvas" class="centered">
+        Ваш браузер не поддерживает canvas :/
+    </canvas>
+    <div class="text-center">
+        <button class="btn btn-success" onclick="canvasGrid.addColumn()">Добавить колонку</button> <br>
+        <button class="btn btn-success" onclick="canvasGrid.addRow()">Добавить строчку</button> <br>
+    </div>
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        #canvas {
+            width: 70vw;
+            height: 70vh;
+        }
+    </style>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script src="{% static 'scripts/grid.js' %}"></script>
+    <script src="{% static 'scripts/canvasGrid.js' %}"></script>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const canvasGrid = new CanvasGrid(20, 4, canvas);
+
+        window.onresize = () => {
+            canvasGrid.onresize();
+        }
+
+        function renderLoop() {
+            canvasGrid.render();
+
+            window.requestAnimationFrame(renderLoop);
+        }
+        
+        window.requestAnimationFrame(renderLoop);
+    </script>
+{% endblock %}
