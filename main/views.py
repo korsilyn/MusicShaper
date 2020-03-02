@@ -4,13 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 #forms
 from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
-#temp
+#for debug only
 from django.http import HttpResponse
 
-def vlogin(request):
-    context = {
-        'form': LoginForm()
-    }
+def login_page(request):
     if request.method == 'POST':
         loginform = LoginForm(request.POST)
         if loginform.is_valid():
@@ -19,17 +16,41 @@ def vlogin(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user) #надо будет messages прикрутить
-                return HttpResponse('<h2>Вы успешно вошли в свой аккаунт!<h2>')
+                return redirect('index')
             else:
                 return redirect('login')
-    return render(request, 'login.html', context)
+        else:
+            return redirect('login')
+    else:
+        context = {
+            'form': LoginForm()
+        }
+        return render(request, 'login.html', context)
 
 
-def vregister(request):
-    pass
+def register_page(request):
+    if request.method == 'POST':
+        regform = UserCreationForm(request.POST)
+        if regform.is_valid():
+            regform.save()
+            username = regform.data['username']
+            password = regform.data['password1']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user) #надо будет messages прикрутить
+                return redirect('index')
+            else:
+                return redirect('register')
+        else:
+            return redirect('register')
+    else:
+        context = {
+            'form': UserCreationForm()
+        }
+        return render(request, 'register.html', context)
 
 
 @login_required
-def vlogout(request):
+def logout_page(request):
     logout(request)
-    return HttpResponse('<h2>Вы успешно вышли из аккаунта!</h2>') #temp, later redirect on index
+    return redirect('index')

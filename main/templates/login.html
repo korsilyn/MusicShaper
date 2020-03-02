@@ -13,7 +13,7 @@
 {% endblock %}
 {% block 'body' %}
 <form class="centered" action="" method="post">
-    <h1>АВТОРИЗАЦИЯ</h1><br>
+    <h1 class="text-center">АВТОРИЗАЦИЯ</h1><br>
     {% csrf_token %}
     {% for field in form.visible_fields %}
         <div class="form-group ">{{ field }}</div>
