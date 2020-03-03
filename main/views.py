@@ -7,6 +7,8 @@ from .forms import LoginForm
 #for debug only
 from django.http import HttpResponse
 
+from django.contrib import messages
+
 def login_page(request):
     if request.method == 'POST':
         loginform = LoginForm(request.POST)
@@ -15,11 +17,14 @@ def login_page(request):
             password = loginform.data['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user) #надо будет messages прикрутить
+                login(request, user)
+                messages.add_message(request, messages.SUCCESS, "Авторизация успешна")
                 return redirect('index')
             else:
+                messages.add_message(request, messages.ERROR, "Неправильный логин или пароль")
                 return redirect('login')
         else:
+            messages.add_message(request, messages.ERROR, "Некорректные данные в форме авторизации")
             return redirect('login')
     else:
         context = {
@@ -37,11 +42,14 @@ def register_page(request):
             password = regform.data['password1']
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user) #надо будет messages прикрутить
+                login(request, user)
+                messages.add_message(request, messages.SUCCESS, "Регистрация успешна")
                 return redirect('index')
             else:
+                messages.add_message(request, messages.ERROR, "Ошибка регистрации")
                 return redirect('register')
         else:
+            messages.add_message(request, messages.ERROR, "Некорректные данные")
             return redirect('register')
     else:
         context = {
@@ -53,4 +61,5 @@ def register_page(request):
 @login_required
 def logout_page(request):
     logout(request)
+    messages.add_message(request, messages.SUCCESS, "Вышел и не попрощался")
     return redirect('index')
