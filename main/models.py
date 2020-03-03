@@ -5,7 +5,7 @@ from datetime import datetime
 class MusicTrack(models.Model):
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=250)
-    author = models.ForeignKey(User, related_name="track", on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name="tracks", on_delete=models.CASCADE)
     creation_date = models.DateTimeField()
     likes = models.ManyToManyField(User, related_name="track_likes")
     dislikes = models.ManyToManyField(User, related_name="track_dislikes")
