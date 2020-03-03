@@ -44,6 +44,8 @@ class CanvasGridDrawer {
      * @param {number} y 
      */
     drawCell(x, y) {
-        this.canvasGrid.setCell(x, y, this.cellValueToDraw);
+        if (this.canvasGrid.setCell(x, y, this.cellValueToDraw) && this.canvasGrid.cellsToRender.length > 0) {
+            this.canvasGrid.render();
+        }
     }
 }

@@ -11,10 +11,7 @@ class Grid {
         this.height = height;
         
         /** @type {boolean[][]} */
-        this.cells = new Array(width);
-        for (let x = 0; x < width; x++) {
-            this.cells[x] = this.makeColumn(false);
-        }
+        this.cells = [];
     }
 
     /**
@@ -31,38 +28,20 @@ class Grid {
      * @returns {boolen[]}
      */
     makeColumn(value) {
-        return new Array(this.height).fill(value);
-    }
-
-    /**
-     * @param {number} x 
-     * @param {boolean} [value]
-     * @returns {void}
-     */
-    makeColumnSafe(x, value) {
-        if (this.checkBounds(x, 0) && this.cells[x] === undefined) {
-            this.cells[x] = this.makeColumn(Boolean(value));
+        if (value) {
+            return new Array(this.height).fill(value);
+        }
+        else {
+            return [];
         }
     }
 
     /**
-     * @param {boolean} [value]
      * @returns {void}
      */
-    addColumn(value) {
+    addColumn() {
         this.width += 1;
-        this.makeColumnSafe(this.width-1, value);
-    }
-
-    /**
-     * @param {boolean} [value]
-     * @returns {void}
-     */
-    addRow(value) {
-        this.height += 1;
-        this.cells.forEach(column => {
-            column.push(Boolean(value))
-        });
+        this.cells.forEach(column => column.length = this.width);
     }
 
     /**
@@ -72,8 +51,9 @@ class Grid {
      */
     getCell(x, y) {
         if (this.checkBounds(x, y)) {
-            this.makeColumnSafe(x);
-            return this.cells[x][y];
+            if (this.cells[y]) {
+                return Boolean(this.cells[y][x]);
+            }
         }
         return false;
     }
@@ -86,10 +66,19 @@ class Grid {
      */
     setCell(x, y, value) {
         if (this.checkBounds(x, y)) {
-            this.makeColumnSafe(x);
-            let old = this.cells[x][y];
-            this.cells[x][y] = value;
-            return old !== value;
+            if (!this.cells[y]) this.cells[y] = [];
+            if (Boolean(this.cells[y][x]) != value) {
+                if (value) {
+                    this.cells[y][x] = value;
+                }
+                else {
+                    delete this.cells[y][x];
+                    if (this.cells[y].length < this.width / 10 && !this.cells[y].find(v => v != undefined)) {
+                        delete this.cells[y];
+                    }
+                }
+                return true;
+            }
         }
         return false;
     }

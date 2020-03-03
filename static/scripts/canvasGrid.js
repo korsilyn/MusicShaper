@@ -1,16 +1,25 @@
 class CanvasGrid extends Grid {
     /**
+     * @param {HTMLCanvasElement} canvas 
      * @param {number} width 
      * @param {number} height 
      * @param {number} cellWidth 
      * @param {number} cellHeight 
-     * @param {HTMLCanvasElement} canvas 
      */
-    constructor(width, height, cellWidth, cellHeight, canvas) {
+    constructor(canvas, width, height, cellWidth, cellHeight, options={}) {
         super(width, height);
+        this.canvas = canvas;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
-        this.canvas = canvas;
+        this.options = {
+            emptyColor: options.emptyColor || 'white',
+            gridColor: options.gridColor || 'black',
+            toggledColor: options.toggledColor || 'black',
+        }
+
+        if (!options.readonly) {
+            this.drawer = new CanvasGridDrawer(this);
+        }
 
         this.ctx = this.canvas.getContext('2d');
 
@@ -18,18 +27,18 @@ class CanvasGrid extends Grid {
             this.canvas.width = this.cellWidth * this.width;
             this.canvas.height = this.cellHeight * this.height;
             this.cellsToRender = 'all';
+            this.render();
         }
 
         this.canvas.onresize();
 
-        this.drawer = new CanvasGridDrawer(this);
     }
 
     /**
      * @returns {void}
      */
     addColumn() {
-        super.addColumn(false);
+        super.addColumn();
         this.onresize();
     }
 
@@ -63,8 +72,7 @@ class CanvasGrid extends Grid {
             return;
         }
 
-        this.ctx.fillStyle = 'black';
-        this.ctx.lineWidth = 0.5;
+        this.ctx.lineCap = 'square';
 
         if (this.cellsToRender == 'all') {
             this.renderAll();
@@ -84,9 +92,10 @@ class CanvasGrid extends Grid {
     renderEmptyCell(x, y) {
         let rx = x * this.cellWidth;
         let ry = y * this.cellHeight;
-        this.ctx.fillStyle = 'white';
+        this.ctx.fillStyle = this.options.emptyColor;
         this.ctx.fillRect(rx, ry, this.cellWidth, this.cellHeight);
-        this.ctx.fillStyle = 'black';
+        this.ctx.strokeStyle = this.options.gridColor;
+        this.ctx.lineWidth = 0.5;
         this.ctx.strokeRect(rx, ry, this.cellWidth, this.cellHeight);
     }
 
@@ -97,7 +106,8 @@ class CanvasGrid extends Grid {
     renderToggledCell(x, y) {
         let rx = x * this.cellWidth;
         let ry = y * this.cellHeight;
-        this.ctx.fillRect(rx, ry, this.cellWidth, this.cellHeight);
+        this.ctx.fillStyle = this.options.toggledColor;
+        this.ctx.fillRect(rx+0.5, ry+0.5, this.cellWidth-1, this.cellHeight-1);
     }
 
     /**

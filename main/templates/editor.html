@@ -1,11 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block 'title' %}
+    Создание трека
+{% endblock %}
+
 {% block 'body' %}
-    <div class="centered" style="max-width: 80vw; max-height: 70vh; overflow: scroll;">
-        <canvas id="canvas">
-            Ваш браузер не поддерживает canvas :/
-        </canvas>
+    <div class="centered" style="width: 90vw; max-height: 70vh; overflow-y: hidden;">
+        <div style="display: flex; flex-direction: row; align-items: flex-start;">
+            <canvas id="notes"></canvas>
+            <div id="trackScroll" style="overflow-x: hidden;">
+                <canvas id="track">Ваш браузер не поддерживает canvas :/</canvas>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -14,19 +21,42 @@
     <script src="{% static 'scripts/canvasGrid.js' %}"></script>
     <script src="{% static 'scripts/canvasGridDrawer.js' %}"></script>
     <script>
-        const canvas = document.getElementById("canvas");
-        const canvasGrid = new CanvasGrid(100, 7 * 8, 50, 25, canvas);
-
-        window.onresize = () => {
-            canvas.onresize();
-        }
-
-        function renderLoop() {
-            canvasGrid.render();
-
-            window.requestAnimationFrame(renderLoop);
+        const notesCanvas = document.getElementById("notes");
+        const trackCanvas = document.getElementById("track");
+        if (!(trackCanvas.getContext && notesCanvas.getContext)) {
+            throw new Error("canvas is not supported");
         }
         
-        window.requestAnimationFrame(renderLoop);
+        const noteNames = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        const notesCount = noteNames.length * 10;
+
+        const notesCheatsheet = new CanvasGrid(notesCanvas, 1, notesCount, 50, 25, {
+            readonly: true,
+            emptyColor: 'lightgray'
+        });
+
+        const notesCtx = notesCanvas.getContext('2d');
+
+        function drawNoteNames() {
+            notesCtx.font = '25px Consolas';
+            notesCtx.fillStyle = 'black';
+            for (let i = 0; i < 10; i++) {
+                for (let ni = 0; ni < noteNames.length; ni++) {
+                    notesCtx.fillText(noteNames[ni] + i, 11, (i * noteNames.length + ni) * notesCheatsheet.cellHeight + 21);
+                }
+            }
+        }
+
+        drawNoteNames();
+
+        const track = new CanvasGrid(trackCanvas, 100, notesCount, 50, 25, {
+            toggledColor: '#ff173e'
+        });
+
+        window.onresize = () => {
+            notesCanvas.onresize();
+            drawNoteNames();
+            trackCanvas.onresize();
+        }
     </script>
 {% endblock %}
