@@ -29,6 +29,7 @@
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'libs/Pizzicato.min.js' %}"></script>
     <script src="{% static 'scripts/grid.js' %}"></script>
     <script src="{% static 'scripts/canvasGrid.js' %}"></script>
     <script src="{% static 'scripts/canvasGridDrawer.js' %}"></script>
@@ -54,7 +55,7 @@
             notesCtx.font = '25px Consolas';
             notesCtx.fillStyle = 'black';
             for (let i = 0; i < notes.length; i++) {
-                notesCtx.fillText(notes[i], 4, i * notesCheatsheet.cellHeight + 21);
+                notesCtx.fillText(notes[i][0], 4, i * notesCheatsheet.cellHeight + 21);
             }
         }
 
@@ -72,6 +73,34 @@
             notesCanvas.onresize();
             drawNoteNames();
             trackCanvas.onresize();
+        }
+
+        window.onload = () => {
+            let audioContext;
+            let sineWave = new Pizzicato.Sound({ 
+                source: 'wave', 
+            });
+
+            sineWave.attack = 0.2;
+            sineWave.release = 1;
+            sineWave.volume = 0.1;
+
+            track.oncellupdate = (x, y, value) => {
+                if (value) {
+                    if (!audioContext) {
+                        audioContext = new AudioContext();
+                    }
+
+                    const note = notes[y];
+                    sineWave.frequency = note[1];
+
+                    sineWave.play();
+                }
+            }
+
+            track.drawer.onenddraw = () => {
+                sineWave.stop();
+            }
         }
     </script>
 {% endblock %}

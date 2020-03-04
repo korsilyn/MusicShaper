@@ -7,18 +7,30 @@ class CanvasGridDrawer {
 
         this.cellValueToDraw = false;
 
+        this.onstartdraw = null;
+        this.onenddraw = null;
+
         this.canvasGrid.canvas.onmousedown = (event) => {
             if (event.which != 1) return;
             let { x, y } = this.getMouseGridPosition(event);
             this.cellValueToDraw = !this.canvasGrid.getCell(x, y);
+            if (this.onstartdraw) {
+                this.onstartdraw(x, y, this.cellValueToDraw);
+            }
+            
             this.drawCell(x, y);
 
             this.canvasGrid.canvas.onmousemove = onmousemove;
-            this.canvasGrid.canvas.onmouseup = (event) => {
-                if (event.which == 1) {
-                    this.canvasGrid.canvas.onmousemove = null;
-                    this.canvasGrid.onmouseup = null;
+            window.addEventListener('mouseup', onmouseup);
+        }
+        
+        const onmouseup = (event) => {
+            if (event.which == 1) {
+                this.canvasGrid.canvas.onmousemove = null;
+                if (this.onenddraw) {
+                    this.onenddraw();
                 }
+                window.removeEventListener('mouseup', onmouseup);
             }
         }
 

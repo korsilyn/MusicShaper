@@ -34,6 +34,8 @@ class CanvasGrid extends Grid {
 
         this.canvas.onresize();
 
+        this.oncellupdate = null;
+
     }
 
     /**
@@ -62,6 +64,9 @@ class CanvasGrid extends Grid {
         let r;
         if (r = super.setCell(x, y, value)) {
             this.cellsToRender.push({ x, y });
+            if (this.oncellupdate) {
+                this.oncellupdate(x, y, value);
+            }
         }
         return r;
     }
