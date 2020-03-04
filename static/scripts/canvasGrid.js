@@ -23,6 +23,8 @@ class CanvasGrid extends Grid {
 
         this.ctx = this.canvas.getContext('2d');
 
+        this.canvas.ondragstart = () => false;
+
         this.canvas.onresize = () => {
             this.canvas.width = this.cellWidth * this.width;
             this.canvas.height = this.cellHeight * this.height;

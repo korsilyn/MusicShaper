@@ -5,26 +5,28 @@ class CanvasGridDrawer {
     constructor(canvasGrid) {
         this.canvasGrid = canvasGrid;
 
-        this.isDrawing = false;
         this.cellValueToDraw = false;
 
         this.canvasGrid.canvas.onmousedown = (event) => {
             if (event.which != 1) return;
             let { x, y } = this.getMouseGridPosition(event);
             this.cellValueToDraw = !this.canvasGrid.getCell(x, y);
-            this.isDrawing = true;
             this.drawCell(x, y);
-        }
 
-        this.canvasGrid.canvas.onmousemove = (event) => {
-            if (this.isDrawing && event.which == 1) {
-                let { x, y } = this.getMouseGridPosition(event);
-                this.drawCell(x, y);
+            this.canvasGrid.canvas.onmousemove = onmousemove;
+            this.canvasGrid.canvas.onmouseup = (event) => {
+                if (event.which == 1) {
+                    this.canvasGrid.canvas.onmousemove = null;
+                    this.canvasGrid.onmouseup = null;
+                }
             }
         }
 
-        this.canvasGrid.canvas.onmouseup = (event) => {
-            if (event.which != 1) this.isDrawing = false;
+        const onmousemove = (event) => {
+            if (event.which == 1) {
+                let { x, y } = this.getMouseGridPosition(event);
+                this.drawCell(x, y);
+            }
         }
     }
 
