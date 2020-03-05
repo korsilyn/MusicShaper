@@ -33,7 +33,9 @@
 
         const notes = getMusicNotes();
 
-        const musicPatternGrid = new MusicPatternGrid(cheatsheetCanvas, trackCanvas, notes, 100, 50, 25);
+        const musicPatternGrid = new MusicPatternGrid(cheatsheetCanvas, trackCanvas, notes, 100, 50, 25, {
+            source: 'wave'
+        });
 
         const thumbs = document.getElementsByClassName("scrollbar-thumb");
         new ScrollbarThumb(thumbs[0], cheatsheetCanvas.parentElement.parentElement);
@@ -41,40 +43,6 @@
 
         window.onresize = (event) => {
             musicPatternGrid.onresize(event);
-        }
-
-        window.onload = () => {
-            let audioContext = window.AudioContext;
-            let sound = new Pizzicato.Sound({
-                source: 'wave',
-                options: {
-                    type: 'triangle'
-                }
-            });
-
-            sound.attack = 0.2;
-            sound.release = 1;
-            sound.volume = 0.1;
-
-            const track = musicPatternGrid.trackGrid;
-
-            track.oncellupdate = (x, y, value) => {
-                if (value) {
-                    if (!audioContext) {
-                        audioContext = new AudioContext();
-                        window.onclose = () => audioContext.close();
-                    }
-
-                    const note = notes[y];
-                    sound.frequency = note[1];
-
-                    sound.play();
-                }
-            }
-
-            track.drawer.onenddraw = () => {
-                sound.stop();
-            }
         }
     </script>
 {% endblock %}
