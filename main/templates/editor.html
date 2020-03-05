@@ -10,21 +10,9 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div class="centered" style="width: 90vw; height: 900px;">
-        <div style="display: flex; flex-direction: column; height: 100%;">
-            <div style="display: flex; height: 100%; overflow: hidden;">
-                <div class="scrollbar scrollbar-vertical"><div class="scrollbar-thumb"></div></div>
-                <div style="overflow-y: hidden;">
-                    <div style="display: flex; align-items: flex-start;">
-                        <canvas id="notes"></canvas>
-                        <div style="overflow-x: hidden;">
-                            <canvas id="track">Ваш браузер не поддерживает canvas :/</canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="scrollbar scrollbar-horizontal"><div class="scrollbar-thumb"></div></div>
-        </div>
+    <div style="display: grid; grid-template-rows: 20vh 80vh; overflow: hidden;">
+        {% include 'melodySettings.html' %}
+        {% include 'melodyEditor.html' %}
     </div>
 {% endblock %}
 
@@ -35,71 +23,57 @@
     <script src="{% static 'scripts/canvasGridDrawer.js' %}"></script>
     <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
+    <script src="{% static 'scripts/musicPatternGrid.js' %}"></script>
     <script>
-        const notesCanvas = document.getElementById("notes");
+        const cheatsheetCanvas = document.getElementById("notes");
         const trackCanvas = document.getElementById("track");
-        if (!(trackCanvas.getContext && notesCanvas.getContext)) {
+        if (!(trackCanvas.getContext && cheatsheetCanvas.getContext)) {
             throw new Error("canvas is not supported");
         }
-        
+
         const notes = getMusicNotes();
 
-        const notesCheatsheet = new CanvasGrid(notesCanvas, 1, notes.length, 50, 25, {
-            readonly: true,
-            emptyColor: 'lightgray'
-        });
-
-        const notesCtx = notesCanvas.getContext('2d');
-
-        function drawNoteNames() {
-            notesCtx.font = '25px Consolas';
-            notesCtx.fillStyle = 'black';
-            for (let i = 0; i < notes.length; i++) {
-                notesCtx.fillText(notes[i][0], 4, i * notesCheatsheet.cellHeight + 21);
-            }
-        }
-
-        drawNoteNames();
-
-        const track = new CanvasGrid(trackCanvas, 100, notes.length, 50, 25, {
-            toggledColor: '#ff173e'
-        });
+        const musicPatternGrid = new MusicPatternGrid(cheatsheetCanvas, trackCanvas, notes, 100, 50, 25);
 
         const thumbs = document.getElementsByClassName("scrollbar-thumb");
-        new ScrollbarThumb(thumbs[0], notesCanvas.parentElement.parentElement);
+        new ScrollbarThumb(thumbs[0], cheatsheetCanvas.parentElement.parentElement);
         new ScrollbarThumb(thumbs[1], trackCanvas.parentElement);
 
-        window.onresize = () => {
-            notesCanvas.onresize();
-            drawNoteNames();
-            trackCanvas.onresize();
+        window.onresize = (event) => {
+            musicPatternGrid.onresize(event);
         }
 
         window.onload = () => {
-            let audioContext;
-            let sineWave = new Pizzicato.Sound({ 
-                source: 'wave', 
+            let audioContext = window.AudioContext;
+            let sound = new Pizzicato.Sound({
+                source: 'wave',
+                options: {
+                    type: 'triangle'
+                }
             });
 
-            sineWave.attack = 0.2;
-            sineWave.release = 1;
-            sineWave.volume = 0.1;
+            sound.attack = 0.2;
+            sound.release = 1;
+            sound.volume = 0.1;
+
+            const track = musicPatternGrid.trackGrid;
 
             track.oncellupdate = (x, y, value) => {
                 if (value) {
                     if (!audioContext) {
                         audioContext = new AudioContext();
+                        window.onclose = () => audioContext.close();
                     }
 
                     const note = notes[y];
-                    sineWave.frequency = note[1];
+                    sound.frequency = note[1];
 
-                    sineWave.play();
+                    sound.play();
                 }
             }
 
             track.drawer.onenddraw = () => {
-                sineWave.stop();
+                sound.stop();
             }
         }
     </script>

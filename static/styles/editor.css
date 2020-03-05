@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 :root {
     --scrollbar-width: 25px;
     --scrollbar-thump-width: 60px;

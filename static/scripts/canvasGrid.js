@@ -74,6 +74,18 @@ class CanvasGrid extends Grid {
     /**
      * @returns {void}
      */
+    clear() {
+        let r = super.clear();
+        if (r) {
+            this.cellsToRender = 'all';
+            this.render();
+        }
+        return r;
+    }
+
+    /**
+     * @returns {void}
+     */
     render() {
         if (this.cellsToRender.length == 0) {
             return;

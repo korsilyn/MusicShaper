@@ -82,4 +82,13 @@ class Grid {
         }
         return false;
     }
+
+    /**
+     * @returns {boolean}
+     */
+    clear() {
+        const oldLength = this.cells.length;
+        this.cells = [];
+        return oldLength != 0;
+    }
 }
