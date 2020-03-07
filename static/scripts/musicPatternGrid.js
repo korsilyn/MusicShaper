@@ -33,7 +33,7 @@ class MusicPatternGrid {
             }
         }
 
-        this.trackGrid.drawer.onenddraw = () => {
+        this.trackGrid.painter.onenddraw = () => {
             this.sound.stop();
         }
 

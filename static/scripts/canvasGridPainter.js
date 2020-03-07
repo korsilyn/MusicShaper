@@ -1,4 +1,4 @@
-class CanvasGridDrawer {
+class CanvasGridPainter {
     /**
      * @param {CanvasGrid} canvasGrid
      */

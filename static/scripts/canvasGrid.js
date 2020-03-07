@@ -18,7 +18,7 @@ class CanvasGrid extends Grid {
         }
 
         if (!options.readonly) {
-            this.drawer = new CanvasGridDrawer(this);
+            this.painter = new CanvasGridPainter(this);
         }
 
         this.ctx = this.canvas.getContext('2d');

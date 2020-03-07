@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div style="display: grid; height: 100vh; grid-template-rows: auto auto; overflow: hidden;">
+    <div style="display: grid; height: 100vh; grid-template-rows: auto auto;">
         {% include 'melodySettings.html' %}
         {% include 'melodyEditor.html' %}
     </div>
@@ -20,7 +20,7 @@
     <script src="{% static 'libs/Pizzicato.min.js' %}"></script>
     <script src="{% static 'scripts/grid.js' %}"></script>
     <script src="{% static 'scripts/canvasGrid.js' %}"></script>
-    <script src="{% static 'scripts/canvasGridDrawer.js' %}"></script>
+    <script src="{% static 'scripts/canvasGridPainter.js' %}"></script>
     <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
     <script src="{% static 'scripts/musicPatternGrid.js' %}"></script>
@@ -38,12 +38,20 @@
         });
 
         const thumbs = document.getElementsByClassName("scrollbar-thumb");
-        new ScrollbarThumb(thumbs[0], cheatsheetCanvas.parentElement.parentElement);
-        new ScrollbarThumb(thumbs[1], trackCanvas.parentElement);
+        new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
+        new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
+
+        function syncSizes() {
+            trackCanvas.parentElement.style.width  = trackCanvas.width + 'px';
+            trackCanvas.parentElement.style.height = trackCanvas.height + 'px';
+        }
 
         window.onresize = (event) => {
             musicPatternGrid.onresize(event);
+            syncSizes();
         }
+
+        syncSizes();
 
         window.onload = () => {
             let audioContext = window.AudioContext;
@@ -72,7 +80,7 @@
                 }
             }
 
-            musicPatternGrid.trackGrid.drawer.onenddraw = () => {
+            musicPatternGrid.trackGrid.painter.onenddraw = () => {
                 sound.stop();
             }
         }

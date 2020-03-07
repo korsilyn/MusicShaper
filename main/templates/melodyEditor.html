@@ -1,14 +1,15 @@
-<div style="display: flex; flex-direction: column; width: 100vw; overflow: hidden;">
-    <div style="display: flex; height: 100%; overflow: hidden;">
-        <div class="scrollbar scrollbar-vertical"><div class="scrollbar-thumb"></div></div>
-        <div style="overflow-y: hidden;">
-            <div style="display: flex; align-items: flex-start;">
-                <canvas id="notes"></canvas>
-                <div style="overflow-x: hidden;">
-                    <canvas id="track">Ваш браузер не поддерживает canvas :/</canvas>
-                </div>
+<div class="scrollbar scrollbar-horizontal"><div class="scrollbar-thumb"></div></div>
+<div style="display: flex; overflow: hidden;">
+    <div class="scrollbar scrollbar-vertical"><div class="scrollbar-thumb"></div></div>
+    <div id="vertical_scroll" style="display: flex; align-items: flex-start; overflow-y: hidden;">
+        <canvas id="notes"></canvas>
+        <div id="horizontal_scroll" style="overflow-x: hidden; width: max-content; height: max-content;">
+            <div style="position: relative;">
+                <canvas id="track_background" style="position: absolute; z-index: 0;"></canvas>
+                <canvas id="track" style="position: absolute; z-index: 1;">
+                    Ваш браузер не поддерживает html canvas :/
+                </canvas>
             </div>
         </div>
     </div>
-    <div class="scrollbar scrollbar-horizontal"><div class="scrollbar-thumb"></div></div>
 </div>
