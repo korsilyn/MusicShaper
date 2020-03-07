@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div style="display: grid; grid-template-rows: 20vh 80vh; overflow: hidden;">
+    <div style="display: grid; height: 100vh; grid-template-rows: auto auto; overflow: hidden;">
         {% include 'melodySettings.html' %}
         {% include 'melodyEditor.html' %}
     </div>
@@ -44,5 +44,38 @@
         window.onresize = (event) => {
             musicPatternGrid.onresize(event);
         }
+
+        window.onload = () => {
+            let audioContext = window.AudioContext;
+            let sound = new Pizzicato.Sound({
+                source: 'wave',
+                options: {
+                    type: 'triangle'
+                }
+            });
+
+            sound.attack = 0.2;
+            sound.release = 1;
+            sound.volume = 0.1;
+
+            musicPatternGrid.trackGrid.oncellupdate = (x, y, value) => {
+                if (value) {
+                    if (!audioContext) {
+                        audioContext = new AudioContext();
+                        window.onclose = () => audioContext.close();
+                    }
+
+                    const note = notes[y];
+                    sound.frequency = note[1];
+
+                    sound.play();
+                }
+            }
+
+            musicPatternGrid.trackGrid.drawer.onenddraw = () => {
+                sound.stop();
+            }
+        }
+
     </script>
 {% endblock %}
