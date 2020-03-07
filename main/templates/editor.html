@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div style="display: grid; grid-template-rows: 20vh 80vh; overflow: hidden;">
+    <div style="display: grid; height: 100vh; grid-template-rows: auto auto; overflow: hidden;">
         {% include 'melodySettings.html' %}
         {% include 'melodyEditor.html' %}
     </div>
@@ -56,9 +56,7 @@
             sound.release = 1;
             sound.volume = 0.1;
 
-            const track = musicPatternGrid.trackGrid;
-
-            track.oncellupdate = (x, y, value) => {
+            musicPatternGrid.trackGrid.oncellupdate = (x, y, value) => {
                 if (value) {
                     if (!audioContext) {
                         audioContext = new AudioContext();
@@ -72,7 +70,7 @@
                 }
             }
 
-            track.drawer.onenddraw = () => {
+            musicPatternGrid.trackGrid.drawer.onenddraw = () => {
                 sound.stop();
             }
         }

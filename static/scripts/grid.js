@@ -73,9 +73,6 @@ class Grid {
                 }
                 else {
                     delete this.cells[y][x];
-                    if (this.cells[y].length < this.width / 10 && !this.cells[y].find(v => v != undefined)) {
-                        delete this.cells[y];
-                    }
                 }
                 return true;
             }

@@ -92,10 +92,13 @@ class CanvasGrid extends Grid {
         }
 
         this.ctx.lineCap = 'square';
+        this.ctx.lineWidth = 0.5;
+        this.ctx.strokeStyle = this.options.gridColor;
 
         if (this.cellsToRender == 'all') {
             this.renderAll();
             this.cellsToRender = [];
+            return;
         }
 
         while (this.cellsToRender.length > 0) {
@@ -113,8 +116,6 @@ class CanvasGrid extends Grid {
         let ry = y * this.cellHeight;
         this.ctx.fillStyle = this.options.emptyColor;
         this.ctx.fillRect(rx, ry, this.cellWidth, this.cellHeight);
-        this.ctx.strokeStyle = this.options.gridColor;
-        this.ctx.lineWidth = 0.5;
         this.ctx.strokeRect(rx, ry, this.cellWidth, this.cellHeight);
     }
 
