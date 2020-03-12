@@ -9,6 +9,9 @@ class Grid {
 
         this.width = width;
         this.height = height;
+
+        this.oncellupdate = null;
+        this.onclear = null;
         
         /** @type {boolean[][]} */
         this.cells = [];
@@ -74,6 +77,9 @@ class Grid {
                 else {
                     delete this.cells[y][x];
                 }
+                if (this.oncellupdate) {
+                    this.oncellupdate(x, y, Boolean(value));
+                }
                 return true;
             }
         }
@@ -86,6 +92,9 @@ class Grid {
     clear() {
         const oldLength = this.cells.length;
         this.cells = [];
+        if (this.onclear) {
+            this.onclear();
+        }
         return oldLength != 0;
     }
 }

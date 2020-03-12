@@ -1,16 +1,21 @@
 class CanvasGrid extends Grid {
     /**
      * @param {HTMLCanvasElement} canvas 
-     * @param {number} width 
-     * @param {number} height 
-     * @param {number} cellWidth 
-     * @param {number} cellHeight 
+     * @param {[number, number]} gridSize
+     * @param {[number, number]} cellSize 
      */
-    constructor(canvas, width, height, cellWidth, cellHeight, options={}) {
+    constructor(background, foreground, gridSize, cellSize, options={}) {
         super(width, height);
-        this.canvas = canvas;
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
+        
+        this.background = background;
+        this.foreground = foreground;
+
+        this.width = gridSize[0];
+        this.height = gridSize[1];
+
+        this.cellWidth = cellSize[0];
+        this.cellHeight = cellSize[1];
+
         this.options = {
             emptyColor: options.emptyColor || 'white',
             gridColor: options.gridColor || 'black',
@@ -23,19 +28,14 @@ class CanvasGrid extends Grid {
 
         this.ctx = this.canvas.getContext('2d');
 
-        this.canvas.ondragstart = () => false;
+        this.background.ondragstart = () => false;
+        this.foreground.ondragstart = this.background.ondragstart;
 
-        this.canvas.onresize = () => {
-            this.canvas.width = this.cellWidth * this.width;
-            this.canvas.height = this.cellHeight * this.height;
-            this.cellsToRender = 'all';
-            this.render();
-        }
+        this.background.width = this.cellWidth * this.width;
+        this.background.height = this.cellHeight * this.height;
 
-        this.canvas.onresize();
-
-        this.oncellupdate = null;
-
+        this.foreground.width = this.background.width;
+        this.foreground.height = this.background.height;
     }
 
     /**
@@ -52,35 +52,6 @@ class CanvasGrid extends Grid {
     addRow() {
         super.addRow(false);
         this.onresize();
-    }
-
-    /**
-     * @param {number} x 
-     * @param {number} y
-     * @param {boolean} value
-     * @returns {void}
-     */
-    setCell(x, y, value) {
-        let r;
-        if (r = super.setCell(x, y, value)) {
-            this.cellsToRender.push({ x, y });
-            if (this.oncellupdate) {
-                this.oncellupdate(x, y, value);
-            }
-        }
-        return r;
-    }
-
-    /**
-     * @returns {void}
-     */
-    clear() {
-        let r = super.clear();
-        if (r) {
-            this.cellsToRender = 'all';
-            this.render();
-        }
-        return r;
     }
 
     /**
