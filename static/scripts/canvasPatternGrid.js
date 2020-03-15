@@ -5,7 +5,7 @@ class CanvasPatternGrid extends Grid {
      * @param {[number, number]} cellSize
      * @param {Object.<string, string>} colors
      */
-    constructor(divId, [gridWidth, gridHeight], [cellWidth, cellHeight], colors) {
+    constructor(divId, [gridWidth, gridHeight], [cellWidth, cellHeight], colors, readonly=false) {
         super(gridWidth, gridHeight);
 
         this.cellWidth = cellWidth;
@@ -25,6 +25,8 @@ class CanvasPatternGrid extends Grid {
         
         this.notesContext = this.canvas.getLayerContext(1);
         this.notesContext.fillStyle = this.colors.note;
+
+        if (readonly) return;
 
         this.oncellupdate = (x, y, value) => {
             const f = value ? this.notesContext.fillRect : this.notesContext.clearRect;

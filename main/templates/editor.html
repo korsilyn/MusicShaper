@@ -17,6 +17,7 @@
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'scripts/grid.js' %}"></script>
     <script src="{% static 'scripts/canvasPatternMousePainter.js' %}"></script>
     <script src="{% static 'scripts/canvasPatternGrid.js' %}"></script>
@@ -28,26 +29,44 @@
 
         const noteSize = [50, 25];
 
+        const cheatsheetGrid = new CanvasPatternGrid('cheatsheet', [1, notes.length], noteSize, {
+            grid: "black"
+        }, true);
+
         const trackGrid = new CanvasPatternGrid('track', [100, notes.length], noteSize, {
             note: "#fc4141"
         });
+
+        function renderCheatsheet() {
+            cheatsheetGrid.bgContext.font = '25px Consolas';
+            for (let i = 0; i < notes.length; i++) {
+                cheatsheetGrid.bgContext.fillText(notes[i][0], 4, i * noteSize[1] + 21);
+            }
+        }
         
         window.onload = () => {
+            cheatsheetGrid.renderBackground();
             trackGrid.renderBackground();
+            renderCheatsheet();
+
+            const synth = new Tone.Synth();
+            const gain = new Tone.Gain(0.5);
+            gain.toMaster();
+            synth.connect(gain);
+            
+            const oldOnCellUpdate = trackGrid.oncellupdate;
+            trackGrid.oncellupdate = (x, y, value) => {
+                oldOnCellUpdate(x, y, value);
+                if (!value) return;
+
+                const note = notes[y][0];
+                synth.triggerAttackRelease(note, '8t');
+            }
         }
 
         const thumbs = document.getElementsByClassName("scrollbar-thumb");
         new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
         new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
-
-        /*
-        const notesCtx = this.cheatcheetGrid.emptyLayer.getContext('2d');
-        notesCtx.font = font;
-        notesCtx.fillStyle = color;
-        for (let i = 0; i < notes.length; i++) {
-            notesCtx.fillText(notes[i][0], 4, i * this.cheatcheetGrid.cellHeight + 21);
-        }
-        */
 
     </script>
 {% endblock %}
