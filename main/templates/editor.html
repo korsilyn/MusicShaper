@@ -17,73 +17,37 @@
 {% endblock %}
 
 {% block 'scripts' %}
-    <script src="{% static 'libs/Pizzicato.min.js' %}"></script>
     <script src="{% static 'scripts/grid.js' %}"></script>
-    <script src="{% static 'scripts/canvasGrid.js' %}"></script>
-    <script src="{% static 'scripts/canvasGridPainter.js' %}"></script>
+    <script src="{% static 'scripts/canvasPatternMousePainter.js' %}"></script>
+    <script src="{% static 'scripts/canvasPatternGrid.js' %}"></script>
     <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
-    <script src="{% static 'scripts/musicPatternGrid.js' %}"></script>
+    <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
     <script>
-        const cheatsheetCanvas = document.getElementById("notes");
-        const trackCanvas = document.getElementById("track");
-        if (!(trackCanvas.getContext && cheatsheetCanvas.getContext)) {
-            throw new Error("canvas is not supported");
-        }
-
         const notes = getMusicNotes();
 
-        const musicPatternGrid = new MusicPatternGrid(cheatsheetCanvas, trackCanvas, notes, 100, 50, 25, {
-            source: 'wave'
+        const noteSize = [50, 25];
+
+        const trackGrid = new CanvasPatternGrid('track', [100, notes.length], noteSize, {
+            note: "#fc4141"
         });
+        
+        window.onload = () => {
+            trackGrid.renderBackground();
+        }
 
         const thumbs = document.getElementsByClassName("scrollbar-thumb");
         new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
         new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
 
-        function syncSizes() {
-            trackCanvas.parentElement.style.width  = trackCanvas.width + 'px';
-            trackCanvas.parentElement.style.height = trackCanvas.height + 'px';
+        /*
+        const notesCtx = this.cheatcheetGrid.emptyLayer.getContext('2d');
+        notesCtx.font = font;
+        notesCtx.fillStyle = color;
+        for (let i = 0; i < notes.length; i++) {
+            notesCtx.fillText(notes[i][0], 4, i * this.cheatcheetGrid.cellHeight + 21);
         }
-
-        window.onresize = (event) => {
-            musicPatternGrid.onresize(event);
-            syncSizes();
-        }
-
-        syncSizes();
-
-        window.onload = () => {
-            let audioContext = window.AudioContext;
-            let sound = new Pizzicato.Sound({
-                source: 'wave',
-                options: {
-                    type: 'triangle'
-                }
-            });
-
-            sound.attack = 0.2;
-            sound.release = 1;
-            sound.volume = 0.1;
-
-            musicPatternGrid.trackGrid.oncellupdate = (x, y, value) => {
-                if (value) {
-                    if (!audioContext) {
-                        audioContext = new AudioContext();
-                        window.onclose = () => audioContext.close();
-                    }
-
-                    const note = notes[y];
-                    sound.frequency = note[1];
-
-                    sound.play();
-                }
-            }
-
-            musicPatternGrid.trackGrid.painter.onenddraw = () => {
-                sound.stop();
-            }
-        }
+        */
 
     </script>
 {% endblock %}

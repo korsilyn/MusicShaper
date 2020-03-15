@@ -2,11 +2,14 @@
 <div style="display: flex; overflow: hidden;">
     <div class="scrollbar scrollbar-vertical"><div class="scrollbar-thumb"></div></div>
     <div id="vertical_scroll" style="display: flex; align-items: flex-start; overflow-y: hidden;">
-        <canvas id="notes"></canvas>
+        <div id="cheatsheet" style="position: relative;">
+            <canvas style="position: absolute; z-index: 0;"></canvas>
+            <canvas style="position: absolute; z-index: 1;"></canvas>
+        </div>
         <div id="horizontal_scroll" style="overflow-x: hidden; width: max-content; height: max-content;">
-            <div style="position: relative;">
-                <canvas id="track_background" style="position: absolute; z-index: 0;"></canvas>
-                <canvas id="track" style="position: absolute; z-index: 1;">
+            <div id="track" style="position: relative;">
+                <canvas style="position: absolute; z-index: 0;"></canvas>
+                <canvas style="position: absolute; z-index: 1;">
                     Ваш браузер не поддерживает html canvas :/
                 </canvas>
             </div>
