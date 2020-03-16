@@ -26,7 +26,6 @@
     <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
     <script>
         const notes = getMusicNotes();
-
         const noteSize = [50, 25];
 
         const cheatsheetGrid = new CanvasPatternGrid('cheatsheet', [1, notes.length], noteSize, {
@@ -40,7 +39,7 @@
         function renderCheatsheet() {
             cheatsheetGrid.bgContext.font = '25px Consolas';
             for (let i = 0; i < notes.length; i++) {
-                cheatsheetGrid.bgContext.fillText(notes[i][0], 4, i * noteSize[1] + 21);
+                cheatsheetGrid.bgContext.fillText(notes[i], 4, i * noteSize[1] + 21);
             }
         }
         
@@ -59,7 +58,7 @@
                 oldOnCellUpdate(x, y, value);
                 if (!value) return;
 
-                const note = notes[y][0];
+                const note = notes[y];
                 synth.triggerAttackRelease(note, '8t');
             }
         }
