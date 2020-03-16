@@ -3,18 +3,23 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-def music_instrument_path(instance, filename):
-    return 'music_track_projects/{}/instruments/id_{}__{}'.\
+def music_track_pattern_path(instance, filename):
+    return "projects/{}/patterns/{}_{}".\
         format(instance.project.id, instance.id, filename)
 
-class MusicInstrument(models.Model):
-    name = models.CharField(max_length=64)
-    sound_file = models.FileField(upload_to=music_instrument_path, null=True)
-    sound_source = models.CharField(max_length=16, null=True)
-    effects = models.CharField()
+
+def music_track_project_data_path(instance, filename):
+    return "projects/{}/{}".format(instance.id, filename)
+
+
+class MusicTrackPattern(models.Model):
+    name = models.CharField(max_length=25)
+    midi = models.FileField(upload_to=music_track_pattern_path)
+
 
 class MusicTrackProject(models.Model):
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=250)
     author = models.ForeignKey(User, related_name="projects", on_delete=models.CASCADE)
-    instruments = models.ManyToManyField(MusicInstrument, related_name="project")
+    patterns = models.ManyToManyField(MusicTrackPattern, related_name="project")
+    data = models.FileField(upload_to=music_track_project_data_path)
