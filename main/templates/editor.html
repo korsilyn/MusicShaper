@@ -42,30 +42,79 @@
                 cheatsheetGrid.bgContext.fillText(notes[i], 4, i * noteSize[1] + 21);
             }
         }
-        
-        window.onload = () => {
-            cheatsheetGrid.renderBackground();
-            trackGrid.renderBackground();
-            renderCheatsheet();
-
-            const synth = new Tone.Synth();
-            const gain = new Tone.Gain(0.5);
-            gain.toMaster();
-            synth.connect(gain);
-            
-            const oldOnCellUpdate = trackGrid.oncellupdate;
-            trackGrid.oncellupdate = (x, y, value) => {
-                oldOnCellUpdate(x, y, value);
-                if (!value) return;
-
-                const note = notes[y];
-                synth.triggerAttackRelease(note, '8t');
-            }
-        }
 
         const thumbs = document.getElementsByClassName("scrollbar-thumb");
         new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
         new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
+        
+        cheatsheetGrid.renderBackground();
+        trackGrid.renderBackground();
+        renderCheatsheet();
+
+        const previewSynth = new Tone.Synth();
+        const gain = new Tone.Gain(0.5);
+        
+        previewSynth.connect(gain);
+        gain.toMaster();
+        
+        const oldOnCellUpdate = trackGrid.oncellupdate;
+        trackGrid.oncellupdate = (x, y, value) => {
+            oldOnCellUpdate(x, y, value);
+            if (!value) return;
+
+            previewSynth.triggerAttackRelease(notes[y], '8t');
+        }
+
+        let playSynth = null;
+
+        function stop() {
+            if (playSynth) {
+                playSynth.dispose();
+                playSynth = null;
+            }
+        }
+
+        function play() {
+
+            /** @type {Object.<string, boolean[]>} */
+            const usedRows = trackGrid.rows.reduce((obj, row, y) => {
+                if (row.find(cell => Boolean(cell))) obj[notes[y]] = row;
+                return obj;
+            }, {});
+
+            const rowsCount = Object.keys(usedRows).length;
+            if (rowsCount == 0) return;
+
+            /** @type {boolean[][]} */
+            const usedRowsNotes = Object.values(usedRows);
+
+            const columnsCount = usedRowsNotes
+                .reduce((max, curr) => curr.length > max ? curr.length : max, usedRowsNotes[0].length);
+            
+            stop();
+            
+            playSynth = new Tone.PolySynth(rowsCount);
+            playSynth.toMaster();
+
+            const interval = 0.3;
+
+            /** @param {number} column */
+            const playColumn = (column) => {
+                const notesToPlay = [];
+                for (const note in usedRows) {
+                    const row = usedRows[note];
+                    if (row[column]) {
+                        notesToPlay.push(note);
+                    }
+                }
+
+                playSynth.triggerAttackRelease(notesToPlay, '8n', '+' + column * interval);
+            }
+
+            for (let column = 0; column < columnsCount; column++) {
+                playColumn(column);
+            }
+        }
 
     </script>
 {% endblock %}

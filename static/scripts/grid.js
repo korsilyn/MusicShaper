@@ -14,7 +14,7 @@ class Grid {
         this.onclear = null;
         
         /** @type {boolean[][]} */
-        this.cells = [];
+        this.rows = [];
     }
 
     /**
@@ -44,7 +44,7 @@ class Grid {
      */
     addColumn() {
         this.width += 1;
-        this.cells.forEach(column => column.length = this.width);
+        this.rows.forEach(column => column.length = this.width);
     }
 
     /**
@@ -54,8 +54,8 @@ class Grid {
      */
     getCell(x, y) {
         if (this.checkBounds(x, y)) {
-            if (this.cells[y]) {
-                return Boolean(this.cells[y][x]);
+            if (this.rows[y]) {
+                return Boolean(this.rows[y][x]);
             }
         }
         return false;
@@ -69,13 +69,13 @@ class Grid {
      */
     setCell(x, y, value) {
         if (this.checkBounds(x, y)) {
-            if (!this.cells[y]) this.cells[y] = [];
-            if (Boolean(this.cells[y][x]) != value) {
+            if (!this.rows[y]) this.rows[y] = [];
+            if (Boolean(this.rows[y][x]) != value) {
                 if (value) {
-                    this.cells[y][x] = value;
+                    this.rows[y][x] = value;
                 }
                 else {
-                    delete this.cells[y][x];
+                    delete this.rows[y][x];
                 }
                 if (this.oncellupdate) {
                     this.oncellupdate(x, y, Boolean(value));
@@ -90,8 +90,8 @@ class Grid {
      * @returns {boolean}
      */
     clear() {
-        const oldLength = this.cells.length;
-        this.cells = [];
+        const oldLength = this.rows.length;
+        this.rows = [];
         if (this.onclear) {
             this.onclear();
         }
