@@ -96,10 +96,14 @@
             playSynth = new Tone.PolySynth(rowsCount);
             playSynth.toMaster();
 
-            const interval = 0.3;
+            let loop, column = 0;
 
-            /** @param {number} column */
-            const playColumn = (column) => {
+            const playColumn = (time) => {
+                if (column >= columnsCount) {
+                    loop.stop(time);
+                    return;
+                }
+
                 const notesToPlay = [];
                 for (const note in usedRows) {
                     const row = usedRows[note];
@@ -108,12 +112,15 @@
                     }
                 }
 
-                playSynth.triggerAttackRelease(notesToPlay, '8n', '+' + column * interval);
+                playSynth.triggerAttackRelease(notesToPlay, '8n', time);
+
+                column++;
             }
 
-            for (let column = 0; column < columnsCount; column++) {
-                playColumn(column);
-            }
+            loop = new Tone.Loop(playColumn, '4n');
+
+            loop.start(0);
+            Tone.Transport.start();
         }
 
     </script>
