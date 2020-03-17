@@ -1,11 +1,12 @@
-class CanvasPatternGrid extends Grid {
+class PatternGrid extends Grid {
     /**
      * @param {string} divId id of layers div
      * @param {[number, number]} gridSize
      * @param {[number, number]} cellSize
      * @param {Object.<string, string>} colors
+     * @param {number} bgLayer
      */
-    constructor(divId, [gridWidth, gridHeight], [cellWidth, cellHeight], colors, readonly=false) {
+    constructor(divId, [gridWidth, gridHeight], [cellWidth, cellHeight], colors, readonly=false, bgLayer=0) {
         super(gridWidth, gridHeight);
 
         this.cellWidth = cellWidth;
@@ -18,12 +19,12 @@ class CanvasPatternGrid extends Grid {
             note: colors.note || "black"
         }
         
-        this.bgContext = this.canvas.getLayerContext(0);
+        this.bgContext = this.canvas.getLayerContext(bgLayer);
         
         this.bgContext.strokeStyle = this.colors.grid;
         this.bgContext.lineWidth = 0.5;
         
-        this.notesContext = this.canvas.getLayerContext(1);
+        this.notesContext = this.canvas.getLayerContext(bgLayer + 1);
         this.notesContext.fillStyle = this.colors.note;
 
         if (readonly) return;
@@ -37,7 +38,7 @@ class CanvasPatternGrid extends Grid {
             this.notesContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
 
-        this.mousePainter = new CanvasPatternMousePainter(this);
+        this.mousePainter = new PatternMousePainter(this);
     }
 
     renderBackground() {

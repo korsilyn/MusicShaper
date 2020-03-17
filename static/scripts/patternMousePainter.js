@@ -1,4 +1,4 @@
-class CanvasPatternMousePainter {
+class PatternMousePainter {
     /**
      * @param {CanvasPatternGrid} grid
      */

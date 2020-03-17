@@ -18,23 +18,24 @@
 
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
+    <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
     <script src="{% static 'scripts/grid.js' %}"></script>
-    <script src="{% static 'scripts/canvasPatternMousePainter.js' %}"></script>
-    <script src="{% static 'scripts/canvasPatternGrid.js' %}"></script>
+    <script src="{% static 'scripts/patternMousePainter.js' %}"></script>
+    <script src="{% static 'scripts/patternGrid.js' %}"></script>
     <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
-    <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
+    <script src="{% static 'scripts/patternPlayer.js' %}"></script>
     <script>
         const notes = getMusicNotes();
         const noteSize = [50, 25];
 
-        const cheatsheetGrid = new CanvasPatternGrid('cheatsheet', [1, notes.length], noteSize, {
+        const cheatsheetGrid = new PatternGrid('cheatsheet', [1, notes.length], noteSize, {
             grid: "black"
         }, true);
 
-        const trackGrid = new CanvasPatternGrid('track', [100, notes.length], noteSize, {
+        const trackGrid = new PatternGrid('track', [100, notes.length], noteSize, {
             note: "#fc4141"
-        });
+        }, false, 1);
 
         function renderCheatsheet() {
             cheatsheetGrid.bgContext.font = '25px Consolas';
@@ -51,77 +52,25 @@
         trackGrid.renderBackground();
         renderCheatsheet();
 
-        const previewSynth = new Tone.Synth();
+        const synth = new Tone.PolySynth(notes.length);
         const gain = new Tone.Gain(0.5);
         
-        previewSynth.connect(gain);
+        synth.connect(gain);
         gain.toMaster();
+
+        const noteDuration = '8n';
         
         const oldOnCellUpdate = trackGrid.oncellupdate;
         trackGrid.oncellupdate = (x, y, value) => {
             oldOnCellUpdate(x, y, value);
             if (!value) return;
 
-            previewSynth.triggerAttackRelease(notes[y], '8t');
+            synth.triggerAttackRelease(notes[y], noteDuration);
         }
 
-        let playSynth = null;
-
-        function stop() {
-            if (playSynth) {
-                playSynth.dispose();
-                playSynth = null;
-            }
-        }
-
-        function play() {
-
-            /** @type {Object.<string, boolean[]>} */
-            const usedRows = trackGrid.rows.reduce((obj, row, y) => {
-                if (row.find(cell => Boolean(cell))) obj[notes[y]] = row;
-                return obj;
-            }, {});
-
-            const rowsCount = Object.keys(usedRows).length;
-            if (rowsCount == 0) return;
-
-            /** @type {boolean[][]} */
-            const usedRowsNotes = Object.values(usedRows);
-
-            const columnsCount = usedRowsNotes
-                .reduce((max, curr) => curr.length > max ? curr.length : max, usedRowsNotes[0].length);
-            
-            stop();
-            
-            playSynth = new Tone.PolySynth(rowsCount);
-            playSynth.toMaster();
-
-            let loop, column = 0;
-
-            const playColumn = (time) => {
-                if (!playSynth || column >= columnsCount) {
-                    loop.stop(time);
-                    return;
-                }
-
-                const notesToPlay = [];
-                for (const note in usedRows) {
-                    const row = usedRows[note];
-                    if (row[column]) {
-                        notesToPlay.push(note);
-                    }
-                }
-
-                playSynth.triggerAttackRelease(notesToPlay, '8n', time);
-
-                column++;
-            }
-
-            loop = new Tone.Loop(playColumn, '4n');
-
-            loop.start(0);
-            Tone.Transport.start();
-        }
+        const player = new PatternPlayer(trackGrid, synth, {
+            noteDuration
+        });
 
     </script>
 {% endblock %}
