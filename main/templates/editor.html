@@ -99,7 +99,7 @@
             let loop, column = 0;
 
             const playColumn = (time) => {
-                if (column >= columnsCount) {
+                if (!playSynth || column >= columnsCount) {
                     loop.stop(time);
                     return;
                 }
