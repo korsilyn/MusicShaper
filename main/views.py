@@ -9,6 +9,19 @@ from django.http import HttpResponse
 
 from django.contrib import messages
 
+
+def index(request):
+    """
+    Главная страница
+
+    :param request: -
+    :return: context
+    """
+    context = {
+    }
+    return render(request, 'index.html', context)
+
+
 def login_page(request):
     if request.method == 'POST':
         loginform = LoginForm(request.POST)
