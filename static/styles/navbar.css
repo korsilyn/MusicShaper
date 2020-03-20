@@ -58,8 +58,9 @@ nav {
 }
 
 .link-text {
-    display: none;
     margin-left: 1rem;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
 }
 
 .nav-link svg {
@@ -111,17 +112,10 @@ nav:hover .logo svg {
     }
 
     nav:hover .link-text {
-        display: inline;
+        opacity: 1;
     }
 
     nav:hover .logo-text {
         left: 0px;
     }
-}
-
-.dark {
-    --text-primary: #b6b6b6;
-    --text-secondary: #ececec;
-    --bg-primary: #23232e;
-    --bg-secondary: #141418;
 }

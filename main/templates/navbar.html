@@ -1,7 +1,7 @@
 <nav id="navbar">
   <ul class="navbar-nav">
     <li class="logo">
-      <a href="#" class="nav-link">
+      <a href="{% url 'index' %}" class="nav-link">
         <span class="link-text logo-text">Music Shaper</span>
         <svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="angle-double-right" role="img"
           xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
@@ -22,13 +22,15 @@
         <span class="link-text">Главная</span>
       </a>
     </li>
+    {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a href="{% url 'login' %}" class="nav-link">
+          <span class="link-text">Профиль</span>
+        </a>
+      </li>
+    {% endif %}
     <div class="nav-item-bottom">
       {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a href="{% url 'login' %}" class="nav-link">
-            <span class="link-text">Профиль</span>
-          </a>
-        </li>
         <li class="nav-item">
           <a href="{% url 'logout' %}" class="nav-link">
             <span class="link-text">Выйти</span>
