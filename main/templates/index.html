@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Главная страница{% endblock %}
+
+{% block 'head' %}
+    <style>
+        .description {
+            font-size: 17pt;
+            color: rgb(50, 50, 50);
+            word-wrap: break-word;
+        }
+        
+        .block > .description {
+            max-width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        .block {
+            margin-top: 10%;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+        }
+
+        .block > li {
+            font-size: 15pt;
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center" style="margin-top: 10%;">
+        {% if not user.is_authenticated %}
+            <div class="block">
+                <h2>Добро пожаловать!</h2>
+                <h1>Делать музыку - это просто</h1>
+                <div class="description">
+                    Music Shaper позволяет вам легко писать собственные композиции и делиться ими со всем миром! <br>
+                </div>
+                
+                <a class="btn btn-success" href="{% url 'register' %}">
+                    Регистрация
+                </a>
+            </div>
+            
+            <div class="block">
+                <h1>Почему Music Shaper?</h1>
+                <li>
+                    Втроенный редактор
+                    <p>
+                        Он <i>есть</i>, он простой и удобный!
+                    </p>
+                </li>
+                <li>
+                    Легко делиться
+                    <p>
+                        ...
+                    </p>
+                </li>
+            </div>
+        {% else %}
+            <div class="block">
+                <h2>Ещё раз здравствуйте!</h2>
+                <p>
+                    <div class="description">
+                        Похоже, что пришло время творить
+                    </div>
+                    <a class="btn btn-outline-success" href="#">
+                        Создать проект
+                    </a>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
