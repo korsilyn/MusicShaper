@@ -9,6 +9,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'styles/editor.css' %}">
 {% endblock %}
 
+{% block 'body_attrs' %}{% endblock %}
+
 {% block 'body' %}
     <div style="display: grid; height: 100vh; grid-template-rows: auto auto;">
         {% include 'melodySettings.html' %}
