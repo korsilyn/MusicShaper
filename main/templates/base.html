@@ -11,7 +11,7 @@
 <body>
     <div style="display: flex; align-items: flex-start;">
         {% include 'navbar.html' %}
-        <div class="container">
+        <div {% block 'body_attrs' %}class="container"{% endblock %}>
             {% include 'messages.html' %}
             {% block 'body' %}
                 Здесь должен размещаться контент страницы

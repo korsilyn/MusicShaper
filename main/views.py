@@ -34,6 +34,18 @@ def index(request):
     return render(request, 'index.html', get_base_context(request))
 
 
+def editor(request):
+    '''
+    Страница редактора мелодии
+
+    :param request: запрос клиента
+    :return: страница редактора мелодии
+    :rtype: HttpResponse
+    '''
+
+    return render(request, 'editor.html', get_base_context(request))
+
+
 def login_page(request):
     '''
     Страница авторизации

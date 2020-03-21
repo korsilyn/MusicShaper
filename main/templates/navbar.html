@@ -28,6 +28,11 @@
           <span class="link-text">Профиль</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="{% url 'editor' %}" class="nav-link">
+          <span class="link-text">Редактор</span>
+        </a>
+      </li>
     {% endif %}
     <div class="nav-item-bottom">
       {% if user.is_authenticated %}
