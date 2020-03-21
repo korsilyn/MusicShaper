@@ -1,15 +1,48 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-#forms
-from django.contrib.auth.forms import UserCreationForm
-from .forms import LoginForm
-#for debug only
 from django.http import HttpResponse
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+
+from .forms import LoginForm
+from django.contrib.auth.forms import UserCreationForm
+
+
+def get_base_context(request):
+    '''
+    Возвращает базовый контекст для всех страниц сайта
+    
+    :param request: запрос клиента
+    :return: словарь контекста
+    '''
+
+    return {
+        'user': request.user
+    }
+
+
+def index(request):
+    '''
+    Главная страница
+
+    :param request: запрос клиента
+    :return: главная страница
+    :rtype: HttpResponse
+    '''
+
+    return render(request, 'index.html', get_base_context(request))
+
 
 def login_page(request):
+    '''
+    Страница авторизации
+
+    :param request: запрос клиента
+    :return: страница авторизации
+    :rtype: HttpResponse
+    '''
+
     if request.method == 'POST':
         loginform = LoginForm(request.POST)
         if loginform.is_valid():
@@ -34,6 +67,14 @@ def login_page(request):
 
 
 def register_page(request):
+    '''
+    Страница регистрации
+
+    :param request: запрос клиента
+    :return: страница регистрации
+    :rtype: HttpResponse
+    '''
+
     if request.method == 'POST':
         regform = UserCreationForm(request.POST)
         if regform.is_valid():
@@ -60,6 +101,14 @@ def register_page(request):
 
 @login_required
 def logout_page(request):
+    '''
+    Страница выхода из профиля
+
+    :param request: запрос клиента
+    :return: редирект на стартовую страницу
+    :rtype: HttpResponse
+    '''
+
     logout(request)
-    messages.add_message(request, messages.SUCCESS, "Вышел и не попрощался")
+    messages.add_message(request, messages.SUCCESS, "Вы успешно вышли из аккаунта")
     return redirect('index')
