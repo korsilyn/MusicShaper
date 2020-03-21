@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,6 +7,10 @@ from django.contrib.auth import authenticate, login, logout
 
 from .forms import LoginForm
 from django.contrib.auth.forms import UserCreationForm
+
+from .models import MusicTrack, TrackSettings, TrackComment
+
+from datetime import datetime
 
 
 def get_base_context(request):
@@ -44,6 +48,20 @@ def editor(request):
     '''
 
     return render(request, 'editor.html', get_base_context(request))
+
+
+def music_track_page(request, id):
+    track = get_object_or_404(MusicTrack, pk=id)
+    if request.is_ajax():
+        track.comments.add(
+            TrackComment.objects.create(author=request.user, topic=request.GET['topic'], content=request.GET['comment'],
+                                        creation_date=datetime.now(), edit_date=datetime.now(),
+                                        checked_by_author=True))
+        track.save()
+        return JsonResponse({"success": True})
+    context = get_base_context(request)
+    context['track'] = track
+    return render(request, 'music_track_page.html', context)
 
 
 def login_page(request):
