@@ -28,7 +28,7 @@
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
     <script src="{% static 'scripts/patternPlayer.js' %}"></script>
     <script>
-        const notes = getMusicNotes();
+        const notes = getNotes().reverse();
         const noteSize = [50, 25];
 
         const cheatsheetGrid = new PatternGrid('cheatsheet', [1, notes.length], noteSize, {
@@ -51,7 +51,7 @@
         new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
         
         cheatsheetGrid.renderBackground();
-        trackGrid.renderBackground();
+        trackGrid.renderBackground(getNoteNames().length);
         renderCheatsheet();
 
         const synth = new Tone.PolySynth(notes.length);
@@ -73,6 +73,10 @@
         const player = new PatternPlayer(trackGrid, synth, {
             noteDuration
         });
+
+        trackGrid.mousePainter.onenddraw = () => {
+            player.stop();
+        }
 
     </script>
 {% endblock %}

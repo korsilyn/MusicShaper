@@ -23,6 +23,7 @@ class PatternPlayer {
 
     stop() {
         Tone.Transport.stop(0);
+        this.synth.releaseAll();
         setTimeout(() => this.hidePlayhead(), 100);
     }
 
