@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 #models
-from .models import TrackSettings, TrackComment, MusicTrack
+from .models import TrackSettings, TrackComment, MusicTrack, Profile
 #forms
 from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
@@ -70,6 +70,7 @@ def logout_page(request):
 @login_required
 def profile_page(request):
     all_tracks = MusicTrack.objects.all()
+    profile = Profile.objects.all()
     context = {
         "request": request,
         "user": request.user,

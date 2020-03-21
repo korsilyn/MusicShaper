@@ -2,38 +2,42 @@
 
 {% block 'title' %}Профиль пользователя {{ user.username }}{% endblock %}
 {% block 'body' %}
-<h3 class="text-center">Профиль пользователя {{ user.username }}</h3> <br>
-
-  <table class="table table-striped table-bordered">
-    <thead class="thead-dark text-center">
-      <th>Треки пользователя</th>
-      <th>Понравившиеся треки</th>
-    </thead>
-    <tbody>
-      <td>
-        {% if tracks|length > 0 %}
-          <ul>
-            {% for t in tracks %}
-              <li><a href="{% url 'tracks' id=t.id %}">{{ t.name }}</a></li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="text-center">Пользователь не создавал треков</div>
-        {% endif %}
-      </td>
-
-      <td>
-        {% if likes|length > 0 %}
-          <ul>
-            {% for t in likes %}
-              <li><a href="{% url 'votings' id=v.id %}">{{ t.name }}</a></li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="text-center">Пользователь не лайкал голосования</div>
-        {% endif %}
-      </td>
-    </tbody>
-  </table>
-
+<div class="media">
+    <img class="rounded-circle account-img" src="/media/default.jpg">
+    <div class="media-body">
+        <h2 class="account-heading">Профиль пользователя {{ user.username }}</h3> <br>
+        <p class="text-secondary">STATUS</p>
+    </div>
+</div>
+<br>
+<table class="table table-striped table-bordered">
+  <thead class="thead-dark text-center">
+    <th>Треки пользователя</th>
+    <th>Понравившиеся треки</th>
+  </thead>
+  <tbody>
+    <td>
+      {% if tracks|length > 0 %}
+        <ul>
+          {% for t in tracks %}
+            <li><a href="{% url 'tracks' id=t.id %}">{{ t.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="text-center">Пользователь не создавал треков</div>
+      {% endif %}
+    </td>
+    <td>
+      {% if likes|length > 0 %}
+        <ul>
+          {% for t in likes %}
+            <li><a href="{% url 'votings' id=v.id %}">{{ t.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="text-center">Пользователь не лайкал голосования</div>
+      {% endif %}
+    </td>
+  </tbody>
+</table>
 {% endblock %}
