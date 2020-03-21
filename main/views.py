@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+#models
+from .models import TrackSettings, TrackComment, MusicTrack
 #forms
 from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
@@ -63,3 +65,15 @@ def logout_page(request):
     logout(request)
     messages.add_message(request, messages.SUCCESS, "Вышел и не попрощался")
     return redirect('index')
+
+
+@login_required
+def profile_page(request):
+    all_tracks = MusicTrack.objects.all()
+    context = {
+        "request": request,
+        "user": request.user,
+        "tracks": all_tracks.filter(author=request.user),
+        "likes": all_tracks.filter(likes=request.user),
+    }
+    return render(request, 'profile.html', context)
