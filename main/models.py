@@ -62,33 +62,6 @@ class MusicTrackProject(models.Model):
     data = models.FileField(upload_to=music_track_project_data_path)
 
 
-class MusicTrack(models.Model):
-    '''
-    Модель опубликованного проекта
-
-    :param name: имя проекта
-    :param desc: описание
-    :param author: автор
-    :param creation_date: дата публикации
-    :param likes: список юзеров, поставивших лайк
-    :param dislikes: список юзеров, поставивших дизлайк
-    :param comments: список комментариев
-    :param reports: список жалоб
-    :param settings: настройки
-    '''
-
-    name = models.CharField(max_length=50)
-    desc = models.CharField(max_length=250)
-    author = models.ForeignKey(
-        User, related_name="tracks", on_delete=models.CASCADE)
-    creation_date = models.DateTimeField()
-    likes = models.ManyToManyField(User, related_name="likes")
-    dislikes = models.ManyToManyField(User, related_name="dislikes")
-    comments = models.ManyToManyField(TrackComment, related_name="comments")
-    reports = models.ManyToManyField(TrackComment, related_name="reports")
-    settings = models.ManyToManyField(TrackSettings)
-
-
 class TrackSettings(models.Model):
     '''
     Настройки публикации проекта
@@ -122,3 +95,30 @@ class TrackComment(models.Model):
     creation_date = models.DateTimeField()
     edit_date = models.DateTimeField()
     checked_by_author = models.BooleanField()
+
+
+class MusicTrack(models.Model):
+    '''
+    Модель опубликованного проекта
+
+    :param name: имя проекта
+    :param desc: описание
+    :param author: автор
+    :param creation_date: дата публикации
+    :param likes: список юзеров, поставивших лайк
+    :param dislikes: список юзеров, поставивших дизлайк
+    :param comments: список комментариев
+    :param reports: список жалоб
+    :param settings: настройки
+    '''
+
+    name = models.CharField(max_length=50)
+    desc = models.CharField(max_length=250)
+    author = models.ForeignKey(
+        User, related_name="tracks", on_delete=models.CASCADE)
+    creation_date = models.DateTimeField()
+    likes = models.ManyToManyField(User, related_name="likes")
+    dislikes = models.ManyToManyField(User, related_name="dislikes")
+    comments = models.ManyToManyField(TrackComment, related_name="comments")
+    reports = models.ManyToManyField(TrackComment, related_name="reports")
+    settings = models.ManyToManyField(TrackSettings)
