@@ -121,4 +121,4 @@ class MusicTrack(models.Model):
     dislikes = models.ManyToManyField(User, related_name="dislikes")
     comments = models.ManyToManyField(TrackComment, related_name="comments")
     reports = models.ManyToManyField(TrackComment, related_name="reports")
-    settings = models.ManyToManyField(TrackSettings)
+    settings = models.ForeignKey(TrackSettings, on_delete=models.CASCADE)
