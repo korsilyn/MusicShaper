@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Проект {{ project.name }}
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        div > h1 {
+            margin-top: 10%;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 50%;
+            margin: auto;
+            margin-top: 5%;
+        }
+
+        .links-grid > a {
+            border-radius: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center">
+        <h1>Проект {{ project.name }}</h1>
+        <h3>Описание: {{ project.desc }}</h3>
+    </div>
+    <div class="links-grid">
+        <a class="btn btn-success text-white">Инструменты</a>
+        <a class="btn btn-success text-white" href="{% url 'editor' %}">Паттерны</a>
+        <a class="btn btn-success text-white">Таймлиния</a>
+        <a class="btn btn-success text-white disabled">Публикация</a>
+    </div>
+{% endblock %}

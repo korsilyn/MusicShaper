@@ -13,7 +13,7 @@ def music_track_pattern_path(instance, filename):
     :rtype: str
     '''
 
-    return "projects/{}/patterns/{}_{}".\
+    return "projects\\{}\\patterns\\{}_{}".\
         format(instance.project.id, instance.id, filename)
 
 
@@ -27,7 +27,7 @@ def music_track_project_data_path(instance, filename):
     :rtype: str
     '''
 
-    return "projects/{}/{}".format(instance.id, filename)
+    return "projects\\{}\\{}".format(instance.id, filename)
 
 
 class MusicTrackPattern(models.Model):
