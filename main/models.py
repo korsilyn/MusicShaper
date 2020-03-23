@@ -29,20 +29,39 @@ def music_track_pattern_path(instance, filename):
     return music_track_project_path(instance.project, f'patterns\\{instance.name}\\{filename}')
 
 
+def music_instrument_path(instance, filename):
+    '''
+    Возвращает путь до настроек музыкального инструмента в папке проекта
+
+    :param instance: модель инструмента
+    :param filename: имя файла
+    :rtype: str
+    '''
+
+    return music_track_project_path(instance.project, f'instruments\\{instance.name}\\{filename}')
+
+
+class MusicInstrument(models.Model):
+    '''
+    Модель музыкального инстурмента
+    '''
+
+    name = models.CharField(max_length=25)
+    settings = models.FileField(upload_to=music_instrument_path)
+
+
 class MusicTrackPattern(models.Model):
     '''
     Модель паттерна проекта
 
     :param name: имя паттерна
     :param color: цвет паттерна в редакторе
-    :param instrument_id: номер инструмента
     :param duration: продолжительность
     :paran notes: json файл с нотами
     '''
 
     name = models.CharField(max_length=25)
     color = models.CharField(max_length=25)
-    instrument_id = models.IntegerField()
     duration = models.FloatField()
     notes = models.FileField(upload_to=music_track_pattern_path)
 
@@ -62,6 +81,7 @@ class MusicTrackProject(models.Model):
     desc = models.CharField(max_length=250)
     author = models.ForeignKey(User, models.CASCADE, "projects")
     creation_date = models.DateTimeField()
+    instruments = models.ManyToManyField(MusicInstrument, "project")
     patterns = models.ManyToManyField(MusicTrackPattern, "project")
     timeline_data = models.FileField(upload_to=music_track_project_path)
 

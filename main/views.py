@@ -81,24 +81,80 @@ def new_project(request):
     return render(request, 'project/new.html', get_base_context(request))
 
 
-@login_required
-def project_home(request, id: int):
+def get_project_or_404(request, id: int):
     '''
-    Главная страница проекта
+    Возвращает проект с нужным id + проверка на автора
 
     :param request: запрос клиента
-    :return: главная страница проекта
-    :rtype: HttpResponse
+    :param id: id проека в базе данных
+    :rtype: MusicTrackProject
     '''
 
     project = get_object_or_404(MusicTrackProject, pk=id)
     if project.author != request.user:
         raise Http404
 
+    return project
+
+
+@login_required
+def project_home(request, id: int):
+    '''
+    Главная страница проекта
+
+    :param request: запрос клиента
+    :param id: id проекта в базе данных
+    :return: главная страница проекта
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, id)
+
     context = get_base_context(request)
     context['project'] = project
 
     return render(request, 'project/home.html', context)
+
+
+@login_required
+def project_instruments_list(request, id: int):
+    '''
+    Страница со списком всех музыкальных инструментов
+    в проекте
+
+    :param request: запрос клиента
+    :param id: id проекта в базе данных
+    :return: список инструментов
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, id)
+
+    context = get_base_context(request)
+    context['project'] = project
+    context['instruments'] = project.instruments
+
+    return render(request, 'project/instrument/list.html', context)
+
+
+@login_required
+def project_new_instrument(request, id: int):
+    '''
+    Страница создания музыкального инструмента
+
+    :param request: запрос клиента
+    :param id: id проекта в базе данных
+    :return: страница создания инструмента
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, id)
+
+    context = get_base_context(request)
+    context['project'] = project
+
+    return render(request, 'project/instrument/new.html', context)
+
 
 
 def editor(request):
