@@ -11,6 +11,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import MusicTrackProject
 from django.core.files.base import ContentFile
 
+from datetime import datetime
+
 
 def get_base_context(request):
     '''
@@ -60,15 +62,14 @@ def new_project(request):
         if exists:
             return HttpResponseBadRequest('проект с таким названием уже существует')
 
-        proj_instance = MusicTrackProject.objects.create(
+        proj_instance = MusicTrackProject(
             name=name,
             desc=desc,
             author=request.user,
+            creation_date=datetime.now()
         )
 
-        content = f'{{"name":"{name}", "description":"{desc}"}}'
-        proj_instance.data.save('data.json', ContentFile(content))
-
+        proj_instance.timeline_data.save('timeline.json', ContentFile('{}'))
         proj_instance.save()
 
         messages.add_message(request, messages.SUCCESS,
