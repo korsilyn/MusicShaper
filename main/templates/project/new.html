@@ -82,8 +82,8 @@
                         sending = false;
                     }
                 },
-                error: (_, _status, err) => {
-                    alert(`Произошла ошибка: ${_.responseText}`);
+                error: (error, _status, _thrownErr) => {
+                    alert(`Произошла ошибка: ${error.responseText}`);
                     sending = false;
                 }
             });
