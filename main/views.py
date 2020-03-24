@@ -11,6 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import MusicTrackProject
 from django.core.files.base import ContentFile
 
+from MusicShaper.settings import STATICFILES_DIRS
 from datetime import datetime
 
 
@@ -152,6 +153,9 @@ def project_new_instrument(request, id: int):
 
     context = get_base_context(request)
     context['project'] = project
+
+    with open(STATICFILES_DIRS[0] + '/data/instrumentDefaults.json', 'r', encoding='utf-8') as f:
+        context['instrumentDefaults'] = f.read()
 
     return render(request, 'project/instrument/new.html', context)
 
