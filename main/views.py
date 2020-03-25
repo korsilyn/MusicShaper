@@ -82,6 +82,23 @@ def new_project(request):
     return render(request, 'project/new.html', get_base_context(request))
 
 
+@login_required
+def projects_list(request):
+    '''
+    Страница со списком проектов пользователя
+
+    :param request: запрос клиента
+    :return: список проектов
+    :rtype: HttpResponse
+    '''
+
+    context = get_base_context(request)
+    context['projects'] = MusicTrackProject.objects.filter(
+        author=request.user).all()
+
+    return render(request, 'project/list.html', context)
+
+
 def get_project_or_404(request, id: int):
     '''
     Возвращает проект с нужным id + проверка на автора
@@ -158,7 +175,6 @@ def project_new_instrument(request, id: int):
         context['instrumentDefaults'] = f.read()
 
     return render(request, 'project/instrument/new.html', context)
-
 
 
 def editor(request):
