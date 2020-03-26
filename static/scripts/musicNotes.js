@@ -2,7 +2,7 @@
  * @returns {string[]}
  */
 function getNoteNames() {
-    return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 }
 
 /**
@@ -10,15 +10,28 @@ function getNoteNames() {
  * @param {number} to
  * @returns {string[]}
  */
-function getNotes(from=2, to=7) {
+function getNotes(from = 2, to = 7) {
     const noteNames = getNoteNames();
     const notes = [];
 
-    for (let i = from; i <= to; i++) {
+    let i;
+
+    const makeNotes = () => {
         for (const noteName of noteNames) {
             notes.push(noteName + i);
         }
     }
-    
+
+    if (from > to) {
+        for (i = from; i >= to; i--) {
+            makeNotes();
+        }
+    }
+    else {
+        for (i = from; i <= to; i++) {
+            makeNotes();
+        }
+    }
+
     return notes;
 }
