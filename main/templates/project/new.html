@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Новый проект
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        h1 {
+            margin-top: 10%;
+            margin-bottom: 30px;
+        }
+
+        form {
+            width: 40%;
+            margin: auto;
+        }
+
+        textarea {
+            min-height: 40px;
+        }
+
+        button {
+            margin-top: 5%;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <h1 class="text-center">Создание проекта</h1>
+    <form action="#" onsubmit="return send_request(this);">
+        <div class="form-group">
+            <label>Имя проекта</label>
+            <input name="name" type="text" class="form-control"
+                placeholder="Имя" maxlength="50" required>
+        </div>
+        <div class="form-group">
+            <label>Описание проекта</label>
+            <textarea name="description" class="form-control"
+                placeholder="Описание (необязательно)" maxlength="250"></textarea>
+        </div>
+        <div class="text-center">
+            <small>(Эти параметры можно будет изменить при публикации)</small>
+            <button type="submit" class="btn btn-outline-primary">Создать проект</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        const check_name = (name) => name.length > 0 && name.length <= 50;
+        const check_desc = (desc) => desc.length >= 0 && desc.length <= 250;
+
+        let sending = false;
+
+        function send_request(form) {
+            if (sending) return;
+
+            if (!(form.name && form.description
+                && check_name(form.name.value) && check_desc(form.description.value))
+            ) {
+                alert("Некорректные данные формы :/");
+                return;
+            }
+            
+            $.ajax({
+                url: "{% url 'new_project' %}",
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    name: form.name.value,
+                    description: form.description.value
+                },
+                success: (data) => {
+                    if (data.proj_id) {
+                        const url = "{% url 'project_home' id=9999 %}".replace('9999', data.proj_id);
+                        location.replace(url);
+                    }
+                    else {
+                        alert(`Произошла ошибка: сервер не отвечает`);
+                        sending = false;
+                    }
+                },
+                error: (error, _status, _thrownErr) => {
+                    alert(`Произошла ошибка: ${error.responseText}`);
+                    sending = false;
+                }
+            });
+
+            sending = true;
+
+            return false; // no page reloading
+        }
+    </script>
+{% endblock %}

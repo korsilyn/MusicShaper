@@ -1,0 +1,7 @@
+<div class="card project-card">
+    <div class="card-body">
+        <h5 class="card-title">{{ project.name }}</h5>
+        <p class="card-text">{{ project.desc|default:"<i>нет описания</i>" }}</p>
+        <a href="{% url 'project_home' id=project.id %}">Открыть</a>
+    </div>
+</div>

@@ -4,20 +4,13 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-def music_track_pattern_path(instance, filename):
-    '''
-    Возвращает путь до паттерна в папке проекта
-
-    :param instance: модель паттерна
-    :param filename: имя файла
-    :rtype: str
-    '''
-
-    return "projects/{}/patterns/{}_{}".\
-        format(instance.project.id, instance.id, filename)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    status = models.CharField(max_length=100)
 
 
-def music_track_project_data_path(instance, filename):
+def music_track_project_path(instance, filename):
     '''
     Возвращает путь до файда с данными проекта
     (настройки, инструменты и т.д.)
@@ -27,7 +20,40 @@ def music_track_project_data_path(instance, filename):
     :rtype: str
     '''
 
-    return "projects/{}/{}".format(instance.id, filename)
+    return f'projects\\{instance.author.id}\\{instance.name}\\{filename}'
+
+
+def music_track_pattern_path(instance, filename):
+    '''
+    Возвращает путь до паттерна в папке проекта
+
+    :param instance: модель паттерна
+    :param filename: имя файла
+    :rtype: str
+    '''
+
+    return music_track_project_path(instance.project, f'patterns\\{instance.name}\\{filename}')
+
+
+def music_instrument_path(instance, filename):
+    '''
+    Возвращает путь до настроек музыкального инструмента в папке проекта
+
+    :param instance: модель инструмента
+    :param filename: имя файла
+    :rtype: str
+    '''
+
+    return music_track_project_path(instance.project, f'instruments\\{instance.name}\\{filename}')
+
+
+class MusicInstrument(models.Model):
+    '''
+    Модель музыкального инстурмента
+    '''
+
+    name = models.CharField(max_length=25)
+    settings = models.FileField(upload_to=music_instrument_path)
 
 
 class MusicTrackPattern(models.Model):
@@ -35,11 +61,15 @@ class MusicTrackPattern(models.Model):
     Модель паттерна проекта
 
     :param name: имя паттерна
-    :paran midi: midi файл с данными паттерна
+    :param color: цвет паттерна в редакторе
+    :param duration: продолжительность
+    :paran notes: json файл с нотами
     '''
 
     name = models.CharField(max_length=25)
-    midi = models.FileField(upload_to=music_track_pattern_path)
+    color = models.CharField(max_length=25)
+    duration = models.FloatField()
+    notes = models.FileField(upload_to=music_track_pattern_path)
 
 
 class MusicTrackProject(models.Model):
@@ -55,11 +85,11 @@ class MusicTrackProject(models.Model):
 
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=250)
-    author = models.ForeignKey(
-        User, related_name="projects", on_delete=models.CASCADE)
-    patterns = models.ManyToManyField(
-        MusicTrackPattern, related_name="project")
-    data = models.FileField(upload_to=music_track_project_data_path)
+    author = models.ForeignKey(User, models.CASCADE, "projects")
+    creation_date = models.DateTimeField()
+    instruments = models.ManyToManyField(MusicInstrument, "project")
+    patterns = models.ManyToManyField(MusicTrackPattern, "project")
+    timeline_data = models.FileField(upload_to=music_track_project_path)
 
 
 class TrackSettings(models.Model):
@@ -88,8 +118,7 @@ class TrackComment(models.Model):
     :param checked_by_author: просмотрен ли автором трека
     '''
 
-    author = models.ForeignKey(
-        User, related_name="comments", on_delete=models.CASCADE)
+    author = models.ForeignKey(User, models.CASCADE, "comments")
     topic = models.CharField(max_length=50)
     content = models.CharField(max_length=400)
     creation_date = models.DateTimeField()
@@ -114,11 +143,10 @@ class MusicTrack(models.Model):
 
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=250)
-    author = models.ForeignKey(
-        User, related_name="tracks", on_delete=models.CASCADE)
+    author = models.ForeignKey(User, models.CASCADE, "tracks")
     creation_date = models.DateTimeField()
-    likes = models.ManyToManyField(User, related_name="likes")
-    dislikes = models.ManyToManyField(User, related_name="dislikes")
-    comments = models.ManyToManyField(TrackComment, related_name="comments")
-    reports = models.ManyToManyField(TrackComment, related_name="reports")
-    settings = models.ForeignKey(TrackSettings, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, "likes")
+    dislikes = models.ManyToManyField(User, "dislikes")
+    comments = models.ManyToManyField(TrackComment, "comments")
+    reports = models.ManyToManyField(TrackComment, "reports")
+    settings = models.ForeignKey(TrackSettings, models.CASCADE)

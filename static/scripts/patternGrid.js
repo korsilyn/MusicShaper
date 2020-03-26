@@ -41,7 +41,10 @@ class PatternGrid extends Grid {
         this.mousePainter = new PatternMousePainter(this);
     }
 
-    renderBackground() {
+    /**
+     * @param {number} guideLinesStep 
+     */
+    renderBackground(guideLinesStep=0) {
         this.bgContext.beginPath();
 
         for (let y = 0; y <= this.canvas.height; y += this.cellHeight) {
@@ -52,6 +55,13 @@ class PatternGrid extends Grid {
         for (let x = 0; x <= this.canvas.width; x += this.cellWidth) {
             this.bgContext.moveTo(x, 0);
             this.bgContext.lineTo(x, this.canvas.height);
+        }
+        
+        if (guideLinesStep > 0) {
+            for (let y = 0; y <= this.canvas.height; y += this.cellHeight * guideLinesStep) {
+                this.bgContext.moveTo(0, y);
+                this.bgContext.lineTo(this.canvas.width, y);
+            }
         }
 
         this.bgContext.stroke();

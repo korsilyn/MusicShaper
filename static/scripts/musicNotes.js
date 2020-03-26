@@ -1,19 +1,22 @@
 /**
+ * @returns {string[]}
+ */
+function getNoteNames() {
+    return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+}
+
+/**
  * @param {number} from
  * @param {number} to
  * @returns {string[]}
  */
-function getMusicNotes(from=2, to=8) {
-    const noteNames = ['C', 'D', '_E', 'F', 'G', 'A', '_B'];
+function getNotes(from=2, to=7) {
+    const noteNames = getNoteNames();
     const notes = [];
 
-    for (let i = to; i >= from; i--) {
+    for (let i = from; i <= to; i++) {
         for (const noteName of noteNames) {
-            const noteSafe = noteName.replace('_', '');
-            if (!noteName.startsWith('_')) {
-                notes.push(noteSafe + '#' + i);
-            }
-            notes.push(noteSafe + i);
+            notes.push(noteName + i);
         }
     }
     

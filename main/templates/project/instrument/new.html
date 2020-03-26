@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}
+    Создание инструмента
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        div.container {
+            margin-top: 5%;
+        }
+
+        .card {
+            padding: 30px;
+        }
+
+        .card > .card, .card > #synthSettings > .card {
+            margin: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center">
+        <h2>Создание инструмента</h2>
+        <a href="{% url 'project_instruments' id=project.id %}">
+            Назад к списку инструментов
+        </a>
+    </div>
+    <br>
+
+    <div class="form-group">
+        <label>Тип инструмента</label>
+        <select id="synthSelector" class="form-control">
+            <option value="null" selected>Не выбран</option>
+        </select>
+    </div>
+    <br>
+
+    <div class="card" style="display: none;">
+        <div id="synthSettings"></div>
+    </div>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        (function(){
+
+        const defaults = JSON.parse(`{{ instrumentDefaults|safe|escapejs }}`);
+        
+        function translate(value, lang="ru") {
+            return defaults.translations[lang][value] || value; 
+        }
+
+        const synthSelector = document.getElementById("synthSelector");
+        const settingsDiv = document.getElementById("synthSettings");
+
+        // instrument type select
+        for (const synthName in defaults.settings) {
+            const newOption = document.createElement("option");
+            newOption.value = synthName;
+            newOption.innerHTML = translate(synthName);
+
+            synthSelector.appendChild(newOption);
+        }
+
+        function placeNumberSetting(name, [_default, min=undefined, max=undefined]) {
+            const formGroup = document.createElement("div");
+            formGroup.classList.add("form-group");
+
+            const inputLabel = document.createElement("label");
+            inputLabel.innerHTML = translate(name);
+
+            formGroup.appendChild(inputLabel);
+
+            const numberInput = document.createElement("input");
+            numberInput.classList.add("form-control");
+            numberInput.type = "number";
+
+            numberInput.value = _default;
+            numberInput.step = 0.1;
+            if (min !== undefined) numberInput.min = min;
+            if (max !== undefined) numberInput.max = max;
+
+            formGroup.appendChild(numberInput);
+            return formGroup;
+        }
+
+        function placeSelectSetting(name, options) {
+            const formGroup = document.createElement("div");
+            formGroup.classList.add("form-group");
+
+            const selectLabel = document.createElement("label");
+            selectLabel.innerHTML = translate(name);
+
+            formGroup.appendChild(selectLabel);
+
+            const selectEl = document.createElement("select");
+            selectEl.classList.add("form-control");
+
+            for (const option of options) {
+                const optionEl = document.createElement("option");
+                optionEl.value = option;
+                optionEl.innerHTML = translate(option);
+
+                selectEl.appendChild(optionEl);
+            }
+
+            formGroup.appendChild(selectEl);
+            return formGroup;
+        }
+
+        function placeSettingsObj(settings, div) {
+            for (const [key, value] of Object.entries(settings)) {
+                if (value instanceof Array) {
+                    const valueType = typeof value[0];
+                    if (valueType == "number") {
+                        div.appendChild(placeNumberSetting(key, value));
+                    }
+                    else if (valueType == "string") {
+                        div.appendChild(placeSelectSetting(key, value));
+                    }
+                    else {
+                        console.error(`not supported setting type ${valueType}`);
+                    }
+                }
+                else {
+                    const cardDiv = document.createElement("div");
+                    cardDiv.classList.add("card");
+
+                    const header = document.createElement("h5");
+                    header.innerHTML = translate(key);
+                    cardDiv.appendChild(header);
+
+                    placeSettingsObj(value, cardDiv);
+                    div.appendChild(cardDiv);
+                }
+            }
+        }
+
+        synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
+            settingsDiv.innerHTML = "";
+            if (synthName != "null") {
+                settingsDiv.parentElement.style.display = "block";
+                placeSettingsObj(defaults.settings[synthName], settingsDiv);
+            }
+            else {
+                settingsDiv.parentElement.style.display = "none";
+            }
+        }
+
+        })();
+    </script>
+{% endblock %}
