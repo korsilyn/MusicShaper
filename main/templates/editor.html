@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}
+    Создание трека
+{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/editor.css' %}">
+{% endblock %}
+
+{% block 'body_attrs' %}{% endblock %}
+
+{% block 'body' %}
+    <div style="display: grid; height: 100vh; grid-template-rows: auto auto;">
+        {% include 'melodySettings.html' %}
+        {% include 'melodyEditor.html' %}
+    </div>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script src="{% static 'libs/Tone.js' %}"></script>
+    <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
+    <script src="{% static 'scripts/grid.js' %}"></script>
+    <script src="{% static 'scripts/patternMousePainter.js' %}"></script>
+    <script src="{% static 'scripts/patternGrid.js' %}"></script>
+    <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
+    <script src="{% static 'scripts/musicNotes.js' %}"></script>
+    <script src="{% static 'scripts/patternPlayer.js' %}"></script>
+    <script>
+        const notes = getMusicNotes();
+        const noteSize = [50, 25];
+
+        const cheatsheetGrid = new PatternGrid('cheatsheet', [1, notes.length], noteSize, {
+            grid: "black"
+        }, true);
+
+        const trackGrid = new PatternGrid('track', [100, notes.length], noteSize, {
+            note: "#fc4141"
+        }, false, 1);
+
+        function renderCheatsheet() {
+            cheatsheetGrid.bgContext.font = '25px Consolas';
+            for (let i = 0; i < notes.length; i++) {
+                cheatsheetGrid.bgContext.fillText(notes[i], 4, i * noteSize[1] + 21);
+            }
+        }
+
+        const thumbs = document.getElementsByClassName("scrollbar-thumb");
+        new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
+        new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
+        
+        cheatsheetGrid.renderBackground();
+        trackGrid.renderBackground();
+        renderCheatsheet();
+
+        const synth = new Tone.PolySynth(notes.length);
+        const gain = new Tone.Gain(0.5);
+        
+        synth.connect(gain);
+        gain.toMaster();
+
+        const noteDuration = '8n';
+        
+        const oldOnCellUpdate = trackGrid.oncellupdate;
+        trackGrid.oncellupdate = (x, y, value) => {
+            oldOnCellUpdate(x, y, value);
+            if (!value) return;
+
+            synth.triggerAttackRelease(notes[y], noteDuration);
+        }
+
+        const player = new PatternPlayer(trackGrid, synth, {
+            noteDuration
+        });
+
+    </script>
+{% endblock %}
