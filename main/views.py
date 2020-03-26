@@ -1,19 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-<<<<<<< HEAD
 #models
 from .models import TrackSettings, TrackComment, MusicTrack, Profile
 #forms
 from django.contrib.auth.forms import UserCreationForm
-=======
-
->>>>>>> develop
 from .forms import LoginForm
-from django.contrib.auth.forms import UserCreationForm
 
 
 def get_base_context(request):
@@ -134,13 +129,25 @@ def logout_page(request):
 
 
 @login_required
-def profile_page(request):
+def profile_page(request, name=None):
+    '''
+    Страница профиля
+
+    :param request: запрос клиента
+    :return: страница профиля
+    :rtype: HttpResponse
+    '''
+
+    if name:
+        user = get_object_or_404(User, username=name)
+    else:
+        user = request.user
     all_tracks = MusicTrack.objects.all()
-    profile = Profile.objects.all()
+    profile = get_object_or_404(Profile, user=user)
     context = {
-        "request": request,
-        "user": request.user,
-        "tracks": all_tracks.filter(author=request.user),
-        "likes": all_tracks.filter(likes=request.user),
+        "user": user,
+        "tracks": all_tracks.filter(author=user),
+        "likes": all_tracks.filter(likes=user),
+        "profile": profile,
     }
     return render(request, 'profile.html', context)

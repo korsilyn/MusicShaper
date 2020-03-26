@@ -2,11 +2,12 @@
 
 {% block 'title' %}Профиль пользователя {{ user.username }}{% endblock %}
 {% block 'body' %}
+<br>
 <div class="media">
-    <img class="rounded-circle account-img" src="/media/default.jpg">
+    <img class="rounded-circle account-img" src="{{ profile.image.url }}" width="200px" height="200px">
     <div class="media-body">
-        <h2 class="account-heading">Профиль пользователя {{ user.username }}</h3> <br>
-        <p class="text-secondary">STATUS</p>
+        <h2 class="account-heading">Профиль пользователя {{ user.username }}</h2> <br>
+        <p class="text-secondary">{{ profile.status }}</p>
     </div>
 </div>
 <br>
@@ -35,7 +36,7 @@
           {% endfor %}
         </ul>
       {% else %}
-        <div class="text-center">Пользователь не лайкал голосования</div>
+        <div class="text-center">Пользователь не лайкал треков</div>
       {% endif %}
     </td>
   </tbody>
