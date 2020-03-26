@@ -271,3 +271,16 @@ def logout_page(request):
     messages.add_message(request, messages.SUCCESS,
                          "Вы успешно вышли из аккаунта")
     return redirect('index')
+
+
+@login_required
+def profile_page(request):
+    all_tracks = MusicTrack.objects.all()
+    profile = Profile.objects.all()
+    context = {
+        "request": request,
+        "user": request.user,
+        "tracks": all_tracks.filter(author=request.user),
+        "likes": all_tracks.filter(likes=request.user),
+    }
+    return render(request, 'profile.html', context)
