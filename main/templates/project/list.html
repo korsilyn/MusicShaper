@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block 'title' %}
     Список проектов
 {% endblock %}
 
 {% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/projectCard.css' %}">
     <style>
         :root {
             --text-transition: cubic-bezier(0.65, 0, 0.35, 1);
@@ -19,24 +21,6 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-        }
-        
-        .card {
-            min-height: 140px;
-            transition: background-color 0.1s ease;
-        }
-
-        .card:hover {
-            background-color: rgb(250, 250, 250);
-        }
-
-        .card a {
-            opacity: 0;
-            transition: opacity 0.1s ease;
-        }
-
-        .card:hover a {
-            opacity: 1;
         }
 
         .projects-grid > a {
@@ -71,13 +55,7 @@
     <h1 class="text-center">Список ваших проектов</h1>
     <div class="projects-grid">
         {% for project in projects %}
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ project.name }}</h5>
-                    <p class="card-text">{{ project.desc|default:"<i>нет описания</i>" }}</p>
-                    <a href="{% url 'project_home' id=project.id %}">Открыть</a>
-                </div>
-            </div>
+            {% include 'project/card.html' %}
         {% endfor %}
         <a href="{% url 'new_project' %}">
             <b>Новый проект</b>
