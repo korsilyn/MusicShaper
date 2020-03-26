@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Проект {{ project.name }}
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        .block {
+            margin-top: 10%;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="block text-center">
+        <h1>Проект {{ project.name }}</h1>
+        <h3>Описание: {{ project.desc }}</h3>
+        <a href="{% url 'projects' %}">Назад к списку проектов</a>
+    </div>
+    <div class="block text-center">
+        <a class="btn btn-secondary" href="{% url 'project_instruments' id=project.id %}">
+            Музыкальные инструменты
+        </a>
+    </div>
+{% endblock %}

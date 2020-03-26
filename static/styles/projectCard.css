@@ -1,0 +1,17 @@
+.project-card {
+    min-height: 140px;
+    transition: background-color 0.1s ease;
+}
+
+.project-card:hover {
+    background-color: rgb(250, 250, 250);
+}
+
+.project-card a {
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.project-card:hover a {
+    opacity: 1;
+}

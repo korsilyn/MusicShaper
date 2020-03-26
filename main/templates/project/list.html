@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}
+    Список проектов
+{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/projectCard.css' %}">
+    <style>
+        :root {
+            --text-transition: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        h1 {
+            margin-top: 10%;
+            margin-bottom: 40px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .projects-grid > a {
+            width: 1fr;
+            color: black;
+            text-align: center;
+            text-decoration: none;
+            border: dashed green;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.1s ease;
+        }
+
+        .projects-grid > a > b {
+            font-size: 1rem;
+            transition: font-size 0.2s var(--text-transition);
+        }
+
+        .projects-grid > a:hover > b {
+            font-size: 1.3rem;
+        }
+
+        .projects-grid > a:hover {
+            background-color: lightgreen;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <h1 class="text-center">Список ваших проектов</h1>
+    <div class="projects-grid">
+        {% for project in projects %}
+            {% include 'project/card.html' %}
+        {% endfor %}
+        <a href="{% url 'new_project' %}">
+            <b>Новый проект</b>
+        </a>
+    </div>
+{% endblock %}
