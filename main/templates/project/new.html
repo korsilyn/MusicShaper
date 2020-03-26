@@ -28,7 +28,7 @@
 
 {% block 'body' %}
     <h1 class="text-center">Создание проекта</h1>
-    <form action="#" onsubmit="return send_request(this);">
+    <form id="sendForm" action="#">
         <div class="form-group">
             <label>Имя проекта</label>
             <input name="name" type="text" class="form-control"
@@ -48,19 +48,22 @@
 
 {% block 'scripts' %}
     <script>
+        (function() {
+
         const check_name = (name) => name.length > 0 && name.length <= 50;
         const check_desc = (desc) => desc.length >= 0 && desc.length <= 250;
 
         let sending = false;
 
-        function send_request(form) {
-            if (sending) return;
+        const form = document.getElementById('sendForm');
+        form.onsubmit = () => {
+            if (sending) return false;
 
             if (!(form.name && form.description
                 && check_name(form.name.value) && check_desc(form.description.value))
             ) {
-                alert("Некорректные данные формы :/");
-                return;
+                alert('Некорректные данные формы :/');
+                return false;
             }
             
             $.ajax({
@@ -92,5 +95,7 @@
 
             return false; // no page reloading
         }
+
+        })();
     </script>
 {% endblock %}
