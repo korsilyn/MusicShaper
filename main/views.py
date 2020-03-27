@@ -353,6 +353,7 @@ def profile_change_password_page(request):
         return render(request, 'profile_cp.html', context)
 
 
+@login_required
 def profile_delete_avatar(request):
     profile = get_object_or_404(Profile, user=request.user)
     if request.method == 'POST':
