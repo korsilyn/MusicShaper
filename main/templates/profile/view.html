@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}Профиль {{ user.username }}{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/projectCard.css' %}">
+    <style>
+        h2 {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        #account-img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #tracksGrid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        div > #actions {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <h2 class="text-center">Профиль пользователя {{ user.username }}</h2>
+    <img id="account-img" class="rounded-circle"
+        src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}"
+        width="150px" height="150px">
+    <br>
+    {% if profile.status %}
+        <p class="text-secondary text-center">“{{ profile.status }}”</p>
+    {% endif %}
+
+    <div class="text-center">
+        <div id="actions" class="btn-group-vertical">
+            {% if request.user == profile.user %}
+                <a class="btn btn-primary" href="{% url 'profile_edit' %}">
+                    Редактировать Профиль
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="text-center">
+        <b>Треки пользователя</b>
+    </div>
+    {% if tracks|length > 0 %}
+        <div id="tracksGrid">
+            {% for t in tracks %}
+                {% include 'track/card.html' %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center">
+            <i>Пользователь не создавал треков</i>
+        </div>
+    {% endif %}
+    <br>
+
+    <div class="text-center">
+        <b>Лайки пользователя</b>
+    </div>
+    {% if likes|length > 0 %}
+        <div id="projectsGrid">
+            {% for l in likes %}
+            {% include 'project/card.html' %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center"><i>Пользователь не лайкал треки</i></div>
+    {% endif %}
+{% endblock %}
