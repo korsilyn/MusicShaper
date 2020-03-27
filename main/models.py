@@ -14,17 +14,8 @@ class Profile(models.Model):
     '''
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default='', upload_to='profile_pics')
     status = models.CharField(max_length=100, default='')
-
-    def __str__(self):
-        '''
-        Возвращает ник пользователя
-
-        :rtype: str
-        '''
-
-        return self.user.username
 
 
 def create_profile(sender, **kwargs):

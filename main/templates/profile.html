@@ -14,10 +14,13 @@
 {% block 'body' %}
 <br>
 <div class="media">
-    <img class="rounded-circle account-img" src="{{ profile.image.url }}" width="200px" height="200px">
+    <img class="rounded-circle account-img" src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}" width="200px" height="200px">
     <div class="media-body">
         <h2 class="account-heading">Профиль пользователя {{ user.username }}</h2> <br>
         <p class="text-secondary">{{ profile.status }}</p>
+        {% if request.user == user %}
+          <a class="btn btn-primary" href="{% url 'profile' %}?do=edit">Редактировать Профиль</a>
+        {% endif %}
     </div>
 </div>
 <br>

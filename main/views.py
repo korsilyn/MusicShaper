@@ -3,18 +3,15 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseBadRequ
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-#models
-from .models import TrackSettings, TrackComment, MusicTrack, Profile
-#forms
-from django.contrib.auth.forms import UserCreationForm
-from .forms import LoginForm
-
-from .models import MusicTrackProject
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.core.files.base import ContentFile
-
 from MusicShaper.settings import STATICFILES_DIRS
 from datetime import datetime
+#models
+from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject
+#forms
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from .forms import LoginForm
 
 
 def get_base_context(request):
@@ -285,6 +282,14 @@ def profile_page(request, name=None):
     :rtype: HttpResponse
     '''
 
+    if 'do' in request.GET:
+        do = request.GET['do']
+        if do == "edit":
+            return profile_edit_page(request)
+        elif do == "cp":
+            return profile_change_password_page(request)
+        elif do == "deleteav":
+            return profile_delete_avatar(request)
     if name:
         user = get_object_or_404(User, username=name)
     else:
@@ -292,9 +297,66 @@ def profile_page(request, name=None):
     all_tracks = MusicTrack.objects.all()
     profile = get_object_or_404(Profile, user=user)
     context = {
+        "request": request,
         "user": user,
         "tracks": all_tracks.filter(author=user),
         "likes": all_tracks.filter(likes=user),
         "profile": profile,
     }
     return render(request, 'profile.html', context)
+
+
+@login_required
+def profile_edit_page(request):
+    '''
+    Страница редактирования профиля
+
+    :param request: запрос клиента
+    :return: страница редактировния профиля
+    :rtype: HttpResponse
+    '''
+
+    profile = get_object_or_404(Profile, user=request.user)
+    if request.method == 'POST':
+        status = request.POST.get("status", "None")
+        image = request.FILES['image']
+        if status and len(status) <= 100:
+            profile.status = status
+        if image:
+            profile.image.delete(save=True)
+            profile.image = image
+        profile.save()
+        return redirect('profile')
+    else:
+        context = get_base_context(request)
+        context['profile'] = profile
+        return render(request, 'profile_edit.html', context)
+
+
+@login_required
+def profile_change_password_page(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect('profile')
+        else:
+            return redirect('profile_cp')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+        context = {
+            "form": form,
+        }
+        return render(request, 'profile_cp.html', context)
+
+
+def profile_delete_avatar(request):
+    profile = get_object_or_404(Profile, user=request.user)
+    if request.method == 'POST':
+        profile.image.delete(save=True)
+        return redirect('profile')
+    return render(request, 'profile_delav.html')
+    

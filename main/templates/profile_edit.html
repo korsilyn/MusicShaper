@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Редактор профиля{% endblock %}
+{% block 'head' %}
+    <style>
+        form {
+            width: 50%;
+            margin: auto;
+            margin-top: 20vh;
+        }
+    </style>
+{% endblock %}
+{% block 'body' %}
+<br>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h1 class="text-center">РЕДАКТОР ПРОФИЛЯ</h1><br>
+    <label>Имя пользователя:</label> 
+    <input type="text" value="{{ user }}" disabled class="form-control">
+    <label>Статус:</label> 
+    <input type="text" placeholder="{% if profile.status %}{{ profile.status }}{% else %}Статус{% endif %}" class="form-control" name="status">
+    <ul>
+        <li>В статусе вы можете написать ваше настроение\что угодно</li>
+        <li>Длина не больше 100 символов</li>
+    </ul>
+    <input type="file" class="form-control" name="image">
+    <ul>
+        <li>Здесь будут условия</li>
+    </ul>
+    {% if profile.image %}
+        <a class="btn btn-secondary" href="{% url 'profile' %}?do=deleteav">Удалить аватар</a>
+    {% endif %}
+    <a class="btn btn-outline-success" href="{% url 'profile' %}?do=cp">Сменить пароль</a>
+    <div class="text-center"><button type="submit" class="btn btn-primary">Обновить</button></div>
+</form>
+{% endblock %}
