@@ -138,7 +138,7 @@ def project_home(request, id: int):
 
 
 @login_required
-def project_instruments_list(request, id: int):
+def instruments(request, id: int):
     '''
     Страница со списком всех музыкальных инструментов
     в проекте
@@ -159,7 +159,7 @@ def project_instruments_list(request, id: int):
 
 
 @login_required
-def project_new_instrument(request, id: int):
+def new_instrument(request, id: int):
     '''
     Страница создания музыкального инструмента
 
@@ -336,7 +336,7 @@ def profile_edit_page(request):
 
 
 @login_required
-def change_password_page(request):
+def change_password(request):
     '''
     Страница смены пароля
 
@@ -365,7 +365,7 @@ def change_password_page(request):
 
 
 @login_required
-def profile_delete_avatar(request):
+def delete_avatar(request):
     '''
     Страница удаления аватара
 
