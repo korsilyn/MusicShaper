@@ -11,7 +11,7 @@ Music Shaper позволяет вам легко писать собствен�
 Что требуется для работы проекта
 
 ```
-python3
+python3 # Tested on 3.8.2
 Django==3.0
 Pillow==7.0.0
 ```
@@ -34,7 +34,8 @@ python manage.py runserver
 ## Работает при помощи
 
 * [Django](https://docs.djangoproject.com/en/3.0/) - Бэкенд фреймворк
-* [Bootstrap 4](https://getbootstrap.com/docs/4.4/) - Дизайн
+* [Bootstrap 4](https://getbootstrap.com/docs/4.4/) - Фронтенд фреймворк
+* [Pillow](https://pillow.readthedocs.io/en/stable/) - Обработка картинок
 
 
 ## Авторы
