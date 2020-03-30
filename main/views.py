@@ -361,7 +361,7 @@ def change_password(request):
     else:
         context = get_base_context(request)
         context['form'] = PasswordChangeForm(user=request.user)
-        return render(request, 'change_password.html', context)
+        return render(request, 'profile/change_password.html', context)
 
 
 @login_required
@@ -383,3 +383,26 @@ def delete_avatar(request):
         return redirect('profile')
 
     return render(request, 'profile/delete_avatar.html')
+
+
+def search_page(request):
+    '''
+    Страница поиска пользователей\треков и тп
+
+    :param request: запрос клиента
+    :return: страница поиска
+    :rtype: HttpResponse
+    '''
+
+    if request.method == 'POST':
+        context = get_base_context(request)
+        search = request.POST.get('search', None)
+        if not search:
+            messages.add_message(request, messages.ERROR,
+                             'Введите поисковой запрос')
+            return redirect('search')
+        context['users'] = User.objects.filter(username=search)
+        context['tracks'] = MusicTrack.objects.filter(name=search)
+        context['quory'] = search
+        return render(request, 'search.html', context)
+    return render(request, 'search.html')

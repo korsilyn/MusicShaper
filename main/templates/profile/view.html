@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block 'body' %}
-    <h2 class="text-center">Профиль пользователя {{ user.username }}</h2>
+    <h2 class="text-center">Профиль пользователя {{ profile.user }}</h2>
     <img id="account-img" class="rounded-circle"
         src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}"
         width="150px" height="150px">

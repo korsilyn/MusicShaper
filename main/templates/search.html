@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}Поиск{% endblock %}
+
+{% block 'body' %}
+    <br>
+    <form method="POST" class="text-center">
+        {% csrf_token %}
+        <h2>ПОИСК</h2><br>
+        <div class="form-group">
+            <input type="text" placeholder='Введите ваш запрос' class="form-control" name='search' required>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Искать</button>
+        </div>
+    </form>
+    <br>
+    {% if quory %}
+        <ul class="list-group">
+        {% for u in users %}
+            <li class="list-group-item">
+                <img height="40px" width="40px" class="rounded-circle" 
+                src="{% if u.profile.image %}{{ u.profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}">
+                <b>{{ u.profile.user }}</b>
+                <i><small>{{ u.profile.status }}</small></i>
+            </li>
+        {% endfor %}
+        {% for t in tracks %}
+            <li class="list-group-item">
+                <p>{{ t.name }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
