@@ -9,15 +9,23 @@
         {% csrf_token %}
         <h2>ПОИСК</h2><br>
         <div class="form-group">
-            <input type="text" placeholder='Введите ваш запрос' class="form-control" name='search' required>
+            <input type="search" placeholder='Введите ваш запрос' class="form-control" name='search' required>
+        </div>
+        <div class="form-group">
+            <label>Искать по:</label>
+            <select name="filter">
+                <option value="user" {% if filter == "user" %}selected{% endif %}>Пользователям</option>
+                <option value="track" {% if filter == "track" %}selected{% endif %}>Трекам</option>
+            </select>
         </div>
         <div class="text-center">
             <button type="submit" class="btn btn-primary">Искать</button>
         </div>
     </form>
     <br>
-    {% if quory %}
+    {% if query %}
         <ul class="list-group">
+        {% if users %}
         {% for u in users %}
             <li class="list-group-item">
                 <img height="40px" width="40px" class="rounded-circle" 
@@ -25,12 +33,22 @@
                 <b>{{ u.profile.user }}</b>
                 <i><small>{{ u.profile.status }}</small></i>
             </li>
+        {% empty %}
+            <div class="text-center">
+                <i>Ничего не найдено</i>
+            </div>
         {% endfor %}
+        {% else %}
         {% for t in tracks %}
             <li class="list-group-item">
                 <p>{{ t.name }}</p>
             </li>
+        {% empty %}
+            <div class="text-center">
+                <i>Ничего не найдено</i>
+            </div>
         {% endfor %}
+        {% endif %}
         </ul>
     {% endif %}
 {% endblock %}

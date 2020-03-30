@@ -15,6 +15,19 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import LoginForm
 
 from datetime import datetime
+from difflib import SequenceMatcher
+
+
+def similar(a, b):
+    '''
+    Возвращает число, показывающее на сколько похожи значения a и b
+
+    :param a: первое слово
+    :param b: второе слово
+    :return: число
+    '''
+
+    return SequenceMatcher(None, a, b).ratio()
 
 
 def get_base_context(request):
@@ -396,13 +409,27 @@ def search_page(request):
 
     if request.method == 'POST':
         context = get_base_context(request)
-        search = request.POST.get('search', None)
-        if not search:
+        query = request.POST.get('search', None)
+        search_filter = request.POST.get('filter', None)
+        if not query or not search_filter:
             messages.add_message(request, messages.ERROR,
-                             'Введите поисковой запрос')
+                             'Ошибка поиска')
             return redirect('search')
-        context['users'] = User.objects.filter(username=search)
-        context['tracks'] = MusicTrack.objects.filter(name=search)
-        context['quory'] = search
+        users = User.objects.all()
+        tracks = MusicTrack.objects.all()
+        users_filtered = []
+        tracks_filtered = []
+        if search_filter == 'user':
+            for u in users:
+                if similar(query, u.username) > 0.6:
+                    users_filtered.append(u)
+            context['users'] = users_filtered
+        elif search_filter == 'track':
+            for t in tracks:
+                if similar(query, t.name) > 0.6:
+                    tracks_filtered.append(t)
+            context['tracks'] = tracks_filtered
+        context['query'] = query
+        context['filter'] = search_filter
         return render(request, 'search.html', context)
     return render(request, 'search.html')
