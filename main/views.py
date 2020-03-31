@@ -407,29 +407,27 @@ def search_page(request):
     :rtype: HttpResponse
     '''
 
-    if request.method == 'POST':
-        context = get_base_context(request)
-        query = request.POST.get('search', None)
+    if request.method == 'POST' and request.is_ajax():
+        query = request.POST.get('query', None)
         search_filter = request.POST.get('filter', None)
-        if not query or not search_filter:
-            messages.add_message(request, messages.ERROR,
-                             'Ошибка поиска')
-            return redirect('search')
-        users = User.objects.all()
-        tracks = MusicTrack.objects.all()
-        users_filtered = []
-        tracks_filtered = []
+        filtered = []
+        json_filtered = []
         if search_filter == 'user':
-            for u in users:
+            for u in User.objects.all():
                 if similar(query, u.username) > 0.6:
-                    users_filtered.append(u)
-            context['users'] = users_filtered
+                    filtered.append(u)
+            json_filtered = list(map(lambda u: {
+                'username': u.username,
+                'image': u.profile.image.url if u.profile.image else None,
+                'status': u.profile.status,
+                'similar': similar(query, u.username) }, filtered))
         elif search_filter == 'track':
-            for t in tracks:
-                if similar(query, t.name) > 0.6:
-                    tracks_filtered.append(t)
-            context['tracks'] = tracks_filtered
-        context['query'] = query
-        context['filter'] = search_filter
-        return render(request, 'search.html', context)
+            for u in MusicTrack.objects.all():
+                if similar(query, u.name) > 0.6:
+                    filtered.append(u)
+            json_filtered = list(map(lambda u: {'name': u.name,}, filtered))
+        json_filtered.sort(key=lambda v: v['similar'], reverse=True)
+        return JsonResponse({
+            "filtered": json_filtered,
+        })
     return render(request, 'search.html')

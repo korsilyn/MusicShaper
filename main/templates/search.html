@@ -5,50 +5,70 @@
 
 {% block 'body' %}
     <br>
-    <form method="POST" class="text-center">
-        {% csrf_token %}
+    <div class="text-center">
         <h2>ПОИСК</h2><br>
         <div class="form-group">
-            <input type="search" placeholder='Введите ваш запрос' class="form-control" name='search' required>
+            <input type="search" placeholder='Введите ваш запрос' class="form-control" id='search' required>
         </div>
         <div class="form-group">
             <label>Искать по:</label>
-            <select name="filter">
-                <option value="user" {% if filter == "user" %}selected{% endif %}>Пользователям</option>
-                <option value="track" {% if filter == "track" %}selected{% endif %}>Трекам</option>
+            <select id="filter">
+                <option value="user" selected>Пользователям</option>
+                <option value="track">Трекам</option>
             </select>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Искать</button>
+            <button onclick="ajax_request()" class="btn btn-primary">Искать</button>
         </div>
-    </form>
+    </div>
     <br>
-    {% if query %}
-        <ul class="list-group">
-        {% if users %}
-        {% for u in users %}
-            <li class="list-group-item">
-                <img height="40px" width="40px" class="rounded-circle" 
-                src="{% if u.profile.image %}{{ u.profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}">
-                <b>{{ u.profile.user }}</b>
-                <i><small>{{ u.profile.status }}</small></i>
-            </li>
-        {% empty %}
-            <div class="text-center">
-                <i>Ничего не найдено</i>
-            </div>
-        {% endfor %}
-        {% else %}
-        {% for t in tracks %}
-            <li class="list-group-item">
-                <p>{{ t.name }}</p>
-            </li>
-        {% empty %}
-            <div class="text-center">
-                <i>Ничего не найдено</i>
-            </div>
-        {% endfor %}
-        {% endif %}
-        </ul>
-    {% endif %}
+    <ul class="list-group" id='result'>
+        
+    </ul>
+{% endblock %}
+{% block 'scripts' %}
+<script>
+    function ajax_request() {
+        if (!document.getElementById("search").value) return;
+        const filter = document.getElementById("filter").value;
+        $.ajax({
+            url: "{% url 'search' %}",
+            dataType: "json",
+            method: "POST",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                filter,
+                query: document.getElementById("search").value,
+            },
+            success: (data) => {
+                const elul = document.getElementById('result');
+                elul.innerHTML = '';
+                if (data.filtered.length > 0){
+                    for (const v of data.filtered) {
+                        const el = document.createElement('li');
+                        elul.appendChild(el);
+                        el.classList.add('list-group-item');
+                        if (filter == 'user') {
+                            el.innerHTML = `<img class="rounded-circle" width="40px" height="40px" src="${v.image ? v.image : `{% static 'img/default_avatar.jpg'  %}`}">
+                            <b>${v.username}</b>
+                            <i><small>${v.status}</i></small>`;
+                        }
+                        else if (filter == 'track') {
+                            el.innerHTML = `<b>${v.name}</b>`;
+                        }
+                    }
+                }
+                else {
+                    const el = document.createElement('div');
+                    elul.appendChild(el);
+                    el.classList.add('text-center')
+                    el.innerHTML = `<i>Ничего не найдено</i>`
+                }
+            },
+            error: (error, _status, _thrownErr) => {
+                alert(error.responseText);
+            },
+        })
+    }
+</script>
 {% endblock %}
