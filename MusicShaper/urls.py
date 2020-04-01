@@ -39,4 +39,3 @@ urlpatterns = [
     path('track/<int:id>', views.music_track_page, name='track'),
     path('search/', views.search_page, name='search'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-]
