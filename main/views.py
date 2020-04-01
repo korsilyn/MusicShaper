@@ -9,25 +9,14 @@ from django.core.files.base import ContentFile
 from MusicShaper.settings import STATICFILES_DIRS
 
 from django.contrib.auth.models import User
-from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject
+from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject, user_to_dict
 
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import LoginForm
 
 from datetime import datetime
 from difflib import SequenceMatcher
-
-
-def similar(a, b):
-    '''
-    Возвращает число, показывающее на сколько похожи значения a и b
-
-    :param a: первое слово
-    :param b: второе слово
-    :return: число
-    '''
-
-    return SequenceMatcher(None, a, b).ratio()
+from operator import itemgetter
 
 
 def get_base_context(request):
@@ -42,6 +31,41 @@ def get_base_context(request):
         'request': request,
         'user': request.user,
     }
+
+
+def similar(a, b):
+    '''
+    Возвращает число, показывающее на сколько похожи последовательности a и b
+
+    :param a: первая последовательность
+    :param b: второе последовательность
+    :return: число от 0 до 1
+    '''
+
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def filter_similar(items, comp_value, threshold, key_lambda=None):
+    '''
+    Фильтрует елементы списка последовательностей по схожести
+    с другой последовательностью
+    Возвращает фильтрующй генератор
+    Значение генератора - кортеж (элемент, схожесть)
+
+    :param items: список последовательностей
+    :param comp_value: последовательность для сравнения
+    :param threashold: граница схожести от 0 до 1
+    :param key_lambda: функция, возвращающая ключ сортировки елемента в списке
+    :return: фильтрующий генератор
+    '''
+
+    if key_lambda is None:
+        def key_lambda(item): return item
+
+    for item in items:
+        similarity = similar(key_lambda(item), comp_value)
+        if similarity >= threshold:
+            yield (item, similarity)
 
 
 def index(request):
@@ -400,7 +424,7 @@ def delete_avatar(request):
 
 def search_page(request):
     '''
-    Страница поиска пользователей\треков и тп
+    Страница поиска пользователей / треков и т.п.
 
     :param request: запрос клиента
     :return: страница поиска
@@ -408,26 +432,24 @@ def search_page(request):
     '''
 
     if request.method == 'POST' and request.is_ajax():
-        query = request.POST.get('query', None)
-        search_filter = request.POST.get('filter', None)
-        filtered = []
-        json_filtered = []
-        if search_filter == 'user':
-            for u in User.objects.all():
-                if similar(query, u.username) > 0.6:
-                    filtered.append(u)
-            json_filtered = list(map(lambda u: {
-                'username': u.username,
-                'image': u.profile.image.url if u.profile.image else None,
-                'status': u.profile.status,
-                'similar': similar(query, u.username) }, filtered))
-        elif search_filter == 'track':
-            for u in MusicTrack.objects.all():
-                if similar(query, u.name) > 0.6:
-                    filtered.append(u)
-            json_filtered = list(map(lambda u: {'name': u.name,}, filtered))
-        json_filtered.sort(key=lambda v: v['similar'], reverse=True)
+        search_request = request.POST.get('request', None)
+        results_type = request.POST.get('type', None)
+        sort_by = request.POST.get('sortBy', None)
+
+        if not (search_request and results_type and sort_by):
+            raise HttpResponseBadRequest
+
+        threshold = 0.6
+        results = []
+
+        if results_type == 'user':
+            results = filter_similar(
+                User.objects.all(), search_request, threshold, lambda u: u.username)
+            results = sorted(results, key=itemgetter(1))
+            results = list(map(lambda r: user_to_dict(r[0]), results))
+
         return JsonResponse({
-            "filtered": json_filtered,
+            "results": results,
         })
+
     return render(request, 'search.html')

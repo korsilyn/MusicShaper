@@ -6,10 +6,6 @@
 
 {% block 'head' %}
     <style>
-        div.container {
-            margin-top: 5%;
-        }
-
         .title {
             margin-bottom: 8%;
         }
@@ -21,6 +17,7 @@
 {% endblock %}
 
 {% block 'body' %}
+    <div class="margin-top-5"></div>
     <div class="text-center title">
         <h2>Список инструментов</h2>
         <a href="{% url 'project_home' id=project.id %}">Назад к проекту</a>
