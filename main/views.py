@@ -475,17 +475,30 @@ def search_page(request):
         threshold = 0.6
         results = []
 
-        def filter_results(model, key):
-            return filter_similar_sorted(
-                model.objects.all(), search_request, threshold,
-                key=key, reverse=True
-            )
-
         if results_type == 'user':
-            results = filter_results(User, lambda u: u.username)
+            results = filter_similar_sorted(
+                User.objects.all(), search_request, threshold,
+                key=lambda u: u.username, reverse=True
+            )
             results = list(map(lambda r: user_to_dict(r[0]), results))
         elif results_type == 'track':
-            results = filter_results(MusicTrack, lambda t: t.name)
+            results = filter_similar(
+                MusicTrack.objects.all(), search_request, threshold, lambda t: t.name
+            )
+
+            key_lambda = None
+            if sort_by == 'relevant':
+                key_lambda = lambda r: r[1]
+            elif sort_by == 'popularity':
+                key_lambda = lambda r: r[0].likes.count() + r[0].dislikes.count() # temp fix
+            elif sort_by == 'likes':
+                key_lambda = lambda r: r[0].likes.count()
+            elif sort_by == 'new' or sort_by == 'old':
+                key_lambda = lambda r: r[0].creation_date
+            else:
+                raise HttpResponseBadRequest
+
+            results = sorted(results, reverse=sort_by != 'old', key=key_lambda)
             results = list(map(lambda r: r[0].to_dict(), results))
 
         return JsonResponse({

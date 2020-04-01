@@ -28,6 +28,10 @@
         .profile-link {
             margin-left: 8px;
         }
+
+        .avatar {
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
     </style>
 {% endblock %}
 
@@ -54,7 +58,8 @@
                 <br>
                 <label>Сортировать по</label>
                 <select id="sortBy" class="form-control">
-                    <option value="popularity" selected>Популярности</option>
+                    <option value="relevant" selected>Релевантности</option>
+                    <option value="popularity">Популярности</option>
                     <option value="likes">Лайкам</option>
                     <option value="new">Сначала новое</option>
                     <option value="old">Сначала старое</option>
@@ -111,13 +116,17 @@
         function getUserElementHTML(user) {
             const avatarUrl = user.profile.image || "{% static 'img/default_avatar.jpg'  %}";
             const profileUrl = `{% url 'profile' %}?username=${user.username}`;
-            return `<img class="rounded-circle" width="40px" height="40px" src="${avatarUrl}">
-                <b class="profile-link"><a href="${profileUrl}">${user.username}</a></b>
-                 - <small>“<i>${user.profile.status}</i>”</small>`;
+            let html = `<img class="rounded-circle avatar" width="40px" height="40px" src="${avatarUrl}">
+                <b class="profile-link"><a href="${profileUrl}">${user.username}</a></b>`;
+            if (user.profile.status) {
+                html += ` - <small>“<i>${user.profile.status}</i>”</small>`;
+            }
+            return html;
         }
 
         function getTrackElementHTML(track) {
-            return `<b class="track-link"><a href=>${track.name}</a></b><br>
+            const trackUrl = "{% url 'track' id=0 %}".replace('/0', '/' + track.id);
+            return `<b class="track-link"><a href="${trackUrl}">${track.name}</a></b><br>
             “<i>${track.desc}</i>”`;
         }
 

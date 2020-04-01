@@ -4,7 +4,7 @@
 {% block 'title' %}Профиль {{ user.username }}{% endblock %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'styles/projectCard.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/trackCard.css' %}">
     <style>
         h2 {
             margin-top: 20px;
@@ -18,9 +18,14 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
-        #tracksGrid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
+        .tracksGrid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .tracksGrid > * {
+            max-width: 200px;
+            margin: 5px;
         }
 
         div > #actions {
@@ -54,8 +59,8 @@
         <b>Треки пользователя</b>
     </div>
     {% if tracks|length > 0 %}
-        <div id="tracksGrid">
-            {% for t in tracks %}
+        <div class="tracksGrid mx-auto">
+            {% for track in tracks %}
                 {% include 'track/card.html' %}
             {% endfor %}
         </div>
@@ -70,9 +75,9 @@
         <b>Лайки пользователя</b>
     </div>
     {% if likes|length > 0 %}
-        <div id="projectsGrid">
-            {% for l in likes %}
-            {% include 'project/card.html' %}
+        <div class="tracksGrid mx-auto">
+            {% for track in likes %}
+                {% include 'track/card.html' %}
             {% endfor %}
         </div>
     {% else %}

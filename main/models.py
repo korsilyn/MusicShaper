@@ -29,7 +29,7 @@ class Profile(models.Model):
 
         return {
             'id': self.pk,
-            'image': self.image.url,
+            'image': self.image.url if self.image else None,
             'status': self.status,
         }
 
@@ -206,4 +206,4 @@ class MusicTrack(models.Model):
         :rtype: dict
         '''
 
-        return model_to_dict(self, fields=('name', 'desc', 'author', 'creation_date', 'settings'))
+        return model_to_dict(self, fields=('id', 'name', 'desc', 'author', 'creation_date', 'settings'))
