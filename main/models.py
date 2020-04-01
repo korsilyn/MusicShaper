@@ -24,7 +24,6 @@ class Profile(models.Model):
         Переводит модель профиля в словарь
         (поле image считается за url файла)
 
-        :param profile: модель профиля
         :rtype: dict
         '''
 
@@ -198,3 +197,13 @@ class MusicTrack(models.Model):
     comments = models.ManyToManyField(TrackComment, "comments")
     reports = models.ManyToManyField(TrackComment, "reports")
     settings = models.ForeignKey(TrackSettings, models.CASCADE)
+
+    def to_dict(self):
+        '''
+        Переводит модель трека в словарь
+        (ManyToMany поля недоступны, ForeignKey заменены на id)
+
+        :rtype: dict
+        '''
+
+        return model_to_dict(self, fields=('name', 'desc', 'author', 'creation_date', 'settings'))

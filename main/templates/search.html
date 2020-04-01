@@ -99,8 +99,8 @@
                 success: (data) => {
                     showResults(data.results, resultTypeSelect.value);
                 },
-                error: (error, _status, _thrownErr) => {
-                    showError('Произошла ошибка: ' + error.responseText);
+                error: (error, status, thrownErr) => {
+                    showError('Произошла ошибка: ' + thrownErr);
                 },
             })
         }
@@ -117,7 +117,8 @@
         }
 
         function getTrackElementHTML(track) {
-            return `<b>${track.name}</b>`;
+            return `<b class="track-link"><a href=>${track.name}</a></b><br>
+            “<i>${track.desc}</i>”`;
         }
 
         const errorEl = document.getElementById("error");
@@ -157,7 +158,7 @@
                 for (const v of results) {
                     const el = document.createElement('li');
                     el.classList.add('list-group-item');
-                    el.innerHTML = getUserElementHTML(v);
+                    el.innerHTML = innerHTMLgetter(v);
                     resultsUl.appendChild(el);
                 }
             }

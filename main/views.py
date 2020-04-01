@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 from MusicShaper.settings import STATICFILES_DIRS
 
 from django.contrib.auth.models import User
-from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject, user_to_dict
+from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject, TrackSettings, user_to_dict
 
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import LoginForm
@@ -45,7 +45,7 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 
-def filter_similar(items, comp_value, threshold, key_lambda=None):
+def filter_similar(items, comp_value, threshold, key=None):
     '''
     Фильтрует елементы списка последовательностей по схожести
     с другой последовательностью
@@ -55,17 +55,32 @@ def filter_similar(items, comp_value, threshold, key_lambda=None):
     :param items: список последовательностей
     :param comp_value: последовательность для сравнения
     :param threashold: граница схожести от 0 до 1
-    :param key_lambda: функция, возвращающая ключ сортировки елемента в списке
+    :param key: функция, возвращающая ключ сортировки елемента в списке
     :return: фильтрующий генератор
     '''
 
-    if key_lambda is None:
-        def key_lambda(item): return item
+    if key is None:
+        def key(item): return item
 
     for item in items:
-        similarity = similar(key_lambda(item), comp_value)
+        similarity = similar(key(item), comp_value)
         if similarity >= threshold:
             yield (item, similarity)
+
+
+def filter_similar_sorted(*fs_args, reverse=False, **fs_kwargs):
+    '''
+    Фильтрует елементы списка функцией filter_similar + сортирует
+    результат по "схожестям"
+
+    :param fs_args: позиционные аргументы функции filter_similar
+    :param fs_kwargs: проименованные аргументы функции filter_similar
+    :param reverse: аналогичен аргументу reverse в функции sorted
+    :return: фильтрующий генератор
+    '''
+
+    fs_generator = filter_similar(*fs_args, **fs_kwargs)
+    return sorted(fs_generator, key=itemgetter(1), reverse=reverse)
 
 
 def index(request):
@@ -442,11 +457,18 @@ def search_page(request):
         threshold = 0.6
         results = []
 
+        def filter_results(model, key):
+            return filter_similar_sorted(
+                model.objects.all(), search_request, threshold,
+                key=key, reverse=True
+            )
+
         if results_type == 'user':
-            results = filter_similar(
-                User.objects.all(), search_request, threshold, lambda u: u.username)
-            results = sorted(results, key=itemgetter(1))
+            results = filter_results(User, lambda u: u.username)
             results = list(map(lambda r: user_to_dict(r[0]), results))
+        elif results_type == 'track':
+            results = filter_results(MusicTrack, lambda t: t.name)
+            results = list(map(lambda r: r[0].to_dict(), results))
 
         return JsonResponse({
             "results": results,
