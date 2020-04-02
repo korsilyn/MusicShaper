@@ -59,7 +59,7 @@ nav:focus {
     transition: var(--transition-speed);
 }
 
-.navbar-nav > .nav-item .nav-link {
+.navbar-nav .nav-item .nav-link {
     pointer-events: none;
 }
 
@@ -112,7 +112,7 @@ nav:focus {
 
 /* Large screens */
 @media only screen and (min-width: 900px) {
-    nav.opened .navbar-nav > .nav-item .nav-link {
+    nav.opened .navbar-nav .nav-item .nav-link {
         pointer-events: all;
     }
 

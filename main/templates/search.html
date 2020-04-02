@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}Поиск{% endblock %}
+
+{% block 'head' %}
+    <style>
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        h4 {
+            margin-bottom: 15px;
+        }
+
+        #searchBar, #searchSettings, #results {
+            width: 80%;
+        }
+
+        #results, #searchBtn, #errorDiv {
+            margin-top: 30px;
+        }
+
+        #error {
+            color: red;
+        }
+
+        .profile-link {
+            margin-left: 8px;
+        }
+
+        .avatar {
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="margin-top-20"></div>
+    <h2 class="text-center">ПОИСК</h2>
+    <div class="form-group">
+        <input id='searchBar' type="search" class="form-control mx-auto"
+            placeholder='Поисковой запрос' required>
+    </div>
+    <div id="searchSettings" class="card mx-auto">
+        <div class="card-header">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSettings">
+                Настройки поиска
+            </button>
+        </div>
+        <div id="collapseSettings" class="collapse">
+            <div class="card-body">
+                <label>Искать</label>
+                <select id="resultType" class="form-control">
+                    <option value="track" selected>Треки</option>
+                    <option value="user">Пользователей</option>
+                </select>
+                <br>
+                <label>Сортировать по</label>
+                <select id="sortBy" class="form-control">
+                    <option value="relevant" selected>Релевантности</option>
+                    <option value="popularity">Популярности</option>
+                    <option value="likes">Лайкам</option>
+                    <option value="new">Сначала новое</option>
+                    <option value="old">Сначала старое</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button id="searchBtn" class="btn btn-primary">Искать</button>
+        <br>
+        <div id="errorDiv">
+            <i id="error"></i>
+        </div>
+    </div>
+    <ul class="list-group mx-auto" id='results'></ul>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        (function() {
+        
+        const searchBar        = document.getElementById('searchBar');
+        const resultTypeSelect = document.getElementById('resultType');
+        const sortBySelect     = document.getElementById('sortBy');
+
+        function search() {
+            if (!(searchBar && searchBar.value)) {
+                showError("введите поисковой запрос");
+                return;
+            }
+
+            $.ajax({
+                url: "{% url 'search' %}",
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    request: searchBar.value,
+                    type: resultTypeSelect.value,
+                    sortBy: sortBySelect.value,
+                },
+                success: (data) => {
+                    showResults(data.results, resultTypeSelect.value);
+                },
+                error: (error, status, thrownErr) => {
+                    showError('Произошла ошибка: ' + thrownErr);
+                },
+            })
+        }
+
+        const searchBtn = document.getElementById('searchBtn');
+        searchBtn.addEventListener('click', search);
+
+        function getUserElementHTML(user) {
+            const avatarUrl = user.profile.image || "{% static 'img/default_avatar.jpg'  %}";
+            const profileUrl = `{% url 'profile' %}?username=${user.username}`;
+            let html = `<img class="rounded-circle avatar" width="40px" height="40px" src="${avatarUrl}">
+                <b class="profile-link"><a href="${profileUrl}">${user.username}</a></b>`;
+            if (user.profile.status) {
+                html += ` - <small>“<i>${user.profile.status}</i>”</small>`;
+            }
+            return html;
+        }
+
+        function getTrackElementHTML(track) {
+            const trackUrl = "{% url 'track' id=0 %}".replace('/0', '/' + track.id);
+            return `<b class="track-link"><a href="${trackUrl}">${track.name}</a></b><br>
+            “<i>${track.desc}</i>”`;
+        }
+
+        const errorEl = document.getElementById("error");
+
+        function showError(message) {
+            errorEl.innerHTML = message;
+        }
+
+        function hideError() {
+            return showError('');
+        }
+
+        const resultsUl = document.getElementById('results')
+
+        function showResults(results, resultsType) {
+            resultsUl.innerHTML = '';
+
+            if (results.length > 0){
+                hideError();
+                
+                let innerHTMLgetter;
+                switch (resultsType) {
+                    default:
+                        showError('ошибка сервера');
+                        console.error('invalid result type: ' + resultsType);
+                        break;
+                    
+                    case 'user':
+                        innerHTMLgetter = getUserElementHTML;
+                        break;
+                    
+                    case 'track':
+                        innerHTMLgetter = getTrackElementHTML;
+                        break;
+                }
+
+                for (const v of results) {
+                    const el = document.createElement('li');
+                    el.classList.add('list-group-item');
+                    el.innerHTML = innerHTMLgetter(v);
+                    resultsUl.appendChild(el);
+                }
+            }
+            else {
+                showError("Ничего не найдено :/");
+            }
+        }
+
+        })();
+    </script>
+{% endblock %}

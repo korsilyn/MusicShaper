@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from django.forms.models import model_to_dict
 
 
 class Profile(models.Model):
@@ -18,6 +19,20 @@ class Profile(models.Model):
     image = models.ImageField(default='', upload_to='profile_pics')
     status = models.CharField(max_length=100, default='')
 
+    def to_dict(self):
+        '''
+        Переводит модель профиля в словарь
+        (поле image считается за url файла)
+
+        :rtype: dict
+        '''
+
+        return {
+            'id': self.pk,
+            'image': self.image.url if self.image else None,
+            'status': self.status,
+        }
+
 
 def create_profile(sender, **kwargs):
     if kwargs['created']:
@@ -25,6 +40,21 @@ def create_profile(sender, **kwargs):
 
 
 post_save.connect(create_profile, sender=User)
+
+
+def user_to_dict(user: User):
+    '''
+    Переводит модель пользователя в словарь
+
+    :param user: модель пользователя
+    :rtype: dict
+    '''
+
+    return {
+        'id': user.pk,
+        'username': user.username,
+        'profile': user.profile.to_dict(),
+    }
 
 
 def music_track_project_path(instance, filename):
@@ -167,3 +197,13 @@ class MusicTrack(models.Model):
     comments = models.ManyToManyField(TrackComment, "comments")
     reports = models.ManyToManyField(TrackComment, "reports")
     settings = models.ForeignKey(TrackSettings, models.CASCADE)
+
+    def to_dict(self):
+        '''
+        Переводит модель трека в словарь
+        (ManyToMany поля недоступны, ForeignKey заменены на id)
+
+        :rtype: dict
+        '''
+
+        return model_to_dict(self, fields=('id', 'name', 'desc', 'author', 'creation_date', 'settings'))
