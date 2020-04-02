@@ -1,24 +1,26 @@
 {
     "settings": {
-        "Synth": {
-            "oscillator": {
-                "type": ["sine", "square", "triangle", "sawtooth"]
+        "synths": {
+            "Synth": {
+                "oscillator": {
+                    "type": ["sine", "square", "triangle", "sawtooth"]
+                },
+                "envelope": {
+                    "attack": [0.005, 0],
+                    "decay": [0.1, 0],
+                    "sustain": [0.3, 0],
+                    "release": [1, 0]
+                }
             },
-            "envelope": {
-                "attack": [0.005, 0],
-                "decay": [0.1, 0],
-                "sustain": [0.3, 0],
-                "release": [1, 0]
-            }
-        },
-        "NoiseSynth": {
-            "noise": {
-                "type": ["white", "brown", "pink"]
-            },
-            "envelope": {
-                "attack": [0.005, 0],
-                "decay": [0.1, 0],
-                "sustain": [0, 0, 1]
+            "NoiseSynth": {
+                "noise": {
+                    "type": ["white", "brown", "pink"]
+                },
+                "envelope": {
+                    "attack": [0.005, 0],
+                    "decay": [0.1, 0],
+                    "sustain": [0, 0, 1]
+                }
             }
         }
     },

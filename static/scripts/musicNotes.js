@@ -6,8 +6,8 @@ function getNoteNames() {
 }
 
 /**
- * @param {number} from
- * @param {number} to
+ * @param {number} from first octave
+ * @param {number} to last octave
  * @returns {string[]}
  */
 function getNotes(from = 2, to = 7) {

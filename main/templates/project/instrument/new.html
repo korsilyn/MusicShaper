@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/piano.css' %}">
     <style>
         .card {
             padding: 30px;
@@ -13,6 +14,14 @@
 
         .card > .card, .card > #synthSettings > .card {
             margin: 15px;
+        }
+
+        #octaveInputDiv {
+            max-width: 40%;
+        }
+
+        .piano {
+            margin-bottom: 30px;
         }
     </style>
 {% endblock %}
@@ -25,7 +34,15 @@
             Назад к списку инструментов
         </a>
     </div>
-    <br>
+    <div class="margin-top-5"></div>
+
+    <div id="octaveInputDiv" class="form-group mx-auto">
+        <label>Октава (от 2 до 7)</label>
+        <input id="octaveInput" class="form-control"
+            type="number" min="2" max="7" value="4">
+    </div>
+    
+    {% include 'project/piano.html' %}
 
     <div class="form-group">
         <label>Тип инструмента</label>
@@ -33,16 +50,19 @@
             <option value="null" selected>Не выбран</option>
         </select>
     </div>
-    <br>
 
-    <div class="card" style="display: none;">
-        <div id="synthSettings"></div>
+    <div id="settingsCollapse" class="collapse">
+        <div id="synthSettings" class="card"></div>
     </div>
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'libs/Tone.js' %}"></script>
+    <script src="{% static 'scripts/musicNotes.js' %}"></script>
     <script>
-        (function(){
+        (function() {
+
+        // #region options menu
 
         const defaults = JSON.parse(`{{ instrumentDefaults|safe|escapejs }}`);
         
@@ -50,11 +70,11 @@
             return defaults.translations[lang][value] || value; 
         }
 
-        const synthSelector = document.getElementById("synthSelector");
-        const settingsDiv = document.getElementById("synthSettings");
+        const synthSelector = document.getElementById('synthSelector');
+        const settingsDiv = document.getElementById('synthSettings');
 
         // instrument type select
-        for (const synthName in defaults.settings) {
+        for (const synthName in defaults.settings.synths) {
             const newOption = document.createElement("option");
             newOption.value = synthName;
             newOption.innerHTML = translate(synthName);
@@ -139,13 +159,104 @@
         synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
             settingsDiv.innerHTML = "";
             if (synthName != "null") {
-                settingsDiv.parentElement.style.display = "block";
-                placeSettingsObj(defaults.settings[synthName], settingsDiv);
+                placeSettingsObj(defaults.settings.synths[synthName], settingsDiv);
+                $('#settingsCollapse').collapse('show');
             }
             else {
-                settingsDiv.parentElement.style.display = "none";
+                $('#settingsCollapse').collapse('hide');
             }
         }
+
+        // #endregion
+
+        // #region piano
+
+        let synth = new Tone.Synth();
+        synth.toMaster();
+
+        let isSynthPlaying = false;
+
+        let octave = 0;
+        const octaveInput = document.getElementById('octaveInput');
+        octaveInput.onchange = () => octave = octaveInput.value;
+
+        octaveInput.onchange();
+
+        function activateKey(key) {
+            key.classList.add('active');
+        }
+
+        function deactivateKey(key) {
+            key.classList.remove('active');
+        }
+
+        function playKey(key) {
+            activateKey(key);
+            const note = key.attributes.getNamedItem('note').value;
+            if (!isSynthPlaying) {
+                synth.triggerAttack(note + octave);
+                isSynthPlaying = true;
+            }
+            else {
+                synth.setNote(note + octave);
+            }
+        }
+
+        function stopPlaying() {
+            synth.triggerRelease();
+            isSynthPlaying = false;
+            lastKey = null;
+            for (const key of document.querySelectorAll(".key.active")) {
+                deactivateKey(key);
+            }
+        }
+
+        const pianoKeys = document.querySelectorAll(".key");
+
+        let lastKey = null;
+        for (const key of pianoKeys) {
+            const playEv = ({ which }) => {
+                if (which != 0) {
+                    if (lastKey && lastKey != key) {
+                        deactivateKey(lastKey);
+                    }
+                    playKey(key);
+                    lastKey = key;
+                }
+            };
+
+            key.addEventListener('mousedown', playEv);
+            key.addEventListener('mousemove', playEv);
+        }
+
+        window.addEventListener('mouseup', stopPlaying);
+
+        const whitePianoKeys = document.querySelectorAll(".key.white");
+        const blackPianoKeys = document.querySelectorAll(".key.black");
+
+        const whiteKeys = ['z', 'x', 'c', 'v', 'b', 'n', 'm'];
+        const blackKeys = ['s', 'd', 'g', 'h', 'j'];
+
+        window.addEventListener('keydown', ev => {
+            const key = ev.code.replace('Key', '').toLowerCase();
+            const whiteKeyIndex = whiteKeys.indexOf(key);
+            const blackKeyIndex = blackKeys.indexOf(key);
+
+            if (whiteKeyIndex > -1) playKey(whitePianoKeys.item(whiteKeyIndex));
+            if (blackKeyIndex > -1) playKey(blackPianoKeys.item(blackKeyIndex));
+        }, true);
+
+        window.addEventListener('keyup', ev => {
+            const key = ev.code.replace('Key', '').toLowerCase();
+            const whiteKeyIndex = whiteKeys.indexOf(key);
+            const blackKeyIndex = blackKeys.indexOf(key);
+
+            if (whiteKeyIndex > -1 || blackKeyIndex > -1) {
+                stopPlaying();
+            }
+        });
+
+        // #endregion
 
         })();
     </script>

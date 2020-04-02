@@ -1,0 +1,46 @@
+.piano {
+    --border-radius: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.key {
+    height: calc(var(--width) * 2);
+    width: var(--width);
+}
+
+.key:hover {
+    cursor: pointer;
+}
+
+.piano > .key:first-child {
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.piano > .key:last-child {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.white {
+    --width: 60px;
+    background-color: white;
+    border: 1px solid rgb(44, 43, 43);
+}
+
+.white.active {
+    background-color: #CCC;
+}
+
+.black {
+    --width: 40px;
+    background-color: black;
+    margin-left: calc(var(--width) / -2);
+    margin-right: calc(var(--width) / -2);
+    z-index: 2;
+}
+
+.black.active {
+    background-color: rgb(56, 54, 54);
+}
