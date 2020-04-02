@@ -12,8 +12,12 @@
             padding: 30px;
         }
 
-        .card > .card, .card > #synthSettings > .card {
-            margin: 15px;
+        #settingsCollapse, #synthSelector {
+            max-width: 70%;
+        }
+
+        #synthSettings .card {
+            margin-top: 15px;
         }
 
         #octaveInputDiv {
@@ -44,37 +48,32 @@
     
     {% include 'project/piano.html' %}
 
-    <div class="form-group">
+    <div class="form-group text-center">
         <label>Тип инструмента</label>
-        <select id="synthSelector" class="form-control">
-            <option value="null" selected>Не выбран</option>
+        <select id="synthSelector" class="form-control mx-auto">
         </select>
     </div>
 
-    <div id="settingsCollapse" class="collapse">
+    <div id="settingsCollapse" class="collapse mx-auto">
         <div id="synthSettings" class="card"></div>
     </div>
+    <br>
 {% endblock %}
 
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
+    <script src="{% static 'scripts/instrumentDefaults.js' %}"></script>
     <script>
         (function() {
 
         // #region options menu
 
-        const defaults = JSON.parse(`{{ instrumentDefaults|safe|escapejs }}`);
-        
-        function translate(value, lang="ru") {
-            return defaults.translations[lang][value] || value; 
-        }
-
         const synthSelector = document.getElementById('synthSelector');
         const settingsDiv = document.getElementById('synthSettings');
 
         // instrument type select
-        for (const synthName in defaults.settings.synths) {
+        for (const synthName of getSynthNames()) {
             const newOption = document.createElement("option");
             newOption.value = synthName;
             newOption.innerHTML = translate(synthName);
@@ -132,14 +131,17 @@
             for (const [key, value] of Object.entries(settings)) {
                 if (value instanceof Array) {
                     const valueType = typeof value[0];
-                    if (valueType == "number") {
+                    if (valueType == 'undefined') {
+                        continue;
+                    }
+                    else if (valueType == "number") {
                         div.appendChild(placeNumberSetting(key, value));
                     }
                     else if (valueType == "string") {
                         div.appendChild(placeSelectSetting(key, value));
                     }
                     else {
-                        console.error(`not supported setting type ${valueType}`);
+                        console.error(`not supported setting type ${valueType} (${key})`);
                     }
                 }
                 else {
@@ -158,21 +160,30 @@
 
         synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
             settingsDiv.innerHTML = "";
-            if (synthName != "null") {
-                placeSettingsObj(defaults.settings.synths[synthName], settingsDiv);
-                $('#settingsCollapse').collapse('show');
-            }
-            else {
-                $('#settingsCollapse').collapse('hide');
-            }
+            placeSettingsObj(getSynthDefaults(synthName), settingsDiv);
+            makeSynth(Tone[synthName]);
+            $('#settingsCollapse').collapse('show');
         }
 
         // #endregion
-
+        
         // #region piano
-
-        let synth = new Tone.Synth();
-        synth.toMaster();
+        
+        const gain = new Tone.Gain(0.3);
+        gain.toMaster();
+        
+        let synth = null;
+        function makeSynth(_constructor) {
+            if (synth) {
+                stopPlaying();
+                synth.disconnect();
+            }
+            
+            synth = new _constructor();
+            synth.connect(gain);
+        }
+        
+        makeSynth(Tone.Synth);
 
         let isSynthPlaying = false;
 
@@ -190,15 +201,17 @@
             key.classList.remove('active');
         }
 
+        function getNote(key) {
+            return key.attributes.getNamedItem('note').value + octave;
+        }
+
         function playKey(key) {
             activateKey(key);
-            const note = key.attributes.getNamedItem('note').value;
-            if (!isSynthPlaying) {
-                synth.triggerAttack(note + octave);
+            const hasNote = !(synth instanceof Tone.NoiseSynth);
+            const note = hasNote ? getNote(key) : undefined;
+            if (!isSynthPlaying || lastKey != key) {
+                synth.triggerAttack(note);
                 isSynthPlaying = true;
-            }
-            else {
-                synth.setNote(note + octave);
             }
         }
 
@@ -257,6 +270,9 @@
         });
 
         // #endregion
+
+        // init
+        synthSelector.onchange({ srcElement: { value: 'Synth' } });
 
         })();
     </script>
