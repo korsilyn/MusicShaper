@@ -22,11 +22,15 @@
         #submitBtn, #error {
             margin-top: 5%;
         }
+
+        #error {
+            color: red;
+        }
     </style>
 {% endblock %}
 
 {% block 'body' %}
-    <div class="margin-top-10"></div>
+    <div class="margin-top-20"></div>
     <h1 class="text-center">Создание проекта</h1>
     <form id="sendForm" action="#">
         <div class="form-group">
@@ -95,12 +99,17 @@
                         location.replace(url);
                     }
                     else {
-                        alert(`Произошла ошибка: сервер не отвечает`);
-                        sending = false;
+                        showError(`Произошла ошибка: сервер не отвечает`);
                     }
                 },
                 error: (error, _status, thrownErr) => {
-                    showError(`Произошла ошибка: ${thrownErr}`);
+                    let msg = thrownErr;
+                    if (error.responseText.length <= 100) {
+                        msg += `<br>${error.responseText}`;
+                    }
+                    showError(`Произошла ошибка: ${msg}`);
+                },
+                complete: () => {
                     sending = false;
                 }
             });
