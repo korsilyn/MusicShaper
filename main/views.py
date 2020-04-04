@@ -158,6 +158,20 @@ def projects_list(request):
     return render(request, 'project/list.html', context)
 
 
+def popular_tracks(request):
+    '''
+    Страница с популярными треками
+
+    :param request: запрос клиента
+    :return: Популярные треки
+    :rtype: HttpResponse
+    '''
+
+    context = get_base_context(request)
+
+    return render(request, 'popular_tracks.html', context)
+
+
 def get_project_or_404(request, id: int):
     '''
     Возвращает проект с нужным id + проверка на автора
