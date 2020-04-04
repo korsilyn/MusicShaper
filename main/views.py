@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 
 from django.core.files.base import ContentFile
-from MusicShaper.settings import STATICFILES_DIRS
 
 from django.contrib.auth.models import User
 from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject, TrackSettings, user_to_dict
@@ -229,9 +228,6 @@ def new_instrument(request, id: int):
 
     context = get_base_context(request)
     context['project'] = project
-
-    with open(STATICFILES_DIRS[0] + '/data/instrumentDefaults.json', 'r', encoding='utf-8') as f:
-        context['instrumentDefaults'] = f.read()
 
     return render(request, 'project/instrument/new.html', context)
 
