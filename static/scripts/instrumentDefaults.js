@@ -7,7 +7,7 @@ function defaultEnvelope(values={}, remove=[]) {
         attack:  [undefinedOr(values.attack,  0.005),  0],
         decay:   [undefinedOr(values.decay,   0.1),    0],
         sustain: [undefinedOr(values.sustain, 0.3), 0, 1],
-        release: [undefinedOr(values.release, 1),      0],
+        release: [undefinedOr(values.release, 1),      0.01],
     };
     remove.forEach(rkey => delete env[rkey]);
     return env;
@@ -43,8 +43,8 @@ function getSynthDefaults(synthName) {
         };
 
         case 'AMSynth': return {
-            harmonicity: [3, 0],
-            detune: [0, 0],
+            s__harmonicity: [3, 0],
+            s__detune: [0, -Infinity, Infinity, 100],
             oscillator: defaultOscillator('sine'),
             modulation: defaultOscillator('square'),
             envelope: defaultEnvelope({
@@ -69,6 +69,8 @@ const translations = {
         NoiseSynth: 'Шум',
         AMSynth: 'Двойная волна',
 
+        value: 'величина',
+
         oscillator: 'Генератор волны',
         type: 'Тип',
         sine: 'Синусоид',
@@ -87,8 +89,8 @@ const translations = {
         brown: 'Коричневый',
         pink: 'Розовый',
 
-        harmonicity: 'Гармоничность',
-        detune: 'Расстроенность',
+        s__harmonicity: 'Гармоничность',
+        s__detune: 'Расстроенность',
         modulation: 'Модуляция',
         modulationEnvelope: 'Кривая модуляции',
     }

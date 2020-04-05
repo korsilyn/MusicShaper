@@ -82,7 +82,7 @@
         // #region options menu
 
         const synthSelector = document.getElementById('synthSelector');
-        const settingsDiv = document.getElementById('synthSettings');
+        const synthSettingsDiv = document.getElementById('synthSettings');
 
         // instrument type select
         getSynthNames().forEach(synthName => {
@@ -93,15 +93,60 @@
             synthSelector.appendChild(newOption);
         });
 
-        function drawNumberSetting(name, [initial, min=undefined, max=undefined]) {
+        function getSettingsPath(name, element) {
+            let path = '';
+            let parent = element.parentElement;
+            while (parent && parent != synthSettingsDiv && parent != document.body) {
+                if (parent.hasAttribute('settings-group')) {
+                    path = parent.getAttribute('settings-group') + '.' + path;
+                }
+                parent = parent.parentElement;
+            }
+
+            return path + name;
+        }
+
+        function updateSynth(path, value) {
+            const keys = path.split('.');
+
+            const set = (obj, key) => {
+                if (key.startsWith('s__'))
+                    set(obj[key.slice(3)], 'value');
+                else
+                    obj[key] = value;
+            }
+
+            if (keys.length == 1) {
+                set(piano.synth, keys[0]);
+            }
+            else {
+                let obj = piano.synth;
+                keys.forEach((key, i) => {
+                    if (i < keys.length - 1) {
+                        obj = obj[key];
+                    }
+                    else {
+                        set(obj, key);
+                    }
+                });
+            }
+        }
+
+        function drawNumberSetting(name, [initial, min=undefined, max=undefined, step=undefined]) {
             const formGroup = number_setting.content.cloneNode(true);
             formGroup.querySelector('label').innerHTML = translate(name);
 
             const input = formGroup.querySelector('input');
             input.value = initial;
-            input.step = 0.1;
             if (min !== undefined) input.min = min;
             if (max !== undefined) input.max = max;
+            input.step = step !== undefined ? step : 0.1;
+
+            input.onchange = () => {
+                if (min !== undefined && input.value < min) input.value = min;
+                if (max !== undefined && input.value > max) input.value = max;
+                updateSynth(getSettingsPath(name, input), Number(input.value));
+            };
 
             return formGroup;
         }
@@ -118,6 +163,11 @@
 
                 select.appendChild(optionEl);
             });
+
+            select.onchange = () => {
+                console.log(select.value);
+                updateSynth(getSettingsPath(name, select), select.value);
+            }
 
             return formGroup;
         }
@@ -139,15 +189,19 @@
                 else {
                     const settingsGroup = settings_group.content.cloneNode(true);
                     settingsGroup.querySelector('h5').innerHTML = translate(key);
-                    drawSettings(value, settingsGroup.querySelector('div'));
+
+                    const settingsDiv = settingsGroup.querySelector('div');
+                    settingsDiv.setAttribute('settings-group', key);
+                    drawSettings(value, settingsDiv);
+
                     div.appendChild(settingsGroup);
                 }
             }
         }
 
         synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
-            settingsDiv.innerHTML = '';
-            drawSettings(getSynthDefaults(synthName), settingsDiv);
+            synthSettingsDiv.innerHTML = '';
+            drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
             makeSynth(Tone[synthName]);
         }
 
