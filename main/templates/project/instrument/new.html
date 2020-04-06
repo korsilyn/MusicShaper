@@ -7,12 +7,13 @@
 
 {% block 'head' %}
     {% include 'components/piano-keys.html' %}
+    <link rel="stylesheet" href="{% static 'styles/slider.css' %}">
     <style>
         .card {
             padding: 30px;
         }
 
-        #synthSelector, #synthSettings {
+        div.container > * {
             max-width: 70%;
             margin-left: auto;
             margin-right: auto;
@@ -41,6 +42,12 @@
     </div>
     
     <piano-keys></piano-keys>
+
+    <div class="margin-top-5"></div>
+    <div class="form-group mx-auto text-center" style="width: 40%;">
+        <label>Громкость</label>
+        <input type="range" min="-20" max="5" value="-10" class="slider" id="volumeSlider">
+    </div>
 
     <div class="form-group text-center" style="margin-top: 30px;">
         <label>Тип инструмента</label>
@@ -112,7 +119,7 @@
             const set = (obj, key) => {
                 if (key.startsWith('s__'))
                     set(obj[key.slice(3)], 'value');
-                else
+                else if (obj !== undefined)
                     obj[key] = value;
             }
 
@@ -142,11 +149,13 @@
             if (max !== undefined) input.max = max;
             input.step = step !== undefined ? step : 0.1;
 
-            input.onchange = () => {
-                if (min !== undefined && input.value < min) input.value = min;
-                if (max !== undefined && input.value > max) input.value = max;
-                updateSynth(getSettingsPath(name, input), Number(input.value));
+            input.onchange = function () {
+                if (min !== undefined && this.value < min) this.value = min;
+                if (max !== undefined && this.value > max) this.value = max;
+                updateSynth(getSettingsPath(name, this), Number(this.value));
             };
+
+            input.onchange();
 
             return formGroup;
         }
@@ -164,10 +173,11 @@
                 select.appendChild(optionEl);
             });
 
-            select.onchange = () => {
-                console.log(select.value);
-                updateSynth(getSettingsPath(name, select), select.value);
+            select.onchange = function () {
+                updateSynth(getSettingsPath(name, this), this.value);
             }
+
+            select.onchange();
 
             return formGroup;
         }
@@ -200,9 +210,11 @@
         }
 
         synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
-            synthSettingsDiv.innerHTML = '';
-            drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
             makeSynth(Tone[synthName]);
+            setTimeout(() => {
+                synthSettingsDiv.innerHTML = '';
+                drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
+            }, 100)
         }
 
         // #endregion
@@ -213,6 +225,10 @@
 
         document.getElementById('octaveInput').onchange = function () {
             piano.setAttribute('octave', this.value);
+        }
+
+        document.getElementById('volumeSlider').onchange = function () {
+            if (piano.synth) piano.synth.volume.value = Number(this.value);
         }
         
         const gain = new Tone.Gain(0.3);
@@ -228,11 +244,10 @@
             piano.synth.connect(gain);
         }
         
-        makeSynth(Tone.Synth);
-
         // #endregion
-
+        
         // init
+        makeSynth(Tone.Synth);
         synthSelector.onchange({ srcElement: { value: 'Synth' } });
 
         })();
