@@ -46,7 +46,7 @@
     <div class="margin-top-5"></div>
     <div class="form-group mx-auto text-center" style="width: 40%;">
         <label>Громкость</label>
-        <input type="range" min="-20" max="5" value="-10" class="slider" id="volumeSlider">
+        <input type="range" min="-40" max="5" value="-5" class="slider" id="volumeSlider">
     </div>
 
     <div class="form-group text-center" style="margin-top: 30px;">
@@ -100,22 +100,21 @@
             synthSelector.appendChild(newOption);
         });
 
-        function getSettingsPath(name, element) {
-            let path = '';
+        function getSettingsPath(element) {
+            const keys = [];
+
             let parent = element.parentElement;
             while (parent && parent != synthSettingsDiv && parent != document.body) {
                 if (parent.hasAttribute('settings-group')) {
-                    path = parent.getAttribute('settings-group') + '.' + path;
+                    keys.unshift(parent.getAttribute('settings-group'));
                 }
                 parent = parent.parentElement;
             }
 
-            return path + name;
+            return keys;
         }
 
-        function updateSynth(path, value) {
-            const keys = path.split('.');
-
+        function updateSynth(path, name, value) {
             const set = (obj, key) => {
                 if (key.startsWith('s__'))
                     set(obj[key.slice(3)], 'value');
@@ -123,19 +122,13 @@
                     obj[key] = value;
             }
 
-            if (keys.length == 1) {
-                set(piano.synth, keys[0]);
+            if (path.length == 0) {
+                set(piano.synth, name);
             }
             else {
                 let obj = piano.synth;
-                keys.forEach((key, i) => {
-                    if (i < keys.length - 1) {
-                        obj = obj[key];
-                    }
-                    else {
-                        set(obj, key);
-                    }
-                });
+                path.forEach(key => obj = obj[key]);
+                set(obj, name);
             }
         }
 
@@ -152,7 +145,7 @@
             input.onchange = function () {
                 if (min !== undefined && this.value < min) this.value = min;
                 if (max !== undefined && this.value > max) this.value = max;
-                updateSynth(getSettingsPath(name, this), Number(this.value));
+                updateSynth(getSettingsPath(this), name, Number(this.value));
             };
 
             input.onchange();
@@ -174,7 +167,7 @@
             });
 
             select.onchange = function () {
-                updateSynth(getSettingsPath(name, this), this.value);
+                updateSynth(getSettingsPath(this), name, this.value);
             }
 
             select.onchange();
@@ -211,10 +204,10 @@
 
         synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
             makeSynth(Tone[synthName]);
-            setTimeout(() => {
-                synthSettingsDiv.innerHTML = '';
-                drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
-            }, 100)
+            synthSettingsDiv.innerHTML = '';
+            drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
+            volumeSlider.value = volumeInitial + piano.synth.volume.value;
+            volumeSlider.onchange();
         }
 
         // #endregion
@@ -227,7 +220,10 @@
             piano.setAttribute('octave', this.value);
         }
 
-        document.getElementById('volumeSlider').onchange = function () {
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeInitial = Number(volumeSlider.value);
+
+        volumeSlider.onchange = function () {
             if (piano.synth) piano.synth.volume.value = Number(this.value);
         }
         

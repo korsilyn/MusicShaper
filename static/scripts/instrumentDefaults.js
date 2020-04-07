@@ -94,7 +94,7 @@ function getSynthDefaults(synthName) {
         };
 
         case 'MonoSynth': return {
-            s__volume: Decibel(-25),
+            s__volume: Decibel(-20),
             s__detune: Detune(0),
             oscillator: defaultOscillator('square'),
             filter: {
@@ -132,10 +132,12 @@ function getSynthDefaults(synthName) {
             voice0: {
                 s__frequency: Frequency(261),
                 ...getSynthDefaults('MonoSynth'),
+                s__volume: Decibel(-5),
             },
             voice1: {
                 s__frequency: Frequency(261),
                 ...getSynthDefaults('MonoSynth'),
+                s__volume: Decibel(-5),
             },
         };
     }
