@@ -198,7 +198,7 @@ class MusicTrack(models.Model):
     comments = models.ManyToManyField(TrackComment, "comments")
     reports = models.ManyToManyField(TrackComment, "reports")
     settings = models.ForeignKey(TrackSettings, models.CASCADE)
-    listeners = models.ManyToManyField(User, related_name="listened_tracks")
+    listeners = models.ManyToManyField(User, "listened_tracks")
 
     def to_dict(self):
         '''
