@@ -170,6 +170,11 @@
                     <span class="link-text">Поиск</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{% url 'popular_tracks' %}" class="nav-link">
+                    <span class="link-text">Популярные треки</span>
+                </a>
+            </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a href="{% url 'profile' %}" class="nav-link">
