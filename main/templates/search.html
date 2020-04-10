@@ -92,7 +92,7 @@
             }
 
             $.ajax({
-                url: "{% url 'search' %}",
+                url: window.location.href,
                 dataType: 'json',
                 method: 'POST',
                 data: {

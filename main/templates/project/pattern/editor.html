@@ -28,7 +28,7 @@
     <script src="{% static 'scripts/musicNotes.js' %}"></script>
     <script src="{% static 'scripts/patternPlayer.js' %}"></script>
     <script>
-        const notes = getNotes().reverse();
+        const notes = getNotes(7, 2);
         const noteSize = [50, 25];
 
         const cheatsheetGrid = new PatternGrid('cheatsheet', [1, notes.length], noteSize, {

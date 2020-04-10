@@ -6,13 +6,21 @@
 {% endblock %}
 
 {% block 'head' %}
+    {% include 'components/piano-keys.html' %}
+    <link rel="stylesheet" href="{% static 'styles/slider.css' %}">
     <style>
         .card {
             padding: 30px;
         }
 
-        .card > .card, .card > #synthSettings > .card {
-            margin: 15px;
+        div.container > * {
+            max-width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #synthSettings .card {
+            margin-top: 15px;
         }
     </style>
 {% endblock %}
@@ -25,127 +33,218 @@
             Назад к списку инструментов
         </a>
     </div>
-    <br>
+    <div class="margin-top-5"></div>
 
-    <div class="form-group">
+    <div class="form-group mx-auto" style="max-width: 36%;">
+        <label>Октава (от 2 до 7)</label>
+        <input id="octaveInput" type="number" class="form-control"
+            min="2" max="7" value="4">
+    </div>
+    
+    <piano-keys></piano-keys>
+
+    <div class="margin-top-5"></div>
+    <div class="form-group mx-auto text-center" style="width: 40%;">
+        <label>Громкость</label>
+        <input type="range" min="-40" max="5" value="-5" class="slider" id="volumeSlider">
+    </div>
+
+    <div class="form-group text-center" style="margin-top: 30px;">
         <label>Тип инструмента</label>
-        <select id="synthSelector" class="form-control">
-            <option value="null" selected>Не выбран</option>
+        <select id="synthSelector" class="form-control mx-auto">
         </select>
     </div>
+
+    <div id="synthSettings" class="card"></div>
     <br>
 
-    <div class="card" style="display: none;">
-        <div id="synthSettings"></div>
-    </div>
+    <template id="number_setting">
+        <div class="form-group">
+            <label></label>
+            <input type="number" class="form-control">
+        </div>
+    </template>
+
+    <template id="select_setting">
+        <div class="form-group">
+            <label></label>
+            <select class="form-control"></select>
+        </div>
+    </template>
+
+    <template id="settings_group">
+        <div class="card">
+            <h5></h5>
+        </div>
+    </template>
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'libs/Tone.js' %}"></script>
+    <script src="{% static 'scripts/musicNotes.js' %}"></script>
+    <script src="{% static 'scripts/instrumentDefaults.js' %}"></script>
     <script>
-        (function(){
+        (function() {
 
-        const defaults = JSON.parse(`{{ instrumentDefaults|safe|escapejs }}`);
-        
-        function translate(value, lang="ru") {
-            return defaults.translations[lang][value] || value; 
-        }
+        // #region options menu
 
-        const synthSelector = document.getElementById("synthSelector");
-        const settingsDiv = document.getElementById("synthSettings");
+        const synthSelector = document.getElementById('synthSelector');
+        const synthSettingsDiv = document.getElementById('synthSettings');
 
         // instrument type select
-        for (const synthName in defaults.settings) {
+        getSynthNames().forEach(synthName => {
             const newOption = document.createElement("option");
             newOption.value = synthName;
             newOption.innerHTML = translate(synthName);
 
             synthSelector.appendChild(newOption);
+        });
+
+        function getSettingsPath(element) {
+            const keys = [];
+
+            let parent = element.parentElement;
+            while (parent && parent != synthSettingsDiv && parent != document.body) {
+                if (parent.hasAttribute('settings-group')) {
+                    keys.unshift(parent.getAttribute('settings-group'));
+                }
+                parent = parent.parentElement;
+            }
+
+            return keys;
         }
 
-        function placeNumberSetting(name, [_default, min=undefined, max=undefined]) {
-            const formGroup = document.createElement("div");
-            formGroup.classList.add("form-group");
+        function updateSynth(path, name, value) {
+            const set = (obj, key) => {
+                if (key.startsWith('s__'))
+                    set(obj[key.slice(3)], 'value');
+                else if (obj !== undefined)
+                    obj[key] = value;
+            }
 
-            const inputLabel = document.createElement("label");
-            inputLabel.innerHTML = translate(name);
+            if (path.length == 0) {
+                set(piano.synth, name);
+            }
+            else {
+                let obj = piano.synth;
+                path.forEach(key => obj = obj[key]);
+                set(obj, name);
+            }
+        }
 
-            formGroup.appendChild(inputLabel);
+        function drawNumberSetting(name, [initial, min=undefined, max=undefined, step=undefined]) {
+            const formGroup = number_setting.content.cloneNode(true);
+            formGroup.querySelector('label').innerHTML = translate(name);
 
-            const numberInput = document.createElement("input");
-            numberInput.classList.add("form-control");
-            numberInput.type = "number";
+            const input = formGroup.querySelector('input');
+            input.value = initial;
+            if (min !== undefined) input.min = min;
+            if (max !== undefined) input.max = max;
+            input.step = step !== undefined ? step : 0.1;
 
-            numberInput.value = _default;
-            numberInput.step = 0.1;
-            if (min !== undefined) numberInput.min = min;
-            if (max !== undefined) numberInput.max = max;
+            input.onchange = function () {
+                if (min !== undefined && this.value < min) this.value = min;
+                if (max !== undefined && this.value > max) this.value = max;
+                updateSynth(getSettingsPath(this), name, Number(this.value));
+            };
 
-            formGroup.appendChild(numberInput);
+            input.onchange();
+
             return formGroup;
         }
 
-        function placeSelectSetting(name, options) {
-            const formGroup = document.createElement("div");
-            formGroup.classList.add("form-group");
+        function drawSelectSetting(name, options) {
+            const formGroup = select_setting.content.cloneNode(true);
+            formGroup.querySelector('label').innerHTML = translate(name);
 
-            const selectLabel = document.createElement("label");
-            selectLabel.innerHTML = translate(name);
-
-            formGroup.appendChild(selectLabel);
-
-            const selectEl = document.createElement("select");
-            selectEl.classList.add("form-control");
-
-            for (const option of options) {
+            const select = formGroup.querySelector('select');
+            options.forEach(option => {
                 const optionEl = document.createElement("option");
                 optionEl.value = option;
                 optionEl.innerHTML = translate(option);
 
-                selectEl.appendChild(optionEl);
+                select.appendChild(optionEl);
+            });
+
+            select.onchange = function () {
+                updateSynth(getSettingsPath(this), name, this.value);
             }
 
-            formGroup.appendChild(selectEl);
+            select.onchange();
+
             return formGroup;
         }
 
-        function placeSettingsObj(settings, div) {
+        function drawSettings(settings, div) {
             for (const [key, value] of Object.entries(settings)) {
                 if (value instanceof Array) {
                     const valueType = typeof value[0];
-                    if (valueType == "number") {
-                        div.appendChild(placeNumberSetting(key, value));
-                    }
-                    else if (valueType == "string") {
-                        div.appendChild(placeSelectSetting(key, value));
-                    }
-                    else {
-                        console.error(`not supported setting type ${valueType}`);
+                    switch (valueType) {
+                        default:
+                            console.error(`not supported setting type ${valueType} (${key})`);
+                            break;
+                        
+                        case 'undefined': continue;
+                        case 'number': div.appendChild(drawNumberSetting(key, value)); break;
+                        case 'string': div.appendChild(drawSelectSetting(key, value)); break;
                     }
                 }
                 else {
-                    const cardDiv = document.createElement("div");
-                    cardDiv.classList.add("card");
+                    const settingsGroup = settings_group.content.cloneNode(true);
+                    settingsGroup.querySelector('h5').innerHTML = translate(key);
 
-                    const header = document.createElement("h5");
-                    header.innerHTML = translate(key);
-                    cardDiv.appendChild(header);
+                    const settingsDiv = settingsGroup.querySelector('div');
+                    settingsDiv.setAttribute('settings-group', key);
+                    drawSettings(value, settingsDiv);
 
-                    placeSettingsObj(value, cardDiv);
-                    div.appendChild(cardDiv);
+                    div.appendChild(settingsGroup);
                 }
             }
         }
 
         synthSelector.onchange = ({ srcElement: { value: synthName } }) => {
-            settingsDiv.innerHTML = "";
-            if (synthName != "null") {
-                settingsDiv.parentElement.style.display = "block";
-                placeSettingsObj(defaults.settings[synthName], settingsDiv);
-            }
-            else {
-                settingsDiv.parentElement.style.display = "none";
-            }
+            makeSynth(Tone[synthName]);
+            synthSettingsDiv.innerHTML = '';
+            drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
+            volumeSlider.value = volumeInitial + piano.synth.volume.value;
+            volumeSlider.onchange();
         }
+
+        // #endregion
+        
+        // #region piano
+
+        const piano = document.getElementsByTagName('piano-keys').item(0);
+
+        document.getElementById('octaveInput').onchange = function () {
+            piano.setAttribute('octave', this.value);
+        }
+
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeInitial = Number(volumeSlider.value);
+
+        volumeSlider.onchange = function () {
+            if (piano.synth) piano.synth.volume.value = Number(this.value);
+        }
+        
+        const gain = new Tone.Gain(0.3);
+        gain.toMaster();
+        
+        function makeSynth(_constructor) {
+            if (piano.synth) {
+                piano.stop();
+                piano.synth.disconnect();
+            }
+            
+            piano.synth = new _constructor();
+            piano.synth.connect(gain);
+        }
+        
+        // #endregion
+        
+        // init
+        makeSynth(Tone.Synth);
+        synthSelector.onchange({ srcElement: { value: 'Synth' } });
 
         })();
     </script>
