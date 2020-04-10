@@ -158,6 +158,26 @@ def projects_list(request):
     return render(request, 'project/list.html', context)
 
 
+def popular_tracks(request):
+    '''
+    Страница с популярными треками
+
+    :param request: запрос клиента
+    :return: Популярные треки
+    :rtype: HttpResponse
+    '''
+
+    context = get_base_context(request)
+    all_tracks = MusicTrack.objects.all()
+
+    context["tracks"] = [{"name": tr.name, "id": tr.id, "likes": tr.likes, "desc": tr.desc,
+                          "count": tr.listeners.count()} for tr in all_tracks]
+    context["tracks"].sort(key=lambda i: i["count"], reverse=True)
+    context["tracks"] = context["tracks"][:15]
+
+    return render(request, 'popular_tracks.html', context)
+
+
 def get_project_or_404(request, id: int):
     '''
     Возвращает проект с нужным id + проверка на автора

@@ -78,6 +78,7 @@ class Migration(migrations.Migration):
                 ('comments', models.ManyToManyField(related_name='comments', to='main.TrackComment')),
                 ('dislikes', models.ManyToManyField(related_name='dislikes', to=settings.AUTH_USER_MODEL)),
                 ('likes', models.ManyToManyField(related_name='likes', to=settings.AUTH_USER_MODEL)),
+                ('listeners', models.ManyToManyField(related_name='listened_tracks', to=settings.AUTH_USER_MODEL)),
                 ('reports', models.ManyToManyField(related_name='reports', to='main.TrackComment')),
                 ('settings', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.TrackSettings')),
             ],
