@@ -61,11 +61,13 @@ function getSynthDefaults(synthName) {
         default: return null;
 
         case 'Synth': return {
+            s__volume: Decibel(-10),
             oscillator: defaultOscillator('sine'),
             envelope: defaultEnvelope()
         };
 
         case 'NoiseSynth': return {
+            s__volume: Decibel(-10),
             noise: {
                 type: ["white", "brown", "pink"]
             },
@@ -75,6 +77,7 @@ function getSynthDefaults(synthName) {
         };
 
         case 'AMSynth': return {
+            s__volume: Decibel(-10),
             s__harmonicity: [3, 0],
             s__detune: Detune(0),
             oscillator: defaultOscillator('sine'),
@@ -126,6 +129,7 @@ function getSynthDefaults(synthName) {
         };
 
         case 'DuoSynth': return {
+            s__volume: Decibel(-10),
             s__vibratoAmount: [0.5, 0],
             s__vibratoRate: Positive(5, 1),
             s__harmonicity: [1.5, 0],

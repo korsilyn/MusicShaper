@@ -94,31 +94,6 @@ def music_instrument_path(instance, filename):
     return music_track_project_path(instance.project, f'instruments\\{instance.name}\\{filename}')
 
 
-class MusicInstrument(models.Model):
-    '''
-    Модель музыкального инстурмента
-    '''
-
-    name = models.CharField(max_length=25)
-    settings = models.FileField(upload_to=music_instrument_path)
-
-
-class MusicTrackPattern(models.Model):
-    '''
-    Модель паттерна проекта
-
-    :param name: имя паттерна
-    :param color: цвет паттерна в редакторе
-    :param duration: продолжительность
-    :paran notes: json файл с нотами
-    '''
-
-    name = models.CharField(max_length=25)
-    color = models.CharField(max_length=25)
-    duration = models.FloatField()
-    notes = models.FileField(upload_to=music_track_pattern_path)
-
-
 class MusicTrackProject(models.Model):
     '''
     Модель проекта
@@ -134,9 +109,34 @@ class MusicTrackProject(models.Model):
     desc = models.CharField(max_length=250)
     author = models.ForeignKey(User, models.CASCADE, "projects")
     creation_date = models.DateTimeField()
-    instruments = models.ManyToManyField(MusicInstrument, "project")
-    patterns = models.ManyToManyField(MusicTrackPattern, "project")
     timeline_data = models.FileField(upload_to=music_track_project_path)
+
+
+class MusicInstrument(models.Model):
+    '''
+    Модель музыкального инстурмента
+    '''
+
+    name = models.CharField(max_length=25)
+    project = models.ForeignKey(MusicTrackProject, models.CASCADE, "instruments")
+    settings = models.FileField(upload_to=music_instrument_path)
+
+
+class MusicTrackPattern(models.Model):
+    '''
+    Модель паттерна проекта
+
+    :param name: имя паттерна
+    :param color: цвет паттерна в редакторе
+    :param duration: продолжительность
+    :paran notes: json файл с нотами
+    '''
+
+    name = models.CharField(max_length=25)
+    project = models.ForeignKey(MusicTrackProject, models.CASCADE, "patterns")
+    color = models.CharField(max_length=25)
+    duration = models.FloatField()
+    notes = models.FileField(upload_to=music_track_pattern_path)
 
 
 class TrackSettings(models.Model):
