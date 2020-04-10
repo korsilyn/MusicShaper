@@ -7,7 +7,6 @@
 
 {% block 'head' %}
     {% include 'components/piano-keys.html' %}
-    <link rel="stylesheet" href="{% static 'styles/slider.css' %}">
     <style>
         .card {
             padding: 30px;
@@ -22,6 +21,10 @@
         #synthSettings .card {
             margin-top: 15px;
         }
+
+        #error {
+            color: red;
+        }
     </style>
 {% endblock %}
 
@@ -35,19 +38,22 @@
     </div>
     <div class="margin-top-5"></div>
 
-    <div class="form-group mx-auto" style="max-width: 36%;">
-        <label>Октава (от 2 до 7)</label>
-        <input id="octaveInput" type="number" class="form-control"
-            min="2" max="7" value="4">
+    <div class="mx-auto" style="max-width: 36%">
+        <div class="form-group">
+            <label>Название</label>
+            <input id="nameInput" type="text" class="form-control"
+                minlength="1" maxlength="25" placeholder="Название инструмента">
+            <br>
+        </div>
+        <div class="form-group">
+            <label>Октава (от 2 до 7)</label>
+            <input id="octaveInput" type="number" class="form-control"
+                min="2" max="7" value="4">
+            <small>Необязательная настройка (нужна только для тестирования)</small>
+        </div>
     </div>
     
     <piano-keys></piano-keys>
-
-    <div class="margin-top-5"></div>
-    <div class="form-group mx-auto text-center" style="width: 40%;">
-        <label>Громкость</label>
-        <input type="range" min="-40" max="5" value="-5" class="slider" id="volumeSlider">
-    </div>
 
     <div class="form-group text-center" style="margin-top: 30px;">
         <label>Тип инструмента</label>
@@ -57,6 +63,13 @@
 
     <div id="synthSettings" class="card"></div>
     <br>
+
+    <div class="text-center">
+        <button id="createBtn" class="btn btn-outline-primary">Создать</button>
+        <div class="margin-top-5"></div>
+        <div id="error"></div>
+        <div class="margin-top-10"></div>
+    </div>
 
     <template id="number_setting">
         <div class="form-group">
@@ -91,6 +104,8 @@
         const synthSelector = document.getElementById('synthSelector');
         const synthSettingsDiv = document.getElementById('synthSettings');
 
+        let changes = {};
+
         // instrument type select
         getSynthNames().forEach(synthName => {
             const newOption = document.createElement("option");
@@ -124,11 +139,13 @@
 
             if (path.length == 0) {
                 set(piano.synth, name);
+                changes['settings_' + name] = value;
             }
             else {
                 let obj = piano.synth;
                 path.forEach(key => obj = obj[key]);
                 set(obj, name);
+                changes['settings_' + path.join('.') + '.' + name] = value;
             }
         }
 
@@ -148,9 +165,7 @@
                 updateSynth(getSettingsPath(this), name, Number(this.value));
             };
 
-            input.onchange();
-
-            return formGroup;
+            return [formGroup, () => input.onchange()];
         }
 
         function drawSelectSetting(name, options) {
@@ -170,24 +185,32 @@
                 updateSynth(getSettingsPath(this), name, this.value);
             }
 
-            select.onchange();
-
-            return formGroup;
+            return [formGroup, () => select.onchange()];
         }
 
         function drawSettings(settings, div) {
             for (const [key, value] of Object.entries(settings)) {
                 if (value instanceof Array) {
                     const valueType = typeof value[0];
+
+                    let drawingResult = null;
                     switch (valueType) {
                         default:
                             console.error(`not supported setting type ${valueType} (${key})`);
-                            break;
+                            continue;
                         
                         case 'undefined': continue;
-                        case 'number': div.appendChild(drawNumberSetting(key, value)); break;
-                        case 'string': div.appendChild(drawSelectSetting(key, value)); break;
+                        case 'number': drawingResult = drawNumberSetting(key, value); break;
+                        case 'string': drawingResult = drawSelectSetting(key, value); break;
                     }
+
+                    if (!(drawingResult instanceof Array && drawingResult.length == 2)) {
+                        console.error(`invalid drawing result (key: ${key})`);
+                        continue;
+                    }
+
+                    div.appendChild(drawingResult[0]);
+                    drawingResult[1]();
                 }
                 else {
                     const settingsGroup = settings_group.content.cloneNode(true);
@@ -195,9 +218,9 @@
 
                     const settingsDiv = settingsGroup.querySelector('div');
                     settingsDiv.setAttribute('settings-group', key);
-                    drawSettings(value, settingsDiv);
-
                     div.appendChild(settingsGroup);
+
+                    drawSettings(value, settingsDiv);
                 }
             }
         }
@@ -206,8 +229,6 @@
             makeSynth(Tone[synthName]);
             synthSettingsDiv.innerHTML = '';
             drawSettings(getSynthDefaults(synthName), synthSettingsDiv);
-            volumeSlider.value = volumeInitial + piano.synth.volume.value;
-            volumeSlider.onchange();
         }
 
         // #endregion
@@ -219,15 +240,8 @@
         document.getElementById('octaveInput').onchange = function () {
             piano.setAttribute('octave', this.value);
         }
-
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeInitial = Number(volumeSlider.value);
-
-        volumeSlider.onchange = function () {
-            if (piano.synth) piano.synth.volume.value = Number(this.value);
-        }
         
-        const gain = new Tone.Gain(0.3);
+        const gain = new Tone.Gain(0.4);
         gain.toMaster();
         
         function makeSynth(_constructor) {
@@ -238,10 +252,65 @@
             
             piano.synth = new _constructor();
             piano.synth.connect(gain);
+
+            changes = {};
         }
         
         // #endregion
         
+        // #region creation form
+
+        const nameInput = document.getElementById('nameInput');
+        const errorDiv = document.getElementById("error");
+        
+        function showError(message) {
+            errorDiv.innerHTML = `<i>${message}</i>`;
+        }
+
+        function hideError() {
+            return showError('');
+        }
+        
+        document.getElementById('createBtn').onclick = () => {
+            const name = nameInput.value;
+            if (name.length == 0 || name.length > 25) {
+                return showError('некорректное имя инструмента');
+            }
+
+            console.log(changes);
+
+            $.ajax({
+                url: window.location.href,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    name,
+                    ...changes,
+                },
+
+                success: (data) => {
+                    if (data.success) {
+                        const url = "{% url 'instruments' id=0 %}".replace('/0', '/{{ project.id }}');
+                        location.replace(url);
+                    }
+                    else {
+                        showError('Произошла ошибка: сервер не отвечает');
+                    }
+                },
+
+                error: (error, _status, thrownErr) => {
+                    let msg = thrownErr;
+                    if (error.responseText.length <= 100) {
+                        msg += `<br>${error.responseText}`;
+                    }
+                    showError(`Произошла ошибка: ${msg}`);
+                }
+            });
+        };
+
+        // #endregion
+
         // init
         makeSynth(Tone.Synth);
         synthSelector.onchange({ srcElement: { value: 'Synth' } });

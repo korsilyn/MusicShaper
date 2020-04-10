@@ -6,46 +6,51 @@
 
 {% block 'head' %}
     <style>
-        .title {
-            margin-bottom: 8%;
+        #instrument_list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 60%;
+            gap: 15px;
         }
 
-        a {
-            margin-top: 2%;
+        .instrument_link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            min-height: 140px;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(10, 10, 10, 0.2);
+            transition: background-color 0.1s ease-out;
+        }
+
+        .instrument_link:hover {
+            background-color: rgb(240, 240, 240);
         }
     </style>
 {% endblock %}
 
 {% block 'body' %}
-    <div class="margin-top-5"></div>
+    <div class="margin-top-10"></div>
     <div class="text-center title">
         <h2>Список инструментов</h2>
         <a href="{% url 'project_home' id=project.id %}">Назад к проекту</a>
     </div>
+    <div class="margin-top-5"></div>
     {% if instruments.count == 0 %}
         <div class="text-center">
             В проекте ещё нет инструментов!
         </div>
-        {% else %}
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>№</th>
-                    <th>Имя</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in instruments.all %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>
-                        <a href="#">{{ i.name }}</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    {% else %}
+        <div id="instrument_list" class="mx-auto">
+            {% for i in instruments.all %}
+                <div class="instrument_link">
+                    <b>{{ i.name }}</b>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
+    <div class="margin-top-5"></div>
     <div class="text-center">
         <a class="btn btn-outline-primary" href="{% url 'new_instrument' id=project.id %}">
             Новый инструмент
