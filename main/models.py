@@ -186,6 +186,7 @@ class MusicTrack(models.Model):
     :param comments: список комментариев
     :param reports: список жалоб
     :param settings: настройки
+    :param listeners: список юзеров, послушавших трек
     '''
 
     name = models.CharField(max_length=50)
@@ -197,6 +198,7 @@ class MusicTrack(models.Model):
     comments = models.ManyToManyField(TrackComment, "comments")
     reports = models.ManyToManyField(TrackComment, "reports")
     settings = models.ForeignKey(TrackSettings, models.CASCADE)
+    listeners = models.ManyToManyField(User, related_name="listened_tracks")
 
     def to_dict(self):
         '''

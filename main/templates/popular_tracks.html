@@ -19,10 +19,10 @@
     <tbody align="center">
         {% for item in tracks %}
         <tr>
-            <td> - </td>
-            <td> - </td>
-            <td> - </td>
-            <td> - </td>
+            <td><a href="{% url 'track' id=item.id %}">{{ item.name }}</a></td>
+            <td>{{ item.desc }}</td>
+            <td>{{ item.likes }}</td>
+            <td>{{ item.count }}</td>
         </tr>
         {% empty %}
         <tr>

@@ -168,6 +168,12 @@ def popular_tracks(request):
     '''
 
     context = get_base_context(request)
+    all_tracks = MusicTrack.objects.all()
+
+    context["tracks"] = [{"name": tr.name, "id": tr.id, "likes": tr.likes, "desc": tr.desc,
+                          "count": tr.listeners.count()} for tr in all_tracks]
+    context["tracks"].sort(key=lambda i: i["count"], reverse=True)
+    context["tracks"] = context["tracks"][:15]
 
     return render(request, 'popular_tracks.html', context)
 
