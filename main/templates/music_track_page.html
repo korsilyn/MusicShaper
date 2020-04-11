@@ -25,7 +25,7 @@
 
 {% block 'body' %}
     <h1 class="text-center"> 🎶{{ track.name }}🎶 </h1>
-    <p class="text-secondary text-center"> 🚑{{ track.desc }}🚑</p>
+    <p class="text-secondary text-center"> "{{ track.desc }}"</p>
     <p class="text-center">
         <b> Автор: <a href="{% url 'profile' %}?username={{ track.author }}"> {{ track.author }}</a></b>
         <br>
