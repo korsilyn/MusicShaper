@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.forms.models import model_to_dict
@@ -57,43 +58,6 @@ def user_to_dict(user: User):
     }
 
 
-def music_track_project_path(instance, filename):
-    '''
-    Возвращает путь до файда с данными проекта
-    (настройки, инструменты и т.д.)
-
-    :param instance: модель проекта
-    :param filename: имя файла
-    :rtype: str
-    '''
-
-    return f'projects\\{instance.author.id}\\{instance.name}\\{filename}'
-
-
-def music_track_pattern_path(instance, filename):
-    '''
-    Возвращает путь до паттерна в папке проекта
-
-    :param instance: модель паттерна
-    :param filename: имя файла
-    :rtype: str
-    '''
-
-    return music_track_project_path(instance.project, f'patterns\\{instance.name}\\{filename}')
-
-
-def music_instrument_path(instance, filename):
-    '''
-    Возвращает путь до настроек музыкального инструмента в папке проекта
-
-    :param instance: модель инструмента
-    :param filename: имя файла
-    :rtype: str
-    '''
-
-    return music_track_project_path(instance.project, f'instruments\\{instance.name}\\{filename}')
-
-
 class MusicTrackProject(models.Model):
     '''
     Модель проекта
@@ -109,17 +73,39 @@ class MusicTrackProject(models.Model):
     desc = models.CharField(max_length=250)
     author = models.ForeignKey(User, models.CASCADE, "projects")
     creation_date = models.DateTimeField()
-    timeline_data = models.FileField(upload_to=music_track_project_path)
 
 
 class MusicInstrument(models.Model):
     '''
-    Модель музыкального инстурмента
+    Абстрактная модель музыкального инстурмента
+
+    :param name: имя инструмента (из библиотеки Tone.js)
+    :param editor_name: имя инструмента в редакторе
+    :param project: проект
     '''
 
+    class Meta:
+        abstract = True
+
     name = models.CharField(max_length=25)
-    project = models.ForeignKey(MusicTrackProject, models.CASCADE, "instruments")
-    settings = models.FileField(upload_to=music_instrument_path)
+    editor_name = models.CharField(max_length=25)
+    project = models.ForeignKey(
+        MusicTrackProject, models.CASCADE, "instruments"
+    )
+
+
+class MusicInstrumentEffect(models.Model):
+    '''
+    Абстрактная модель эффекта музыкального инструмента
+    (эхо, искажение и т.д.)
+
+    :param instrument: музыкальный инструмент
+    '''
+
+    class Meta:
+        abstract = True
+
+    instrument = models.ForeignKey(MusicInstrument, models.CASCADE, "effects")
 
 
 class MusicTrackPattern(models.Model):
@@ -129,28 +115,42 @@ class MusicTrackPattern(models.Model):
     :param name: имя паттерна
     :param color: цвет паттерна в редакторе
     :param duration: продолжительность
-    :paran notes: json файл с нотами
     '''
 
     name = models.CharField(max_length=25)
     project = models.ForeignKey(MusicTrackProject, models.CASCADE, "patterns")
     color = models.CharField(max_length=25)
     duration = models.FloatField()
-    notes = models.FileField(upload_to=music_track_pattern_path)
 
 
-class TrackSettings(models.Model):
+class MusicNote(models.Model):
     '''
-    Настройки публикации проекта
+    Модель музыкальной ноты в паттерне
 
-    :param allow_comments: разрешены ли комментарии
-    :param allow_rating: разрешены ли лайки / дизлайки
-    :param allow_reusing: разрешено ли свободное использование
+    :param pattern: паттерн
+    :param position: момент времени, в который должна играть нота
+    :param duration: длительность ноты
+    :param notation: буквенная нотация ноты
+    :param octave: октава
     '''
 
-    allow_comments = models.BooleanField()
-    allow_rating = models.BooleanField()
-    allow_reusing = models.BooleanField()
+    NOTATION_CHOICES = [
+        (1,  'C'),  (2, 'C#'),
+        (3,  'D'),  (4, 'D#'),
+        (5,  'E'),
+        (6,  'F'),  (7,  'F#'),
+        (8,  'G'),  (9,  'G#'),
+        (10, 'A'),  (11, 'A#'),
+        (12, 'B'),
+    ]
+
+    pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, "notes")
+    position = models.FloatField(validators=[MinValueValidator(0)])
+    duration = models.FloatField(validators=[MinValueValidator(0.05)])
+    notation = models.PositiveIntegerField(choices=NOTATION_CHOICES)
+    octave = models.PositiveIntegerField(
+        validators=[MinValueValidator(2), MaxValueValidator(7)]
+    )
 
 
 class TrackComment(models.Model):
@@ -197,7 +197,6 @@ class MusicTrack(models.Model):
     dislikes = models.ManyToManyField(User, "dislikes")
     comments = models.ManyToManyField(TrackComment, "comments")
     reports = models.ManyToManyField(TrackComment, "reports")
-    settings = models.ForeignKey(TrackSettings, models.CASCADE)
     listeners = models.ManyToManyField(User, "listened_tracks")
 
     def to_dict(self):
@@ -209,3 +208,23 @@ class MusicTrack(models.Model):
         '''
 
         return model_to_dict(self, fields=('id', 'name', 'desc', 'author', 'creation_date', 'settings'))
+
+
+class TrackSettings(models.Model):
+    '''
+    Настройки публикации проекта
+
+    :param track: музыкальный трек
+    :param allow_comments: разрешены ли комментарии
+    :param allow_rating: разрешены ли лайки / дизлайки
+    :param allow_reusing: разрешено ли свободное использование
+    '''
+
+    track = models.OneToOneField(
+        MusicTrack, models.CASCADE,
+        primary_key=True, related_name='settings'
+    )
+
+    allow_comments = models.BooleanField()
+    allow_rating = models.BooleanField()
+    allow_reusing = models.BooleanField()
