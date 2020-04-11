@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.core.files.base import ContentFile
 
 from django.contrib.auth.models import User
-from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject, TrackSettings, MusicInstrument, user_to_dict
+from .models import TrackSettings, TrackComment, MusicTrack, Profile, MusicTrackProject, TrackSettings, MusicInstrument, \
+    user_to_dict
 
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .forms import LoginForm
@@ -258,7 +259,7 @@ def new_instrument(request, id: int):
         for key, value in request.POST.items():
             if key.startswith('settings_'):
                 settings[key[9:]] = value
-        
+
         instrument = MusicInstrument.objects.create(
             name=name,
             project=project
@@ -267,7 +268,7 @@ def new_instrument(request, id: int):
         settings_file_content = ContentFile(json_dumps(settings))
         instrument.settings.save('i_' + name + '.json', settings_file_content)
         instrument.save()
-        
+
         return JsonResponse({
             'success': True
         })
@@ -293,14 +294,43 @@ def editor(request):
 def music_track_page(request, id):
     track = get_object_or_404(MusicTrack, pk=id)
     if request.is_ajax():
-        track.comments.add(
-            TrackComment.objects.create(author=request.user, topic=request.GET['topic'], content=request.GET['comment'],
-                                        creation_date=datetime.now(), edit_date=datetime.now(),
-                                        checked_by_author=True))
-        track.save()
-        return JsonResponse({"success": True})
+        if request.GET['operation'] == "send":
+            track.comments.add(
+                TrackComment.objects.create(author=request.user, topic=request.GET['topic'],
+                                            content=request.GET['comment'],
+                                            creation_date=datetime.now(), edit_date=datetime.now(),
+                                            checked_by_author=True))
+            track.save()
+            return JsonResponse({"success": True})
+        elif request.GET['operation'] == "edit":
+            comment_id = request.GET['comment_id']
+            comment = get_object_or_404(TrackComment, pk=comment_id)
+            comment.content = request.GET['comment']
+            comment.save()
+            return JsonResponse({"success": True})
+        elif request.GET['operation'] == 'like':
+            liked = track.likes.filter(pk=request.user.id).count() != 0
+            if liked:
+                track.likes.remove(request.user)
+            else:
+                track.likes.add(request.user)
+            track.save()
+            return JsonResponse({"success": True, "total_likes": track.likes.count()})
+        elif request.GET['operation'] == 'dislike':
+            disliked = track.dislikes.filter(pk=request.user.id).count() != 0
+            if disliked:
+                track.dislikes.remove(request.user)
+            else:
+                track.dislikes.add(request.user)
+            track.save()
+            return JsonResponse({"success": True, "total_dislikes": track.dislikes.count()})
+        return JsonResponse({"success": False})
     context = get_base_context(request)
     context['track'] = track
+    context['liked'] = track.likes.filter(pk=request.user.id).count() != 0
+    context['disliked'] = track.dislikes.filter(pk=request.user.id).count() != 0
+    context['total_likes'] = track.likes.count()
+    context['total_dislikes'] = track.dislikes.count()
     return render(request, 'music_track_page.html', context)
 
 
@@ -532,7 +562,7 @@ def search_page(request):
             if sort_by == 'relevant':
                 key_lambda = lambda r: r[1]
             elif sort_by == 'popularity':
-                key_lambda = lambda r: r[0].likes.count() + r[0].dislikes.count() # temp fix
+                key_lambda = lambda r: r[0].likes.count() + r[0].dislikes.count()  # temp fix
             elif sort_by == 'likes':
                 key_lambda = lambda r: r[0].likes.count()
             elif sort_by == 'new' or sort_by == 'old':
