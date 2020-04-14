@@ -2,6 +2,13 @@ from django import forms
 
 
 class LoginForm(forms.Form):
+    '''
+    Форма авторизации пользователя
+
+    :param username: поле имя пользователя
+    :param password: поле пароля
+    '''
+
     username = forms.CharField(
         max_length=150,
         required=True,
