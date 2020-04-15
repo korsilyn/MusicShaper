@@ -1,5 +1,6 @@
 from .util import render, get_base_context, get_object_or_404, JsonResponse
 from ..models import MusicTrack, TrackComment
+from datetime import datetime
 
 
 def popular_tracks(request):
@@ -23,22 +24,43 @@ def popular_tracks(request):
 
 
 def music_track_page(request, id):
-    '''
-    Страница просмотра (прослушивания) музыкального трека
-
-    :param request: запрос клиента
-    :param id: id трека
-    :rtype: HttpResponse
-    '''
-
     track = get_object_or_404(MusicTrack, pk=id)
     if request.is_ajax():
-        track.comments.add(
-            TrackComment.objects.create(author=request.user, topic=request.GET['topic'], content=request.GET['comment'],
-                                        creation_date=datetime.now(), edit_date=datetime.now(),
-                                        checked_by_author=True))
-        track.save()
-        return JsonResponse({"success": True})
+        if request.GET['operation'] == "send":
+            track.comments.add(
+                TrackComment.objects.create(author=request.user, topic=request.GET['topic'],
+                                            content=request.GET['comment'],
+                                            creation_date=datetime.now(), edit_date=datetime.now(),
+                                            checked_by_author=True))
+            track.save()
+            return JsonResponse({"success": True})
+        elif request.GET['operation'] == "edit":
+            comment_id = request.GET['comment_id']
+            comment = get_object_or_404(TrackComment, pk=comment_id)
+            comment.content = request.GET['comment']
+            comment.save()
+            return JsonResponse({"success": True})
+        elif request.GET['operation'] == 'like':
+            liked = track.likes.filter(pk=request.user.id).count() != 0
+            if liked:
+                track.likes.remove(request.user)
+            else:
+                track.likes.add(request.user)
+            track.save()
+            return JsonResponse({"success": True, "total_likes": track.likes.count()})
+        elif request.GET['operation'] == 'dislike':
+            disliked = track.dislikes.filter(pk=request.user.id).count() != 0
+            if disliked:
+                track.dislikes.remove(request.user)
+            else:
+                track.dislikes.add(request.user)
+            track.save()
+            return JsonResponse({"success": True, "total_dislikes": track.dislikes.count()})
+        return JsonResponse({"success": False})
     context = get_base_context(request)
     context['track'] = track
+    context['liked'] = track.likes.filter(pk=request.user.id).count() != 0
+    context['disliked'] = track.dislikes.filter(pk=request.user.id).count() != 0
+    context['total_likes'] = track.likes.count()
+    context['total_dislikes'] = track.dislikes.count()
     return render(request, 'track/view.html', context)

@@ -189,22 +189,29 @@
             {% endif %}
             <div class="nav-item-bottom">
                 {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a href="{% url 'logout' %}" class="nav-link">
-                        <span class="link-text">Выйти</span>
-                    </a>
-                </li>
+                    {% if user.is_superuser %}
+                        <li class="nav-item">
+                            <a href="{% url 'admin:index' %}" class="nav-link">
+                                <span class="link-text">Администрация</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="nav-link">
+                            <span class="link-text">Выйти</span>
+                        </a>
+                    </li>
                 {% else %}
-                <li class="nav-item">
-                    <a href="{% url 'login' %}" class="nav-link">
-                        <span class="link-text">Войти</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'register' %}" class="nav-link">
-                        <span class="link-text">Регистрация</span>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="nav-link">
+                            <span class="link-text">Войти</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'register' %}" class="nav-link">
+                            <span class="link-text">Регистрация</span>
+                        </a>
+                    </li>
                 {% endif %}
             </div>
         </ul>
