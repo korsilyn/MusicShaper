@@ -21,7 +21,7 @@
                 <tr>
                     <td><a href="{% url 'track' id=item.id %}">{{ item.name }}</a></td>
                     <td>{{ item.desc }}</td>
-                    <td>{{ item.likes }}</td>
+                    <td>{{ item.likes.count }}</td>
                     <td>{{ item.count }}</td>
                 </tr>
             {% empty %}

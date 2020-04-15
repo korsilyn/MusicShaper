@@ -19,7 +19,7 @@ def popular_tracks(request):
     context["tracks"].sort(key=lambda i: i["count"], reverse=True)
     context["tracks"] = context["tracks"][:15]
 
-    return render(request, 'popular_tracks.html', context)
+    return render(request, 'track/popular.html', context)
 
 
 def music_track_page(request, id):
@@ -41,4 +41,4 @@ def music_track_page(request, id):
         return JsonResponse({"success": True})
     context = get_base_context(request)
     context['track'] = track
-    return render(request, 'music_track_page.html', context)
+    return render(request, 'track/view.html', context)

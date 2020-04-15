@@ -37,31 +37,6 @@ def new_instrument(request, id: int):
 
     project = get_project_or_404(request, id)
 
-    if request.method == 'POST' and request.is_ajax():
-        name = request.POST.get('name', '')
-        if len(name) == 0 or len(name) > 25:
-            return JsonResponse({
-                'error': 'invalid name'
-            })
-
-        settings = dict()
-        for key, value in request.POST.items():
-            if key.startswith('settings_'):
-                settings[key[9:]] = value
-        
-        instrument = MusicInstrument.objects.create(
-            name=name,
-            project=project
-        )
-
-        settings_file_content = ContentFile(json_dumps(settings))
-        instrument.settings.save('i_' + name + '.json', settings_file_content)
-        instrument.save()
-        
-        return JsonResponse({
-            'success': True
-        })
-
     context = get_base_context(request)
     context['project'] = project
 

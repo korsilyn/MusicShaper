@@ -1,4 +1,4 @@
-from .util import render, redirect, messages
+from .util import render, redirect, messages, get_base_context
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -34,7 +34,9 @@ def login_page(request):
                                  'Некорректные данные в форме авторизации')
             return redirect('login')
     else:
-        return render(request, 'login.html', {'form': LoginForm()})
+        context = get_base_context(request)
+        context['form'] = LoginForm()
+        return render(request, 'auth/login.html', context)
 
 
 def register_page(request):
@@ -67,10 +69,9 @@ def register_page(request):
                                  'Некорректные данные')
             return redirect('register')
     else:
-        context = {
-            'form': UserCreationForm()
-        }
-        return render(request, 'register.html', context)
+        context = get_base_context(request)
+        context['form'] = UserCreationForm()
+        return render(request, 'auth/register.html', context)
 
 
 @login_required
