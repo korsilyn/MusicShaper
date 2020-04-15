@@ -1,6 +1,8 @@
-from .util import render, get_base_context, get_object_or_404, messages, JsonResponse
+from .util import render, redirect, get_base_context, get_object_or_404, JsonResponse
+from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from ..models import MusicTrackProject
+from ..forms import CreateProjectForm
 from datetime import datetime
 
 
@@ -30,34 +32,24 @@ def new_project(request):
     :rtype: HttpResponse
     '''
 
-    if request.method == 'POST' and request.is_ajax():
-        name = request.POST.get('name', '')
-        desc = request.POST.get('description', '')
+    if request.method == 'POST':
+        form = CreateProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.author = request.user
+            project.creation_date = datetime.now()
+            project.save()
+            add_message(request, SUCCESS, 'Проект успешно создан')
+            return redirect('project_home', id=project.id)
+        else:
+            add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = CreateProjectForm()
 
-        if not (0 < len(name) <= 50 and 0 <= len(desc) <= 250):
-            return HttpResponseBadRequest('некорректные данные формы')
+    context = get_base_context(request)
+    context['form'] = form
 
-        exists = MusicTrackProject.objects.filter(
-            author=request.user, name=name).exists()
-
-        if exists:
-            return HttpResponseBadRequest('проект с таким названием уже существует')
-
-        proj_instance = MusicTrackProject.objects.create(
-            name=name,
-            desc=desc,
-            author=request.user,
-            creation_date=datetime.now()
-        )
-
-        messages.add_message(request, messages.SUCCESS,
-                             'Проект успешно создан!')
-
-        return JsonResponse({
-            'proj_id': proj_instance.id
-        })
-
-    return render(request, 'project/new.html', get_base_context(request))
+    return render(request, 'project/new.html', context)
 
 
 @login_required
