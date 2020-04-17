@@ -1,42 +1,51 @@
-from .project import models, MusicInstrument, MinValueValidator as MinValue, MaxValueValidator as MaxValue
+from .project import MusicInstrument
+from math import inf
 
 
-class Oscillator(models.Model):
-    '''
-    Модель типа волны инструмента
-
-    :param type: тип волны
-    '''
-
-    class Type(models.IntegerChoices):
-        SINE = 0, 'sine'
-        SQUARE = 1, 'square',
-        TRIANGLE = 2, 'triangle',
-        SAWTOOTH = 3, 'sawtooth',
-
-    type = models.IntegerField(default=Type.SINE, choices=Type.choices)
+MusicInstrument.define('Synth', {
+    'oscillator': {
+        'type': ('sine', 'square', 'triangle', 'sawtooth')
+    },
+    'envelope': {
+        'attack':  (0.005, 0),
+        'decay':   (0.1, 0),
+        'sustain': (0.3, 0, 1),
+        'release': (1, 0.01),
+    }
+})
 
 
-class Envelope(models.Model):
-    '''
-    Модель формы кривой громкости инструмента
-    '''
-
-    attack = models.FloatField(validators=[MinValue(0), MaxValue(500)])
-    decay = models.FloatField(validators=[MinValue(0), MaxValue(500)])
-    sustain = models.FloatField(validators=[MinValue(0), MaxValue(1)])
-    release = models.FloatField(validators=[MinValue(0.01)])
-
-
-class FrequencyEnvelope(Envelope):
-    baseFrequency = models.FloatField()
-    octaves = models.FloatField(validators=[MinValue(0)])
-    exponent = models.FloatField(validators=[MinValue(1)])
+MusicInstrument.define('NoiseSynth', {
+    'noise': {
+        'type': ('white', 'brown', 'pink')
+    },
+    'envelope': {
+        'attack':  (0.005, 0),
+        'decay':   (0.1, 0),
+        'sustain': (0, 0, 1),
+    }
+})
 
 
-class Synth(MusicInstrument):
-    def get_synth(self):
-        return "Synth"
-
-    oscillator = models.OneToOneField(Oscillator, models.CASCADE)
-    envelope = models.OneToOneField(Envelope, models.CASCADE)
+MusicInstrument.define('AMSynth', {
+    'harmonicity': (3, 0),
+    'detune': (0, -inf, inf, 100),
+    'oscillator': {
+        'type': ('sine', 'square', 'triangle', 'sawtooth')
+    },
+    'modulation': {
+        'type': ('square', 'sine', 'triangle', 'sawtooth')
+    },
+    'envelope': {
+        'attack':  (0.01, 0),
+        'decay':   (0.01, 0),
+        'sustain': (1, 0, 1),
+        'release': (0.5, 0.01),
+    },
+    'modulationEnvelope': {
+        'attack':  (0.5, 0),
+        'decay':   (0.0, 0),
+        'sustain': (1, 0, 1),
+        'release': (0.5, 0.01),
+    }
+})
