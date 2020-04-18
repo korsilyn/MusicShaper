@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block 'title' %}Главная страница{% endblock %}
+{% block 'title' %}
+    Главная страница
+{% endblock %}
 
 {% block 'head' %}
     <style>
@@ -42,10 +44,14 @@
                 <div class="description">
                     Music Shaper позволяет вам легко писать собственные композиции и делиться ими со всем миром! <br>
                 </div>
-                
-                <a class="btn btn-success" href="{% url 'register' %}">
-                    Регистрация
-                </a>
+                <div class="btn-group-vertical">
+                    <a class="btn btn-primary" href="{% url 'login' %}">
+                        Войти
+                    </a>
+                    <a class="btn btn-success" href="{% url 'register' %}">
+                        Регистрация
+                    </a>
+                </div>
             </div>
             
             <div class="block">
