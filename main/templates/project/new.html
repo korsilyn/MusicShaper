@@ -6,121 +6,29 @@
 
 {% block 'head' %}
     <style>
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        form {
-            width: 40%;
-            margin: auto;
-        }
-
-        textarea {
-            min-height: 40px;
-        }
-
-        #submitBtn, #error {
-            margin-top: 5%;
-        }
-
-        #error {
-            color: red;
+        #createForm {
+            max-width: 40%;
         }
     </style>
 {% endblock %}
 
 {% block 'body' %}
     <div class="margin-top-20"></div>
-    <h1 class="text-center">Создание проекта</h1>
-    <form id="sendForm" action="#">
-        <div class="form-group">
-            <label>Имя проекта</label>
-            <input name="name" type="text" class="form-control"
-                placeholder="Имя" maxlength="50" required>
-        </div>
-        <div class="form-group">
-            <label>Описание проекта</label>
-            <textarea name="description" class="form-control"
-                placeholder="Описание (необязательно)" maxlength="250"></textarea>
-        </div>
+    <h1 class="text-center">Создание проекта</h1> <br>
+    <form id="createForm" class="mx-auto" method="POST">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+                {{ field.label }}:
+                {{ field }}
+            </div>
+        {% endfor %}
         <div class="text-center">
-            <small>(Эти параметры можно будет изменить при публикации)</small>
-            <button id="submitBtn" type="submit" class="btn btn-outline-primary">Создать проект</button>
-            <div id="error"></div>
+            <input type="submit" value="Создать"
+                class="btn btn-outline-primary">
         </div>
     </form>
-{% endblock %}
-
-{% block 'scripts' %}
-    <script>
-        (function() {
-
-        const errorDiv = document.getElementById("error");
-        
-        function showError(message) {
-            errorDiv.innerHTML = `<i>${message}</i>`;
-        }
-
-        function hideError() {
-            return showError('');
-        }
-
-        const check_name = (name) => name.length > 0 && name.length <= 50;
-        const check_desc = (desc) => desc.length >= 0 && desc.length <= 250;
-
-        let sending = false;
-
-        const sendForm = document.getElementById('sendForm');
-
-        function sendRequest() {
-            if (sending) return;
-
-            hideError();
-
-            if (!(sendForm.name && sendForm.description
-                && check_name(sendForm.name.value) && check_desc(sendForm.description.value))
-            ) {
-                showError("Некорректные данные формы :/");
-                return;
-            }
-
-            $.ajax({
-                url: window.location.href,
-                dataType: 'json',
-                method: 'POST',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    name: sendForm.name.value,
-                    description: sendForm.description.value
-                },
-                success: (data) => {
-                    if (data.proj_id) {
-                        const url = "{% url 'project_home' id=0 %}".replace('/0', '/' + data.proj_id);
-                        location.replace(url);
-                    }
-                    else {
-                        showError(`Произошла ошибка: сервер не отвечает`);
-                    }
-                },
-                error: (error, _status, thrownErr) => {
-                    let msg = thrownErr;
-                    if (error.responseText.length <= 100) {
-                        msg += `<br>${error.responseText}`;
-                    }
-                    showError(`Произошла ошибка: ${msg}`);
-                },
-                complete: () => {
-                    sending = false;
-                }
-            });
-
-            sending = true;
-
-            return false; // no page reloading
-        }
-
-        sendForm.onsubmit = sendRequest;
-
-        })();
-    </script>
 {% endblock %}

@@ -7,8 +7,10 @@
 {% block 'head' %}
     <style>
         #instrument_list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            justify-content: center;
             max-width: 60%;
             gap: 15px;
         }
@@ -19,6 +21,8 @@
             justify-content: center;
             border-radius: 10px;
             min-height: 140px;
+            min-width: 200px;
+            margin: 10px;
             cursor: pointer;
             box-shadow: 0 0 8px rgba(10, 10, 10, 0.2);
             transition: background-color 0.1s ease-out;

@@ -1,12 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-
-from django import template
-from django.template.defaultfilters import stringfilter
-
-
-register = template.Library()
+from .settings import ModelWithSettings, JSONSetting
 
 
 class MusicTrackProject(models.Model):
@@ -22,56 +17,68 @@ class MusicTrackProject(models.Model):
 
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=250)
-    author = models.ForeignKey(User, models.CASCADE, "projects")
+    author = models.ForeignKey(User, models.CASCADE, 'projects')
     creation_date = models.DateTimeField()
 
 
-class MusicInstrument(models.Model):
+class MusicInstrument(ModelWithSettings):
     '''
-    Абстрактная модель музыкального инстурмента
-
-    Неабстрактный класс модели должен реализовывать
-    метод get_type, возвращающий тип инструмента
-    из библиотеки Tone.js
+    Модель музыкального инстурмента
 
     :param name: имя инструмента в редакторе
+    :param type: тип инструмента (из библиотеки Tone.js)
     :param project: проект
     '''
 
-    class Meta:
-        abstract = True
-
     name = models.CharField(max_length=25)
+    type = models.CharField(max_length=10)
     project = models.ForeignKey(
-        MusicTrackProject, models.CASCADE, "instruments"
+        MusicTrackProject, models.CASCADE, 'instruments'
     )
 
-    def get_type(self) -> str:
-        raise NotImplementedError
+    def __init__(self, *args, **kwargs):
+        super().__init__(MusicInstrumentSetting, 'instrument', *args, **kwargs)
 
 
-class MusicInstrumentEffect(models.Model):
+class MusicInstrumentEffect(ModelWithSettings):
     '''
-    Абстрактная модель эффекта музыкального инструмента
-    (эхо, искажение и т.д.)
+    Модель эффекта музыкального инструмента
 
-    :param instrument: музыкальный инструмент
+    :param type: тип эффекта (из библиотеки Tone.js)
+    :param instrument: инструмент
     '''
 
-    class Meta:
-        abstract = True
+    type = models.CharField(max_length=25)
+    instrument = models.ForeignKey(
+        MusicInstrument, models.CASCADE, 'effects'
+    )
 
-    instrument = models.ForeignKey(MusicInstrument, models.CASCADE, "effects")
-
-    def get_type(self) -> str:
-        raise NotImplementedError
+    def __init__(self, *args, **kwargs):
+        super().__init__(MusicInstrumentEffectSetting, 'effect', *args, **kwargs)
 
 
-@register.filter
-@stringfilter
-def get_type(obj):
-    if obj is MusicInstrument or obj is MusicInstrumentEffect:
-        return obj.get_type()
+class MusicInstrumentSetting(JSONSetting):
+    '''
+    Модель настройки музыкального инструмента
+
+    :param instrument: инструмент
+    '''
+
+    instrument = models.ForeignKey(
+        MusicInstrument, models.CASCADE, 'settings'
+    )
+
+
+class MusicInstrumentEffectSetting(JSONSetting):
+    '''
+    Модель настройки эффекта музыкального инструмента
+
+    :param effect: эффект инструмента
+    '''
+
+    effect = models.ForeignKey(
+        MusicInstrumentEffect, models.CASCADE, 'settings'
+    )
 
 
 class MusicTrackPattern(models.Model):
@@ -83,8 +90,8 @@ class MusicTrackPattern(models.Model):
     :param duration: продолжительность
     '''
 
+    project = models.ForeignKey(MusicTrackProject, models.CASCADE, 'patterns')
     name = models.CharField(max_length=25)
-    project = models.ForeignKey(MusicTrackProject, models.CASCADE, "patterns")
     color = models.CharField(max_length=25)
     duration = models.FloatField()
 
@@ -110,11 +117,10 @@ class MusicNote(models.Model):
         (12, 'B'),
     ]
 
-    pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, "notes")
+    pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'notes')
     position = models.FloatField(validators=[MinValueValidator(0)])
     duration = models.FloatField(validators=[MinValueValidator(0.05)])
     notation = models.PositiveIntegerField(choices=NOTATION_CHOICES)
     octave = models.PositiveIntegerField(
         validators=[MinValueValidator(2), MaxValueValidator(7)]
     )
-
