@@ -50,12 +50,11 @@ def new_instrument(request, id: int):
                 if existed_i:
                     raise LookupError
 
-                i = MusicInstrument.objects.create(
+                MusicInstrument.objects.create(
                     project=project,
                     name=form.data['name'],
                     type=form.data['type'],
                 )
-                i.set_default_settings()
             except NameError:
                 add_message(request, ERROR, 'Неизвестный тип инструмента')
             except LookupError:
