@@ -1,6 +1,6 @@
 from .util import render, get_base_context, JsonResponse
 from django.contrib.auth.models import User
-from ..models import MusicTrack
+from ..models import MusicTrack, user_to_dict
 from difflib import SequenceMatcher
 from operator import itemgetter
 
