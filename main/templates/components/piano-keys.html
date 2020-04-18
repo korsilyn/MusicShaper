@@ -1,0 +1,203 @@
+{% load static %}
+
+<template id="piano-template">
+    <style>
+        .piano {
+            --border-radius: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .key {
+            height: calc(var(--width) * 2);
+            width: var(--width);
+        }
+
+        .key:hover {
+            cursor: pointer;
+        }
+
+        .piano > .key:first-child {
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+        }
+
+        .piano > .key:last-child {
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+        }
+
+        .white {
+            --width: 60px;
+            background-color: white;
+            border: 1px solid rgb(44, 43, 43);
+        }
+
+        .white.active {
+            background-color: #CCC;
+        }
+
+        .black {
+            --width: 40px;
+            background-color: black;
+            margin-left: calc(var(--width) / -2);
+            margin-right: calc(var(--width) / -2);
+            z-index: 2;
+        }
+
+        .black.active {
+            background-color: rgb(56, 54, 54);
+        }
+    </style>
+
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
+
+    <div class="piano" draggable="false">
+        <div note="C"  class="not-draggable key white"></div>
+        <div note="C#" class="not-draggable key black"></div>
+        <div note="D"  class="not-draggable key white"></div>
+        <div note="D#" class="not-draggable key black"></div>
+        <div note="E"  class="not-draggable key white"></div>
+        <div note="F"  class="not-draggable key white"></div>
+        <div note="F#" class="not-draggable key black"></div>
+        <div note="G"  class="not-draggable key white"></div>
+        <div note="G#" class="not-draggable key black"></div>
+        <div note="A"  class="not-draggable key white"></div>
+        <div note="A#" class="not-draggable key black"></div>
+        <div note="B"  class="not-draggable key white"></div>
+    </div>
+</template>
+
+<script>
+    class PianoKey {
+        /**
+         * @param {PianoKeys} piano
+         * @param {HTMLElement} element
+         */
+        constructor(piano, element) {
+            this.piano = piano;
+            this.element = element;
+
+            const playEvent = ({ which }) => {
+                if (which != 0) {
+                    if (this.piano.lastKey && this.piano.lastKey != this) {
+                        this.piano.lastKey.deactivate();
+                    }
+                    this.play();
+                    this.piano.lastKey = this;
+                }
+            };
+
+            this.element.addEventListener('mousedown', playEvent);
+            this.element.addEventListener('mousemove', playEvent);
+        }
+
+        get isWhite() {
+            return this.element.classList.contains('white');
+        }
+
+        get isBlack() {
+            return this.element.classList.contains('black');
+        }
+
+        get note() {
+            return this.element.getAttribute('note') + this.piano.octave;
+        }
+
+        activate() {
+            this.element.classList.add('active');
+        }
+
+        deactivate() {
+            this.element.classList.remove('active');
+        }
+
+        isActive() {
+            return this.element.classList.contains('active');
+        }
+
+        play() {
+            this.activate();
+            const hasNote = !(this.piano.synth instanceof Tone.NoiseSynth);
+            const note = hasNote ? this.note : undefined;
+            if (!this.piano.isPlaying || this.piano.lastKey != this) {
+                this.piano.synth.triggerAttack(note);
+                this.piano.isPlaying = true;
+            }
+        }
+    }
+
+    class PianoKeys extends HTMLElement {
+        connectedCallback() {
+            const shadowRoot = this.attachShadow({ mode: "open" });
+            const template = document.getElementById('piano-template').content;
+            shadowRoot.appendChild(template.cloneNode(true));
+            this._init();
+        }
+
+        _init() {
+            this.synth = null;
+            this.isPlaying = false;
+
+            this.keys = Array.from(this.shadowRoot.querySelectorAll('.key'))
+                .map(element => new PianoKey(this, element));
+            
+            /** @type {PianoKey} */
+            this.lastKey = null;
+
+            window.addEventListener('mouseup', () => this.stop());
+            this.addEventListener('dragstart', () => this.stop());
+
+            window.addEventListener('keydown', ({ code: keyCode, repeat }) => {
+                if (repeat) return;
+                
+                const key = keyCode.replace('Key', '');
+
+                const whiteKeyIndex = PianoKeys.whiteKeyboardKeys.indexOf(key);
+                const blackKeyIndex = PianoKeys.blackKeyboardKeys.indexOf(key);
+
+                if (whiteKeyIndex > -1) this.whiteKeys[whiteKeyIndex].play();
+                if (blackKeyIndex > -1) this.blackKeys[blackKeyIndex].play();
+            }, true);
+
+            window.addEventListener('keyup', ({ code: keyCode }) => {
+                const key = keyCode.replace('Key', '');
+
+                const whiteKeyIndex = PianoKeys.whiteKeyboardKeys.indexOf(key);
+                const blackKeyIndex = PianoKeys.blackKeyboardKeys.indexOf(key);
+                if (whiteKeyIndex > -1 || blackKeyIndex > -1) {
+                    this.stop();
+                }
+            });
+        }
+
+        get octave() {
+            return Number(this.getAttribute("octave") || 4);
+        }
+
+        get whiteKeys() {
+            return this.keys.filter(key => key.isWhite);
+        }
+
+        get blackKeys() {
+            return this.keys.filter(key => key.isBlack);
+        }
+
+        get activeKeys() {
+            return this.keys.filter(key => key.isActive);
+        }
+
+        stop() {
+            if (!this.isPlaying) return;
+            this.synth.triggerRelease();
+            this.isPlaying = false;
+            this.lastKey = null;
+            this.activeKeys.forEach(key => key.deactivate());
+        }
+    }
+
+    PianoKeys.whiteKeyboardKeys = ['Z', 'X', 'C', 'V', 'B', 'N', 'M'];
+    PianoKeys.blackKeyboardKeys = ['S', 'D', 'G', 'H', 'J'];
+
+    customElements.define('piano-keys', PianoKeys);
+</script>

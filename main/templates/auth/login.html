@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Вход в аккаунт{% endblock %}
+
+{% block 'head' %}
+    <style>
+        form {
+            width: 40%;
+            display: block;
+            margin: auto;
+            margin-top: 30vh;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <form method="post" action="">
+        <h1 class="text-center">АВТОРИЗАЦИЯ</h1><br>
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group ">{{ field }}</div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        <a class="btn btn-secondary btn-block" href="{% url 'register' %}">Регистрация</a>
+    </form>
+{% endblock %}

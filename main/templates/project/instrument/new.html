@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Создание инструмента
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        #createForm {
+            max-width: 40%;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="margin-top-20 text-center">
+        <h2>Создание музыкального инструмента</h2>
+    </div>
+    <form id="createForm" class="mx-auto margin-top-2" method="POST">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+                {{ field.label }}:
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div class="text-center">
+            <small>Эти параметры можно будет изменить позже</small> <br>
+            <input type="submit" value="Создать"
+                class="btn btn-outline-primary margin-top-5">
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Новый проект
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        #createForm {
+            max-width: 40%;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="margin-top-20"></div>
+    <h1 class="text-center">Создание проекта</h1> <br>
+    <form id="createForm" class="mx-auto" method="POST">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+                {{ field.label }}:
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div class="text-center">
+            <input type="submit" value="Создать"
+                class="btn btn-outline-primary">
+        </div>
+    </form>
+{% endblock %}
