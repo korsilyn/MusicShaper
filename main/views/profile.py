@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from ..models import Profile, MusicTrack
 
 
-@login_required
 def profile_page(request):
     '''
     Страница профиля
