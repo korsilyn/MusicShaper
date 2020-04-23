@@ -1,11 +1,8 @@
 from django.db import models
 from abc import ABC, abstractmethod
 from jsonfield import JSONField
-from typing import Union
+from typing import List
 from math import inf
-
-
-NumberType = Union[int, float]
 
 
 class JSONSetting(models.Model):
@@ -24,32 +21,32 @@ class JSONSetting(models.Model):
 
 
 class BaseSettingValue(ABC):
-    def __init__(self, value):
-        self.value = value
+    @abstractmethod
+    def match_json(self, value: tuple):
+        pass
 
     @abstractmethod
-    def to_json(self) -> tuple:
+    def get_value_from_json(self):
         pass
 
 
 class NumberSetting(BaseSettingValue):
-    def __init__(self, value: NumberType, min: NumberType = -inf, max: NumberType = inf, step: NumberType = 0.1):
-        super().__init__((value if value <= max else max) if value >= min else min)
-        self.min = min
-        self.max = max
-        self.step = step
+    def match_json(self, *json_setting: tuple):
+        return all(isinstance(v, (int, float)) for v in json_setting) and 0 < len(json_setting) <= 4
 
-    def to_json(self) -> tuple:
-        return (self.value, self.min, self.max, self.step)
+    def get_value_from_json(self, value, min=-inf, max=inf, step=0.1):
+        min = float(min)
+        max = float(max)
+        value = float(value)
+        return (value if value <= max else max) if value >= min else min
 
 
 class ChoiceSetting(BaseSettingValue):
-    def __init__(self, value, *choices):
-        super().__init__(value)
-        self.choices = choices + (value,) if value not in choices else choices
+    def match_json(self, *json_setting: tuple):
+        return all(isinstance(v, str) for v in json_setting)
 
-    def to_json(self) -> tuple:
-        return (self.choices)
+    def get_value_from_json(self, *choices):
+        return choices[0]
 
 
 class ModelWithSettings(models.Model):
@@ -61,6 +58,10 @@ class ModelWithSettings(models.Model):
     define, с помощью которого можно задать стандартные
     настройки для определённого 'типа' объекта модели
     '''
+
+    SETTING_JSON_PARSERS: List[BaseSettingValue] = [
+        NumberSetting(), ChoiceSetting()
+    ]
 
     class Meta:
         abstract = True
@@ -106,7 +107,7 @@ class ModelWithSettings(models.Model):
         self.settingModel.objects.filter(
             **{self.settingRelatedName: self}).delete()
 
-    def get_setting_value(self, json_setting):
+    def get_setting_value(self, json_setting, default=None):
         '''
         Превращает значение настройки из 'формата define'
         в простое значение
@@ -117,15 +118,14 @@ class ModelWithSettings(models.Model):
         { 'value': 0.5 }
         '''
 
-        if len(json_setting) < 2:
-            return None
+        if not (isinstance(json_setting, tuple) and len(json_setting) >= 2):
+            return default
 
-        v = json_setting[0]
-        if isinstance(v, str):
-            return ChoiceSetting(*json_setting).value
-        if isinstance(v, int) or isinstance(v, float):
-            return NumberSetting(*json_setting).value
-        return None
+        for p in self.SETTING_JSON_PARSERS:
+            if p.match_json(*json_setting):
+                return p.get_value_from_json(*json_setting)
+
+        return default
 
     def clean_setting_dict(self, setting: dict) -> dict:
         '''
