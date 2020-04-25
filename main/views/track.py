@@ -52,6 +52,12 @@ def track_view(request, id):
             comment.content = request.GET['comment']
             comment.save()
             response['success'] = True
+        elif operation == 'delete':
+            d_id = request.GET['comment_id']
+            comment = get_object_or_404(TrackComment, pk=d_id)
+            comment.delete()
+            comment.save()
+            response['success'] = True
         elif operation in ['like', 'dislike']:
             query = getattr(track, operation + 's', None)
             if query is not None:

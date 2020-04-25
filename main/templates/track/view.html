@@ -48,17 +48,19 @@
         {{ track.creation_date|date:"d.m.Y G:i" }}
     </p>
     {% if track.settings.allow_rating %}
-        <h1 class="text-center margin-top-5">
-            <button id="like"    onclick="like()"   >👍</button> : <b id="likes_counter"   >{{ track.likes.count }}   </b>
-            <button id="dislike" onclick="dislike()">👎</button> : <b id="dislikes_counter">{{ track.dislikes.count }}</b>
+        <h1 class="text-center margin-top-5" id="rating">
+            <button id="like" onclick="like()">👍</button>
+            : <b id="likes_counter">{{ track.likes.count }}   </b>
+            <button id="dislike" onclick="dislike()">👎</button>
+            : <b id="dislikes_counter">{{ track.dislikes.count }}</b>
         </h1>
     {% endif %}
     {% if track.settings.allow_comments %}
-        <h3 class="margin-top-10">
+        <h3 class="margin-top-10" id="comment_counter">
             Комментарии ({{ track.comments.count }})
             {% if track.comments.count == 0 %}
                 <i class="text-secondary"
-                    style="font-size: 0.6em; position: relative; bottom: 0.3em;">
+                   style="font-size: 0.6em; position: relative; bottom: 0.3em;">
                     &lt;&ndash; Будьте первым!
                 </i>
             {% endif %}
@@ -68,14 +70,14 @@
         <input type="text" id="topic" class="form-control" placeholder="Тема" required>
         <br>
         <textarea id="comm" placeholder="Содержание" required
-            class="form-control" style="min-height: 40px; max-height: 180px;"></textarea>
+                  class="form-control" style="min-height: 40px; max-height: 180px;"></textarea>
         <button onclick="send_comment()" class="btn btn-outline-dark" id="sendbtn">
             Отправить
         </button>
-        <div class="list-group">
+        <div class="list-group" id="comments">
             {% for comment in track.comments.all %}
                 <div id="comment_{{ comment.id }}"
-                    class="list-group-item {% if comment.author == user %}my_comment{% endif %}">
+                     class="list-group-item {% if comment.author == user %}my_comment{% endif %}">
                     <h6>
                         {{ comment.topic }} {{ comment.creation_date|date:"d.m.Y G:i" }}
                     </h6>
@@ -114,8 +116,23 @@
             button.innerHTML = "Отредактировать";
             button.classList.add("btn", "btn-outline-dark");
             comment.appendChild(button);
+            const d_button = document.createElement("button")
+            d_button.innerHTML = "Удалить";
+            d_button.classList.add("btn", "btn-danger");
+            comment.appendChild(d_button);
+            let p = comment.querySelector("p");
+            d_button.onclick = () => ajax_promise({
+                operation: "delete",
+                comment_id: comment.id.replace("comment_", "")
+            }).then(() => {
+                p.parentNode.remove();
+                const comments = document.getElementById("comments");
+                const comment_counter = document.querySelector("#comment_counter");
+                comment_counter.innerHTML = comment_counter.innerHTML.replace(/\(\d+\)/,
+                    `(${comments.childElementCount})`)
+
+            })
             let first_on_click = () => {
-                let p = comment.querySelector("p");
                 const content = p.innerText;
                 comment.removeChild(p);
                 const text = document.createElement("textarea");
@@ -130,21 +147,23 @@
                     topic: topic.value,
                     comment_id: comment.id.replace("comment_", "")
                 })
-                .then(data => {
-                    p = document.createElement("p");
-                    p.innerHTML = text.value;
-                    comment.removeChild(text);
-                    comment.insertBefore(p, button);
-                    button.onclick = first_on_click;
-                    button.innerHTML = "Отредактировать";
-                    button.classList.replace("btn-outline-success", "btn-outline-dark");
-                });
+                    .then(data => {
+                        p = document.createElement("p");
+                        p.innerHTML = text.value;
+                        comment.removeChild(text);
+                        comment.insertBefore(p, button);
+                        button.onclick = first_on_click;
+                        button.innerHTML = "Отредактировать";
+                        button.classList.replace("btn-outline-success", "btn-outline-dark");
+                    });
             };
             button.onclick = first_on_click;
         }
 
         function update_icons(data) {
-            console.log(data);
+            if (!document.getElementById("rating")) {
+                return
+            }
             if (data.total_dislikes !== undefined) {
                 document.getElementById('dislikes_counter').innerHTML = data.total_dislikes;
                 document.getElementById('dislike').innerHTML = already_disliked ? "🤢" : "👎";
@@ -158,7 +177,8 @@
         function ajax_promise(data) {
             return new Promise((resolve, reject) => {
                 $.ajax({
-                    url: location.href, dataType: "json",
+                    url: location.href,
+                    dataType: "json",
                     data: {
                         csrfmiddlewaretoken: "{{ csrf_token }}",
                         ...data
@@ -177,11 +197,10 @@
         async function like() {
             if (already_disliked) await dislike();
             try {
-                const data = await ajax_promise({ operation: 'like' });
+                const data = await ajax_promise({operation: 'like'});
                 already_liked = !already_liked;
                 update_icons(data);
-            }
-            catch (err) {
+            } catch (err) {
                 console.error('failed to like');
                 console.error(err);
             }
@@ -190,11 +209,10 @@
         async function dislike() {
             if (already_liked) await like();
             try {
-                const data = await ajax_promise({ operation: 'dislike' });
+                const data = await ajax_promise({operation: 'dislike'});
                 already_disliked = !already_disliked;
                 update_icons(data);
-            }
-            catch (err) {
+            } catch (err) {
                 console.error('failed to dislike');
                 console.error(err);
             }
@@ -209,7 +227,7 @@
                 operation: 'send',
                 comment: comm.value,
                 topic: topic.value,
-            }).then(location.reload);
+            }).then(() => location.reload());
         }
 
     </script>
