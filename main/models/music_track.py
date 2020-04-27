@@ -19,7 +19,6 @@ class TrackComment(models.Model):
     content = models.CharField(max_length=400)
     creation_date = models.DateTimeField()
     edit_date = models.DateTimeField()
-    checked_by_author = models.BooleanField()
 
 
 class MusicTrack(models.Model):

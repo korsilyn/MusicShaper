@@ -1,7 +1,7 @@
 from .auth import register_page, login_page, logout_page
 from .profile import profile_page, profile_edit_page, delete_avatar, change_password
 from .search import search_page
-from .track import music_track_page, popular_tracks
+from .track import track_view, popular_tracks
 from .project import new_project, project_home, projects_list, editor
 from .instrument import instruments, new_instrument, edit_instrument
 
