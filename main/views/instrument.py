@@ -1,4 +1,4 @@
-from .util import render, redirect, get_base_context, JsonResponse
+from .util import render, redirect, get_base_context, get_object_or_404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from ..forms import CreateMusicInstrumentForm
@@ -50,7 +50,7 @@ def new_instrument(request, id: int):
                 if existed_i:
                     raise LookupError
 
-                MusicInstrument.objects.create(
+                instrument = MusicInstrument.objects.create(
                     project=project,
                     name=form.data['name'],
                     type=form.data['type'],
@@ -63,7 +63,7 @@ def new_instrument(request, id: int):
                 )
             else:
                 add_message(request, SUCCESS, 'Инструмент успешно создан')
-                return redirect('instruments', id=id)
+                return redirect('edit_instrument', proj_id=id, id=instrument.id)
         else:
             add_message(request, ERROR, 'Некорректные данные формы')
     else:
@@ -74,3 +74,27 @@ def new_instrument(request, id: int):
     context['form'] = form
 
     return render(request, 'project/instrument/new.html', context)
+
+
+@login_required
+def edit_instrument(request, proj_id: int, id: int):
+    '''
+    Страница редактирования настроек инструмента
+
+    :param request: запрос клиента
+    :param proj_id: id проекта в БД
+    :param id: id инстуремнта в БД
+    '''
+
+    project = get_project_or_404(request, proj_id)
+    context = get_base_context(request)
+
+    instrument = get_object_or_404(MusicInstrument, pk=id)
+
+    context.update({
+        'project': project,
+        'instrument': instrument,
+        'settings': instrument.get_all_settings()
+    })
+
+    return render(request, 'project/instrument/edit.html', context)

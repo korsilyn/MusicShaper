@@ -6,48 +6,17 @@
 {% endblock %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'styles/trackCard.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
     <style>
-        h1 {
-            margin-bottom: 40px;
+        #new_btn {
+            border: 1px dashed darkgreen;
+            transition: all 0.1s ease-in-out;
         }
 
-        .projects-grid {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 60%;
-        }
-
-        .projects-grid > a {
-            min-height: 140px;
-            color: black;
-            text-align: center;
-            text-decoration: none;
-            border: dashed green;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.1s ease;
-        }
-
-        .projects-grid > .track-card, .projects-grid > a {
-            min-width: 200px;
-            margin: 10px;
-        }
-
-        .projects-grid > a > b {
-            font-size: 1rem;
-            transition: font-size 0.2s cubic-bezier(0.65, 0, 0.35, 1);
-        }
-
-        .projects-grid > a:hover > b {
-            font-size: 1.3rem;
-        }
-
-        .projects-grid > a:hover {
+        #new_btn:hover {
+            border-width: 2px;
             background-color: lightgreen;
+            font-size: 1.2em;
         }
     </style>
 {% endblock %}
@@ -55,12 +24,21 @@
 {% block 'body' %}
     <div class="margin-top-10"></div>
     <h1 class="text-center">Список ваших проектов</h1>
-    <div class="projects-grid mx-auto">
-        {% for project in projects %}
-            {% include 'project/card.html' %}
+    <div class="card-link-list card-link-list-center">
+        {% for p in projects %}
+            <a href="{% url 'project_home' id=p.id %}">
+                <b class="card-title">
+                    {{ p.name }}
+                </b>
+                <i class="card-desc">
+                    “{{ p.desc }}”
+                </i>
+            </a>
         {% endfor %}
-        <a href="{% url 'new_project' %}">
-            <b>Новый проект</b>
+        <a href="{% url 'new_project' %}" id="new_btn">
+            <b class="card-title-center">
+                Новый проект
+            </b>
         </a>
     </div>
 {% endblock %}

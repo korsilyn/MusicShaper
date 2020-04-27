@@ -22,12 +22,18 @@ class JSONSetting(models.Model):
 
 class BaseSettingValue(ABC):
     @abstractmethod
-    def match_json(self, value: tuple):
-        pass
+    def match_json(self, value: tuple) -> bool:
+        '''
+        Если возвращает True, то класс понимает value
+        как нечтно, что он может спокойно прочитать
+        '''
 
     @abstractmethod
     def get_value_from_json(self):
-        pass
+        '''
+        Получает значение настройки из её json формата
+        громкость: (0, -10, 5) -> 0
+        '''
 
 
 class NumberSetting(BaseSettingValue):
@@ -99,6 +105,10 @@ class ModelWithSettings(models.Model):
         if self.type not in self.DEFINITIONS:
             raise error_class(f'type {self.type} is not defined')
 
+    @property
+    def definition(self):
+        return self.DEFINITIONS[self.type]
+
     def reset(self):
         '''
         Сбрасывает все текущие настройки инструмента
@@ -146,37 +156,37 @@ class ModelWithSettings(models.Model):
                 rs[key] = self.get_setting_value(value)
         return rs
 
-    def get_setting_lazy(self, name: str, assert_type=True) -> dict:
+    def get_setting(self, name: str, assert_type=True) -> dict:
+        '''
+        Возвращает настройку объекта в виде словаря
+
+        :param name: имя настройки
+        :param assert_type: проверять ли тип объекта
+        '''
+
         if assert_type:
             self.assert_type()
         try:
             return self.settingModel.objects.get(**{self.settingRelatedName: self}, name=name).data
         except self.settingModel.DoesNotExist:
-            return self.DEFINITIONS[self.type][name]
+            return self.definition[name]
 
-    def get_json_settings(self) -> dict:
+    def get_setting_model(self, name: str, assert_type=True):
+        if assert_type:
+            self.assert_type()
+        return self.settingModel.objects.get_or_create(
+            **{self.settingRelatedName: self},
+            name=name
+        )
+
+    def get_all_settings(self) -> dict:
         '''
         Возвращает словарь текущих настроек инструмента
+
+        :rtype: dict
         '''
 
         self.assert_type()
-        rsettings = {}
-        for sname in self.DEFINITIONS[self.type]:
-            rsettings[sname] = self.get_setting_lazy(sname)
-        return self.clean_setting_dict(rsettings)
-
-    def get_setting_by_path(self, path: str, default):
-        keys = path.split('.')
-        if len(keys) == 0:
-            return default
-
-        settings = self.get_setting_lazy(keys[0])
-        for key in keys[1:]:
-            settings = settings.get(key, None)
-            if settings is None:
-                return default
-
-        if isinstance(settings, dict):
-            return default
-
-        return settings
+        return self.clean_setting_dict({
+            sname: self.get_setting(sname, False) for sname in self.definition
+        })
