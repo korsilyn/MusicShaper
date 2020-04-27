@@ -22,12 +22,15 @@
 {% block 'body' %}
     <div class="margin-top-5"></div>
     <h2 class="text-center">Профиль пользователя {{ profile.user }}</h2>
+    {% if user == profile.user %}
+        <h5 class="text-center text-secondary"><i>Это вы!</i></h5>
+    {% endif %}
     <img id="account-img" class="rounded-circle margin-top-2 mx-auto"
         src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}"
         width="150px" height="150px">
     <br>
     {% if profile.status %}
-        <p class="text-secondary text-center">“{{ profile.status }}”</p>
+        <p class="text-secondary text-center quotes">{{ profile.status }}</p>
     {% endif %}
 
     <div class="text-center margin-top-2">
@@ -48,8 +51,8 @@
         <div class="card-link-list card-link-list-center">
             {% for track in tracks %}
                 <a href="{% url 'track' id=track.id %}">
-                    <b class="card-title"> {{ track.name }} </b>
-                    <i class="card-desc"> {{ track.desc }} </i>
+                    <b class="card-title">{{ track.name }}</b>
+                    <i class="card-desc quotes">{{ track.desc }}</i>
                 </a>
             {% endfor %}
         </div>
@@ -67,8 +70,8 @@
         <div class="card-link-list card-link-list-center">
             {% for track in likes %}
                 <a href="{% url 'track' id=track.id %}">
-                    <b class="card-title"> {{ track.name }} </b>
-                    <i class="card-desc"> {{ track.desc }} </i>
+                    <b class="card-title">{{ track.name }}</b>
+                    <i class="card-desc quotes">{{ track.desc }}</i>
                 </a>
             {% endfor %}
         </div>

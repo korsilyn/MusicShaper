@@ -27,12 +27,8 @@
     <div class="card-link-list card-link-list-center">
         {% for p in projects %}
             <a href="{% url 'project_home' id=p.id %}">
-                <b class="card-title">
-                    {{ p.name }}
-                </b>
-                <i class="card-desc">
-                    “{{ p.desc }}”
-                </i>
+                <b class="card-title">{{ p.name }}</b>
+                <i class="card-desc quotes">{{ p.desc }}</i>
             </a>
         {% endfor %}
         <a href="{% url 'new_project' %}" id="new_btn">

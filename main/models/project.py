@@ -39,6 +39,12 @@ class MusicInstrument(ModelWithSettings):
     def __init__(self, *args, **kwargs):
         super().__init__(MusicInstrumentSetting, 'instrument', *args, **kwargs)
 
+    @classmethod
+    def define(cls, definition_name, default_settings):
+        if 'volume' not in default_settings:
+            default_settings['volume'] = (-10.0, -20, 5)
+        return super().define(definition_name, default_settings)
+
 
 class MusicInstrumentEffect(ModelWithSettings):
     '''
