@@ -39,4 +39,6 @@ urlpatterns = [
          views.new_instrument, name='new_instrument'),
     path('track/<int:id>', views.music_track_page, name='track'),
     path('search/', views.search_page, name='search'),
+    path('admins/test_track', views.test_track, name='test_track'),
+    path('admins/', views.admins, name='admins'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

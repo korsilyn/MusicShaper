@@ -4,6 +4,7 @@ from .search import search_page
 from .track import music_track_page, popular_tracks
 from .project import new_project, project_home, projects_list, editor
 from .instrument import instruments, new_instrument
+from .admin import admins, test_track
 
 from .util import get_base_context, render
 

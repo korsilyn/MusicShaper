@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Создание пробного трека{% endblock %}
+
+{% block 'head' %}
+    <style>
+        form {
+            width: 40%;
+            display: block;
+            margin: auto;
+            margin-top: 30vh;
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <form method="POST">
+        {% csrf_token %}
+        <h1 class="text-center">Создание пробного трека</h1><br>
+        {{ form }}
+        <br>
+        <div class="text-center"><button type="submit" class="btn btn-success">Создать пробный трек</button></div>
+    </form>
+{% endblock %}
