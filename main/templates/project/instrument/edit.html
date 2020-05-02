@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block 'title' %}
     Настройки инструмента
@@ -27,10 +28,10 @@
             <div class="card form-group">
                 <div class="card-body">
                     {% if group.grouper != '.' %}
-                        <h6 class="card-title">{{ group.grouper }}</h6>
+                        <h6 class="card-title">{% trans group.grouper|capfirst %}</h6>
                     {% endif %}
                     {% for field in group.list %}
-                        <label>{{ field.label }}</label> {{ field }}
+                        <label>{% trans field.label|capfirst %}</label> {{ field }}
                     {% endfor %}
                 </div>
             </div>

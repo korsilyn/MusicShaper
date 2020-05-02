@@ -1,0 +1,125 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: .\MusicShaper\settings.py:120
+msgid "English"
+msgstr "Английский"
+
+#: .\MusicShaper\settings.py:121
+msgid "Russian"
+msgstr "Русский"
+
+# Настройки инструментов
+msgid "Synth"
+msgstr "Волна"
+
+msgid "NoiseSynth"
+msgstr "Шум"
+
+msgid "AMSynth"
+msgstr "Двойная волна"
+
+msgid "MonoSynth"
+msgstr "Волна с фильтром"
+
+msgid "DuoSynth"
+msgstr "Двойная волна с фильтром"
+
+msgid "value"
+msgstr "Величина"
+
+msgid "volume"
+msgstr "Громкость"
+
+msgid "frequency"
+msgstr "Частота"
+
+msgid "filter"
+msgstr "Фильтр"
+
+msgid "baseFrequency"
+msgstr "Базовая частота"
+
+msgid "octaves"
+msgstr "Октавы"
+
+msgid "exponent"
+msgstr "Экспонента"
+
+msgid "rolloff"
+msgstr "Спад частоты"
+
+msgid "vibratoAmount"
+msgstr "Колчисетво вибрато"
+
+msgid "vibratoRate"
+msgstr "Скорость вибрато"
+
+msgid "oscillator"
+msgstr "Генератор волны"
+
+msgid "type"
+msgstr "Тип"
+
+msgid "sine"
+msgstr "Синусоид"
+
+msgid "square"
+msgstr "Квадратная"
+
+msgid "triangle"
+msgstr "Треугольная"
+
+msgid "sawtooth"
+msgstr "Пила"
+
+msgid "envelope"
+msgstr "Кривая громкости"
+
+msgid "filterEnvelope"
+msgstr "Кривая фильтра"
+
+msgid "attack"
+msgstr "Атака"
+
+msgid "decay"
+msgstr "Спад"
+
+msgid "sustain"
+msgstr "Поддерживание"
+
+msgid "release"
+msgstr "Отпускание"
+
+msgid "noise"
+msgstr "Шум"
+
+msgid "white"
+msgstr "Белый"
+
+msgid "brown"
+msgstr "Коричневый"
+
+msgid "pink"
+msgstr "Розовый"
+
+msgid "harmonicity"
+msgstr "Гармоничность"
+
+msgid "detune"
+msgstr "Расстроенность"
+
+msgid "modulation"
+msgstr "Модуляция"
+
+msgid "modulationEnvelope"
+msgstr "Кривая модуляции"
+
+msgid "voice0"
+msgstr "Первая волна с фильтром"
+msgid "voice1"
+msgstr "Вторая волна с фильтром"
+
+msgid "Q"
+msgstr "Качество"
