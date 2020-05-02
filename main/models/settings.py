@@ -20,39 +20,34 @@ class JSONSetting(models.Model):
     data = JSONField()
 
 
-class BaseSettingValue(ABC):
-    @abstractmethod
-    def match_json(self, value: tuple) -> bool:
-        '''
-        Если возвращает True, то класс понимает value
-        как нечтно, что он может спокойно прочитать
-        '''
-
-    @abstractmethod
-    def get_value_from_json(self):
-        '''
-        Получает значение настройки из её json формата
-        громкость: (0, -10, 5) -> 0
-        '''
+class SettingValue:
+    def __init__(self, *, type, initial, **values):
+        self.type = type
+        self.initial = initial
+        for k, v in values.items():
+            setattr(self, k, v)
 
 
-class NumberSetting(BaseSettingValue):
-    def match_json(self, *json_setting: tuple):
-        return all(isinstance(v, (int, float)) for v in json_setting) and 0 < len(json_setting) <= 4
+class FloatSettingValue(SettingValue):
+    def __init__(self, *, initial, min=-inf, max=inf, step=0.1):
+        super().__init__(
+            type='float',
+            initial=float(initial),
+            min=float(min),
+            max=float(max),
+            step=float(step),
+        )
 
-    def get_value_from_json(self, value, min=-inf, max=inf, step=0.1):
-        min = float(min)
-        max = float(max)
-        value = float(value)
-        return (value if value <= max else max) if value >= min else min
 
-
-class ChoiceSetting(BaseSettingValue):
-    def match_json(self, *json_setting: tuple):
-        return all(isinstance(v, str) for v in json_setting)
-
-    def get_value_from_json(self, *choices):
-        return choices[0]
+class ChoiceSettingValue(SettingValue):
+    def __init__(self, *, initial, choices):
+        if initial not in choices:
+            raise ValueError(f'initial \'{initial}\' not found in choices')
+        super().__init__(
+            type='choice',
+            initial=initial,
+            choices=choices,
+        )
 
 
 class ModelWithSettings(models.Model):
@@ -64,10 +59,6 @@ class ModelWithSettings(models.Model):
     `define`, с помощью которого можно задать стандартные
     настройки для определённого 'типа' объекта модели
     '''
-
-    SETTING_JSON_PARSERS: List[BaseSettingValue] = [
-        NumberSetting(), ChoiceSetting()
-    ]
 
     class Meta:
         abstract = True
@@ -115,46 +106,8 @@ class ModelWithSettings(models.Model):
         '''
 
         self.settingModel.objects.filter(
-            **{self.settingRelatedName: self}).delete()
-
-    def get_setting_value(self, json_setting, default=None):
-        '''
-        Превращает значение настройки из 'формата define'
-        в простое значение
-
-        пример:
-        { 'value': (0.5, 0, 1) }
-        после функции станет
-        { 'value': 0.5 }
-        '''
-
-        if not (isinstance(json_setting, tuple) and len(json_setting) >= 2):
-            return default
-
-        for p in self.SETTING_JSON_PARSERS:
-            if p.match_json(*json_setting):
-                return p.get_value_from_json(*json_setting)
-
-        return default
-
-    def clean_setting_dict(self, setting: dict) -> dict:
-        '''
-        Превращает словарь настроек из 'формата define'
-        в словарь, содержащий только значения
-
-        пример:
-        { 's': { 'value': (0.5, 0, 1) } }
-        после функции станет
-        { 's': { 'value': 0.5 } }
-        '''
-
-        rs = {}
-        for key, value in setting.items():
-            if isinstance(value, dict):
-                rs[key] = self.clean_setting_dict(value)
-            else:
-                rs[key] = self.get_setting_value(value)
-        return rs
+            **{self.settingRelatedName: self}
+        ).delete()
 
     def get_setting(self, name: str, assert_type=True) -> dict:
         '''
@@ -171,13 +124,16 @@ class ModelWithSettings(models.Model):
         except self.settingModel.DoesNotExist:
             return self.definition[name]
 
-    def get_setting_model(self, name: str, assert_type=True):
-        if assert_type:
-            self.assert_type()
-        return self.settingModel.objects.get_or_create(
-            **{self.settingRelatedName: self},
-            name=name
-        )
+    def clean_setting_dict(self, setting: dict) -> dict:
+        rs = {}
+        for key, value in setting.items():
+            if isinstance(value, dict):
+                rs[key] = self.clean_setting_dict(value)
+            elif isinstance(value, SettingValue):
+                rs[key] = value.initial
+            else:
+                rs[key] = value
+        return rs
 
     def get_all_settings(self) -> dict:
         '''

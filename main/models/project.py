@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-from .settings import ModelWithSettings, JSONSetting
+from .settings import ModelWithSettings, JSONSetting, FloatSettingValue
 
 
 class MusicTrackProject(models.Model):
@@ -42,7 +42,7 @@ class MusicInstrument(ModelWithSettings):
     @classmethod
     def define(cls, definition_name, default_settings):
         if 'volume' not in default_settings:
-            default_settings['volume'] = (-10.0, -20, 5)
+            default_settings['volume'] = FloatSettingValue(initial=-10.0, min=-20, max=5)
         return super().define(definition_name, default_settings)
 
 

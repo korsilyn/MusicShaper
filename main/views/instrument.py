@@ -1,7 +1,7 @@
 from .util import render, redirect, get_base_context, get_object_or_404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
-from ..forms import CreateMusicInstrumentForm
+from ..forms import CreateMusicInstrumentForm, SettingsModelForm
 from .project import get_project_or_404
 from ..models import MusicInstrument
 
@@ -94,7 +94,7 @@ def edit_instrument(request, proj_id: int, id: int):
     context.update({
         'project': project,
         'instrument': instrument,
-        'settings': instrument.get_all_settings()
+        'form': SettingsModelForm(instance=instrument)
     })
 
     return render(request, 'project/instrument/edit.html', context)
