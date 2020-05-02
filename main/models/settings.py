@@ -5,27 +5,16 @@ from typing import List
 from math import inf
 
 
-class JSONSetting(models.Model):
-    '''
-    Абстрактная модель настройки в формате json
-
-    :param name: имя настройки
-    :param data: данные настройки в json
-    '''
-
-    class Meta:
-        abstract = True
-
-    name = models.CharField(max_length=25)
-    data = JSONField()
-
-
-class SettingValue:
+class SettingValue(ABC):
     def __init__(self, *, type, initial, **values):
         self.type = type
         self.initial = initial
         for k, v in values.items():
             setattr(self, k, v)
+
+    @abstractmethod
+    def validate_value(self, value) -> bool:
+        pass
 
 
 class FloatSettingValue(SettingValue):
@@ -38,6 +27,9 @@ class FloatSettingValue(SettingValue):
             step=float(step),
         )
 
+    def validate_value(self, value):
+        return isinstance(value, (float, int)) and self.min <= value <= self.max
+
 
 class ChoiceSettingValue(SettingValue):
     def __init__(self, *, initial, choices):
@@ -49,11 +41,14 @@ class ChoiceSettingValue(SettingValue):
             choices=choices,
         )
 
+    def validate_value(self, value):
+        return value in self.choices
+
 
 class ModelWithSettings(models.Model):
     '''
     Абстрактная модель *кхм* модели, у которой
-    есть список настроек (`JSONSetting`)
+    есть словарь настроек
 
     У класса дочерней модели также появляется метод
     `define`, с помощью которого можно задать стандартные
@@ -63,14 +58,12 @@ class ModelWithSettings(models.Model):
     class Meta:
         abstract = True
 
+    type = models.CharField(max_length=25)
+    json_settings = JSONField()
+
     def __init_subclass__(cls):
         super().__init_subclass__()
         setattr(cls, 'DEFINITIONS', dict())
-
-    def __init__(self, settingModel, related_name, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.settingModel = settingModel
-        self.settingRelatedName = related_name
 
     @classmethod
     def define(cls, definition_name: str, default_settings: dict):
@@ -85,7 +78,7 @@ class ModelWithSettings(models.Model):
             raise NameError(f'definition {definition_name} already exists')
         cls.DEFINITIONS[definition_name] = default_settings.copy()
 
-    def assert_type(self, error_class=NameError):
+    def assert_type(self, error_class=TypeError):
         '''
         Кидает error_class в случае, если тип инструмента
         объявлен некорректно
@@ -105,44 +98,20 @@ class ModelWithSettings(models.Model):
         Сбрасывает все текущие настройки инструмента
         '''
 
-        self.settingModel.objects.filter(
-            **{self.settingRelatedName: self}
-        ).delete()
+        self.json_settings.clear()
 
-    def get_setting(self, name: str, assert_type=True) -> dict:
-        '''
-        Возвращает настройку объекта в виде словаря
-
-        :param name: имя настройки
-        :param assert_type: проверять ли тип объекта
-        '''
-
-        if assert_type:
-            self.assert_type()
-        try:
-            return self.settingModel.objects.get(**{self.settingRelatedName: self}, name=name).data
-        except self.settingModel.DoesNotExist:
-            return self.definition[name]
-
-    def clean_setting_dict(self, setting: dict) -> dict:
-        rs = {}
-        for key, value in setting.items():
-            if isinstance(value, dict):
-                rs[key] = self.clean_setting_dict(value)
-            elif isinstance(value, SettingValue):
-                rs[key] = value.initial
+    def get_settings_recursive(self, definition, json_settings):
+        for sname, vdef in definition.items():
+            if isinstance(vdef, dict):
+                yield sname, dict(self.get_settings_recursive(vdef, json_settings.get(sname, dict())))
+            elif not isinstance(vdef, SettingValue):
+                raise ValueError(f'invalid setting definition {sname}')
             else:
-                rs[key] = value
-        return rs
+                yield sname, json_settings.get(sname, vdef.initial)
 
-    def get_all_settings(self) -> dict:
-        '''
-        Возвращает словарь текущих настроек инструмента
-
-        :rtype: dict
-        '''
-
+    def get_settings_generator(self):
         self.assert_type()
-        return self.clean_setting_dict({
-            sname: self.get_setting(sname, False) for sname in self.definition
-        })
+        yield from self.get_settings_recursive(self.definition, self.json_settings)
+
+    def get_settings(self):
+        return dict(self.get_settings_generator())

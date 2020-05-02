@@ -33,7 +33,7 @@ class SettingsModelForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        settings = self.instance.get_all_settings()
+        settings = self.instance.get_settings()
         definition = self.instance.definition
 
         self.field_makers_map = {
@@ -73,3 +73,39 @@ class SettingsModelForm(ModelForm):
                 field.group = group
                 self.fields[path] = field
                 self.initial[path] = v
+
+    def save(self, *args, **kwargs):
+        instance = super().save(commit=False)
+        definition = instance.definition
+
+        for path, value in self.data.items():
+            if not path.startswith('.'):
+                continue
+
+            try:
+                value = float(value)
+            except ValueError:
+                pass
+
+            keys = path[1:].split('.')
+            d_dict = definition
+            for key in keys[:-1]:
+                d_dict = d_dict.get(key, None)
+                if not isinstance(d_dict, dict):
+                    raise ValueError(f'invalid setting update path {path}')
+
+            vdef = d_dict.get(keys[-1], None)
+            if not isinstance(vdef, SettingValue):
+                raise ValueError(f'invalid setting update path {path}')
+
+            if value != vdef.initial:
+                if not vdef.validate_value(value):
+                    raise ValueError(f'invalid setting value {value} ({type(value)}) for {path}')
+
+                s_dict = instance.json_settings
+                for key in keys[:-1]:
+                    s_dict = s_dict.setdefault(key, dict())
+                s_dict[keys[-1]] = value
+
+        instance.save(*args, **kwargs)
+        return instance

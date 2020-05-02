@@ -56,7 +56,7 @@ def new_instrument(request, id: int):
                     name=form.data['name'],
                     type=form.data['type'],
                 )
-            except NameError:
+            except TypeError:
                 add_message(request, ERROR, 'Неизвестный тип инструмента')
             except LookupError:
                 add_message(
@@ -91,10 +91,20 @@ def edit_instrument(request, proj_id: int, id: int):
     project = get_project_or_404(request, proj_id)
     instrument = get_object_or_404(MusicInstrument, pk=id)
 
+    if request.method == 'POST':
+        form = SettingsModelForm(instance=instrument, data=request.POST)
+        if form.is_valid():
+            instrument = form.save()
+            add_message(request, SUCCESS, 'Изменения успешно сохранены')
+        else:
+            add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = SettingsModelForm(instance=instrument)
+
     context = get_base_context(request, {
         'project': project,
         'instrument': instrument,
-        'form': SettingsModelForm(instance=instrument)
+        'form': form
     })
 
     return render(request, 'instrument/edit.html', context)
