@@ -1,6 +1,5 @@
 from django.forms import ModelForm, FloatField, NumberInput, ChoiceField, Select
 from ..models.settings import ModelWithSettings, SettingValue, FloatSettingValue, ChoiceSettingValue
-from ..utils import zip_dict
 
 
 class SettingsModelForm(ModelForm):
@@ -42,13 +41,25 @@ class SettingsModelForm(ModelForm):
             'choice': self.make_choice_field
         }
 
-        self.generate_fields(zip_dict(definition, settings))
+        try:
+            self.generate_fields(definition, settings)
+        except KeyError:
+            raise ValueError('invalid instrument type')
 
-    def generate_fields(self, settings, path='', group='.'):
-        for sname, d, v in settings:
-            path += '.' + sname
+    def grouped_fields(self):
+        groups = dict()
+        visible_fields = self.visible_fields()
+        for bound in visible_fields:
+            groups.setdefault(bound.field.group, []).append(bound)
+        return groups
+
+    def generate_fields(self, definition, settings, path=''):
+        ipath = path
+        for sname, d in definition.items():
+            v = settings[sname]
+            path = ipath + '.' + sname
             if isinstance(v, dict):
-                self.generate_fields(zip_dict(d, v), path, sname)
+                self.generate_fields(d, v, path)
             elif not isinstance(d, SettingValue):
                 raise ValueError(f'invalid definition value: {d}')
             else:
@@ -57,7 +68,8 @@ class SettingsModelForm(ModelForm):
                     raise ValueError(f'unsupported setting value {d.type}')
 
                 field = make_f(sname, d)
-                field.group = group
                 field.required = False
+                group = path.split('.')[-2] or '.'
+                field.group = group
                 self.fields[path] = field
                 self.initial[path] = v

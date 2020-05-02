@@ -32,18 +32,17 @@
     </div>
     <form method="POST" class="margin-top-5 mx-auto" style="max-width: 75%;">
         {% csrf_token %}
-        {% regroup form.visible_fields by field.group as grouped_fields %}
-        {% for group in grouped_fields|dictsort:"grouper" %}
+        {% for group, fields in form.grouped_fields.items %}
             <div class="card form-group">
                 <div class="card-body">
                     <h6 class="card-title">
-                        {% if group.grouper != '.' %}
-                            {% trans group.grouper|capfirst %}
+                        {% if group != '.' %}
+                            {% trans group|capfirst %}
                         {% else %}
                             {% trans 'main'|capfirst %}
                         {% endif %}
                     </h6>
-                    {% for field in group.list %}
+                    {% for field in fields %}
                         <label>{% trans field.label|capfirst %}</label> {{ field }}
                     {% endfor %}
                 </div>

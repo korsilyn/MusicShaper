@@ -20,9 +20,10 @@ def instruments(request, id: int):
 
     project = get_project_or_404(request, id)
 
-    context = get_base_context(request)
-    context['project'] = project
-    context['instruments'] = project.instruments
+    context = get_base_context(request, {
+        'project': project,
+        'instruments': project.instruments
+    })
 
     return render(request, 'project/instrument/list.html', context)
 
@@ -69,9 +70,10 @@ def new_instrument(request, id: int):
     else:
         form = CreateMusicInstrumentForm()
 
-    context = get_base_context(request)
-    context['project'] = project
-    context['form'] = form
+    context = get_base_context(request, {
+        'project': project,
+        'form': form
+    })
 
     return render(request, 'project/instrument/new.html', context)
 
@@ -87,11 +89,9 @@ def edit_instrument(request, proj_id: int, id: int):
     '''
 
     project = get_project_or_404(request, proj_id)
-    context = get_base_context(request)
-
     instrument = get_object_or_404(MusicInstrument, pk=id)
 
-    context.update({
+    context = get_base_context(request, {
         'project': project,
         'instrument': instrument,
         'form': SettingsModelForm(instance=instrument)

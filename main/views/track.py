@@ -12,13 +12,12 @@ def popular_tracks(request):
     :rtype: HttpResponse
     '''
 
-    context = get_base_context(request)
     all_tracks = MusicTrack.objects.all()
-
-    context['tracks'] = [{'name': tr.name, 'id': tr.id, 'likes': tr.likes, 'desc': tr.desc,
-                          'count': tr.listeners.count()} for tr in all_tracks]
-    context['tracks'].sort(key=lambda i: i['count'], reverse=True)
-    context['tracks'] = context['tracks'][:15]
+    context = get_base_context(request, {
+        'tracks': [{
+            'name': tr.name, 'id': tr.id, 'likes': tr.likes, 'desc': tr.desc, 'count': tr.listeners.count()
+        } for tr in all_tracks].sort(key=lambda i: i['count'], reverse=True)[:15]
+    })
 
     return render(request, 'track/popular.html', context)
 
@@ -75,8 +74,7 @@ def track_view(request, id):
             track.save()
         return JsonResponse(response)
 
-    context = get_base_context(request)
-    context.update({
+    context = get_base_context(request, {
         'track': track,
         'liked': track.likes.filter(pk=request.user.id).exists(),
         'disliked': track.dislikes.filter(pk=request.user.id).exists(),
