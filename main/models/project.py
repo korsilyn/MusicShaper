@@ -42,7 +42,9 @@ class MusicInstrument(ModelWithSettings):
     @classmethod
     def define(cls, definition_name, default_settings):
         if 'volume' not in default_settings:
-            default_settings['volume'] = FloatSettingValue(initial=-10.0, min=-20, max=5)
+            default_settings['volume'] = FloatSettingValue(
+                initial=-10.0, min=-20, max=5, step=0.5
+            )
         return super().define(definition_name, default_settings)
 
 

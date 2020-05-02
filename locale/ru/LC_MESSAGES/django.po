@@ -11,6 +11,9 @@ msgid "Russian"
 msgstr "Русский"
 
 # Настройки инструментов
+msgid "main"
+msgstr "главное"
+
 msgid "Synth"
 msgstr "Волна"
 
