@@ -118,6 +118,7 @@ msgstr "Кривая модуляции"
 
 msgid "voice0"
 msgstr "Первая волна с фильтром"
+
 msgid "voice1"
 msgstr "Вторая волна с фильтром"
 
