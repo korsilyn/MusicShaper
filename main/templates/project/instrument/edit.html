@@ -49,5 +49,28 @@
                 </div>
             </div>
         {% endfor %}
+        <div class="margin-top-5 text-center">
+            <input id="submitBtn" type="submit" value="Сохранить изменения" class="btn btn-outline-success">
+        </div>
     </form>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        (function(){
+            const sbtn = document.getElementById('submitBtn');
+            const numberInputs = sbtn.form.querySelectorAll('input[type=number][step]');
+
+            const steps = new Map();
+            numberInputs.forEach(input => steps.set(input, input.step))
+
+            sbtn.onclick = function () {
+                numberInputs.forEach(input => input.step = 'any');
+            }
+
+            sbtn.form.addEventListener('invalid', function () {
+                numberInputs.forEach(input => input.step = steps.get(input))
+            }, true);
+        })()
+    </script>
 {% endblock %}

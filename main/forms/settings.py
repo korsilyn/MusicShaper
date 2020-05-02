@@ -42,7 +42,6 @@ class SettingsModelForm(ModelForm):
             'choice': self.make_choice_field
         }
 
-        self.field_order = ['.volume']
         self.generate_fields(zip_dict(definition, settings))
 
     def generate_fields(self, settings, path='', group='.'):
@@ -59,6 +58,6 @@ class SettingsModelForm(ModelForm):
 
                 field = make_f(sname, d)
                 field.group = group
+                field.required = False
                 self.fields[path] = field
                 self.initial[path] = v
-                self.field_order.append(path)
