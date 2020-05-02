@@ -25,7 +25,7 @@ def instruments(request, id: int):
         'instruments': project.instruments
     })
 
-    return render(request, 'project/instrument/list.html', context)
+    return render(request, 'instrument/list.html', context)
 
 
 @login_required
@@ -75,7 +75,7 @@ def new_instrument(request, id: int):
         'form': form
     })
 
-    return render(request, 'project/instrument/new.html', context)
+    return render(request, 'instrument/new.html', context)
 
 
 @login_required
@@ -97,4 +97,4 @@ def edit_instrument(request, proj_id: int, id: int):
         'form': SettingsModelForm(instance=instrument)
     })
 
-    return render(request, 'project/instrument/edit.html', context)
+    return render(request, 'instrument/edit.html', context)

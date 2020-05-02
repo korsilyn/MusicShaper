@@ -1,5 +1,7 @@
 from .util import render, redirect, get_base_context, get_object_or_404, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from ..models import Profile, MusicTrack
 
@@ -84,7 +86,9 @@ def change_password(request):
         else:
             messages.add_message(request, messages.ERROR,
                                  'Некорректные данные формы')
-            return redirect('change_password')
+            return render(request, 'profile/change_password.html', {
+                'form': form
+            })
     else:
         context = get_base_context(request, {
             'form': PasswordChangeForm(user=request.user)

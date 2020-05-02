@@ -99,4 +99,4 @@ def editor(request):
     :rtype: HttpResponse
     '''
 
-    return render(request, 'project/pattern/editor.html', get_base_context(request))
+    return render(request, 'pattern/editor.html', get_base_context(request))
