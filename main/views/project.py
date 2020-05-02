@@ -46,8 +46,9 @@ def new_project(request):
     else:
         form = CreateProjectForm()
 
-    context = get_base_context(request)
-    context['form'] = form
+    context = get_base_context(request, {
+        'form': form
+    })
 
     return render(request, 'project/new.html', context)
 
@@ -62,9 +63,9 @@ def projects_list(request):
     :rtype: HttpResponse
     '''
 
-    context = get_base_context(request)
-    context['projects'] = MusicTrackProject.objects.filter(
-        author=request.user).all()
+    context = get_base_context(request, {
+        'projects': MusicTrackProject.objects.filter(author=request.user).all()
+    })
 
     return render(request, 'project/list.html', context)
 
@@ -82,8 +83,9 @@ def project_home(request, id: int):
 
     project = get_project_or_404(request, id)
 
-    context = get_base_context(request)
-    context['project'] = project
+    context = get_base_context(request, {
+        'project': project
+    })
 
     return render(request, 'project/home.html', context)
 
@@ -97,4 +99,4 @@ def editor(request):
     :rtype: HttpResponse
     '''
 
-    return render(request, 'project/pattern/editor.html', get_base_context(request))
+    return render(request, 'pattern/editor.html', get_base_context(request))

@@ -34,8 +34,9 @@ def login_page(request):
                                  'Некорректные данные в форме авторизации')
             return redirect('login')
     else:
-        context = get_base_context(request)
-        context['form'] = LoginForm()
+        context = get_base_context(request, {
+            'form': LoginForm()
+        })
         return render(request, 'auth/login.html', context)
 
 
@@ -69,8 +70,9 @@ def register_page(request):
                                  'Некорректные данные')
             return redirect('register')
     else:
-        context = get_base_context(request)
-        context['form'] = UserCreationForm()
+        context = get_base_context(request, {
+            'form': UserCreationForm()
+        })
         return render(request, 'auth/register.html', context)
 
 

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block 'title' %}
+    Настройки инструмента
+{% endblock %}
+
+{% block 'head' %}
+    <style>
+        label + input + label {
+            margin-top: 7px;
+        }
+
+        .card {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease-in;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center margin-top-10">
+        <h2>Настройки инструмента</h2>
+        <h3 class="quotes">{{ instrument.name }}</h3>
+        <h5 class="text-secondary">{{ instrument.type }}</h5>
+        <div class="margin-top-2"></div>
+        <a href="{% url 'instruments' id=project.id %}">Назад к списку инструментов</a>
+    </div>
+    <form method="POST" class="margin-top-5 mx-auto" style="max-width: 75%;">
+        {% csrf_token %}
+        {% for group, fields in form.grouped_fields.items %}
+            <div class="card form-group">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        {% if group != '.' %}
+                            {% trans group|capfirst %}
+                        {% else %}
+                            {% trans 'main'|capfirst %}
+                        {% endif %}
+                    </h6>
+                    {% for field in fields %}
+                        <label>{% trans field.label|capfirst %}</label> {{ field }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="margin-top-5 text-center">
+            <input id="submitBtn" type="submit" value="Сохранить изменения" class="btn btn-outline-success">
+        </div>
+    </form>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        (function(){
+            const sbtn = document.getElementById('submitBtn');
+            const numberInputs = sbtn.form.querySelectorAll('input[type=number][step]');
+
+            const steps = new Map();
+            numberInputs.forEach(input => steps.set(input, input.step))
+
+            sbtn.onclick = function () {
+                numberInputs.forEach(input => input.step = 'any');
+            }
+
+            sbtn.form.addEventListener('invalid', function () {
+                numberInputs.forEach(input => input.step = steps.get(input))
+            }, true);
+        })()
+    </script>
+{% endblock %}

@@ -1,5 +1,7 @@
 from .util import render, redirect, get_base_context, get_object_or_404, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from ..models import Profile, MusicTrack
 
@@ -21,8 +23,7 @@ def profile_page(request):
 
     profile = get_object_or_404(Profile, user=user)
 
-    context = get_base_context(request)
-    context.update({
+    context = get_base_context(request, {
         "profile": profile,
         "tracks": MusicTrack.objects.filter(author=user),
         "likes": MusicTrack.objects.filter(likes=user),
@@ -57,8 +58,9 @@ def profile_edit_page(request):
                              'Профиль успешно обновлён')
         return redirect('profile')
     else:
-        context = get_base_context(request)
-        context['profile'] = profile
+        context = get_base_context(request, {
+            'profile': profile
+        })
         return render(request, 'profile/edit.html', context)
 
 
@@ -84,10 +86,13 @@ def change_password(request):
         else:
             messages.add_message(request, messages.ERROR,
                                  'Некорректные данные формы')
-            return redirect('change_password')
+            return render(request, 'profile/change_password.html', {
+                'form': form
+            })
     else:
-        context = get_base_context(request)
-        context['form'] = PasswordChangeForm(user=request.user)
+        context = get_base_context(request, {
+            'form': PasswordChangeForm(user=request.user)
+        })
         return render(request, 'profile/change_password.html', context)
 
 

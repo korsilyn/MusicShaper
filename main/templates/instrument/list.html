@@ -1,37 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block 'title' %}
     Список инструментов
 {% endblock %}
 
 {% block 'head' %}
-    <style>
-        #instrument_list {
-            display: flex;
-            flex-flow: row wrap;
-            align-items: center;
-            justify-content: center;
-            max-width: 60%;
-            gap: 15px;
-        }
-
-        .instrument_link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            min-height: 140px;
-            min-width: 200px;
-            margin: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 8px rgba(10, 10, 10, 0.2);
-            transition: background-color 0.1s ease-out;
-        }
-
-        .instrument_link:hover {
-            background-color: rgb(240, 240, 240);
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
 {% endblock %}
 
 {% block 'body' %}
@@ -46,11 +21,16 @@
             В проекте ещё нет инструментов!
         </div>
     {% else %}
-        <div id="instrument_list" class="mx-auto">
+        <div class="card-link-list card-link-list-center">
             {% for i in instruments.all %}
-                <div class="instrument_link">
-                    <b>{{ i.name }}</b>
-                </div>
+                <a href="{% url 'edit_instrument' proj_id=project.id id=i.id %}">
+                    <b class="card-title">
+                        {{ i.name }}
+                    </b>
+                    <i class="card-desc">
+                        {{ i.type }}
+                    </i>
+                </a>
             {% endfor %}
         </div>
     {% endif %}

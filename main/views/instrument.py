@@ -1,7 +1,7 @@
-from .util import render, redirect, get_base_context, JsonResponse
+from .util import render, redirect, get_base_context, get_object_or_404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
-from ..forms import CreateMusicInstrumentForm
+from ..forms import CreateMusicInstrumentForm, SettingsModelForm
 from .project import get_project_or_404
 from ..models import MusicInstrument
 
@@ -20,11 +20,12 @@ def instruments(request, id: int):
 
     project = get_project_or_404(request, id)
 
-    context = get_base_context(request)
-    context['project'] = project
-    context['instruments'] = project.instruments
+    context = get_base_context(request, {
+        'project': project,
+        'instruments': project.instruments
+    })
 
-    return render(request, 'project/instrument/list.html', context)
+    return render(request, 'instrument/list.html', context)
 
 
 @login_required
@@ -50,12 +51,12 @@ def new_instrument(request, id: int):
                 if existed_i:
                     raise LookupError
 
-                MusicInstrument.objects.create(
+                instrument = MusicInstrument.objects.create(
                     project=project,
                     name=form.data['name'],
                     type=form.data['type'],
                 )
-            except NameError:
+            except TypeError:
                 add_message(request, ERROR, 'Неизвестный тип инструмента')
             except LookupError:
                 add_message(
@@ -63,14 +64,47 @@ def new_instrument(request, id: int):
                 )
             else:
                 add_message(request, SUCCESS, 'Инструмент успешно создан')
-                return redirect('instruments', id=id)
+                return redirect('edit_instrument', proj_id=id, id=instrument.id)
         else:
             add_message(request, ERROR, 'Некорректные данные формы')
     else:
         form = CreateMusicInstrumentForm()
 
-    context = get_base_context(request)
-    context['project'] = project
-    context['form'] = form
+    context = get_base_context(request, {
+        'project': project,
+        'form': form
+    })
 
-    return render(request, 'project/instrument/new.html', context)
+    return render(request, 'instrument/new.html', context)
+
+
+@login_required
+def edit_instrument(request, proj_id: int, id: int):
+    '''
+    Страница редактирования настроек инструмента
+
+    :param request: запрос клиента
+    :param proj_id: id проекта в БД
+    :param id: id инстуремнта в БД
+    '''
+
+    project = get_project_or_404(request, proj_id)
+    instrument = get_object_or_404(MusicInstrument, pk=id)
+
+    if request.method == 'POST':
+        form = SettingsModelForm(instance=instrument, data=request.POST)
+        if form.is_valid():
+            instrument = form.save()
+            add_message(request, SUCCESS, 'Изменения успешно сохранены')
+        else:
+            add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = SettingsModelForm(instance=instrument)
+
+    context = get_base_context(request, {
+        'project': project,
+        'instrument': instrument,
+        'form': form
+    })
+
+    return render(request, 'instrument/edit.html', context)
