@@ -1,15 +1,30 @@
 from .util import render, get_base_context, redirect
 from django.contrib.messages import add_message, SUCCESS, ERROR
+from django.contrib.auth.decorators import user_passes_test, login_required
 from ..forms import CreateTestTrack
 from ..models import MusicTrack, TrackSettings
 from datetime import datetime
 
 
-def admins(request):
+superuser_check = lambda u: u.is_superuser
+
+
+@login_required
+@user_passes_test(superuser_check)
+def admin_home(request):
+    '''
+    Панель администрации
+
+    :param request: запрос клиента
+    :rtype: HttpResponse
+    '''
+
     return render(request, 'admin/admin.html', get_base_context(request))
 
 
-def test_track(request):
+@login_required
+@user_passes_test(superuser_check)
+def create_test_track(request):
     '''
     Страница создания пробного трека
 
@@ -48,4 +63,4 @@ def test_track(request):
         'form': form
     })
 
-    return render(request, 'admin/test_track.html', context)
+    return render(request, 'admin/create_test_track.html', context)
