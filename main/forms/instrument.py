@@ -1,32 +1,39 @@
-from django.forms import Form, CharField, TextInput, Select
+from django.forms import ModelForm, TextInput, Select
 from ..models import MusicInstrument
 
 
-class CreateMusicInstrumentForm(Form):
+class MusicInstrumentForm(ModelForm):
     '''
-    Форма создания музыкального инструмента
+    Форма создания / редактирования музыкального инструмента
     '''
 
-    name = CharField(
-        label='Имя',
-        max_length=25,
-        widget=TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Имя нового музыкального инструмента'
-        })
-    )
+    class Meta:
+        model = MusicInstrument
+        fields = ('name', 'type')
 
-    type = CharField(
-        label='Тип инструмента',
-        max_length=15,
-    )
+        labels = {
+            'name': 'Имя',
+            'type': 'Тип'
+        }
+
+        widgets = {
+            'name': TextInput(attrs={
+                'placeholder': 'Имя инструмента',
+                'class': 'form-control'
+            }),
+            'type': Select(attrs={
+                'class': 'form-control'
+            })
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         choices = [(type, type) for type in MusicInstrument.DEFINITIONS]
-        self.fields['type'].widget = Select(
-            choices=choices,
-            attrs={
-                'class': 'form-control'
-            }
-        )
+        self.fields['type'].widget.choices = choices
+
+    def save(self, *args, **kwargs):
+        instrument = super().save(commit=False)
+        if instrument.pk and 'type' in self.changed_data:
+            instrument.reset()
+        instrument.save(*args, **kwargs)
+        return instrument
