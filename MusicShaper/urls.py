@@ -39,6 +39,10 @@ urlpatterns = [
          views.new_instrument, name='new_instrument'),
     path('project/<int:proj_id>/instrument/<int:id>',
          views.edit_instrument, name='edit_instrument'),
+    path('project/<int:proj_id>/instrument/<int:id>/manage',
+        views.manage_instrument, name='manage_instrument'),
+    path('project/<int:proj_id>/instrument/<int:id>/delete',
+        views.delete_instrument, name='delete_instrument'),
     path('track/<int:id>', views.track_view, name='track'),
     path('search/', views.search_page, name='search'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

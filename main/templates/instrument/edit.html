@@ -31,7 +31,11 @@
         <h3 class="quotes">{{ instrument.name }}</h3>
         <h5 class="text-secondary">{{ instrument.type }}</h5>
         <div class="margin-top-2"></div>
-        <a href="{% url 'instruments' id=project.id %}">Назад к списку инструментов</a>
+        <a href="{% url 'instruments' id=project.id %}">Назад к списку инструментов</a> <br>
+        <a href="{% url 'manage_instrument' proj_id=project.id id=instrument.id %}"
+            class="btn btn-outline-primary" style="margin-top: 1em;">
+            Управление инструментом
+        </a>
     </div>
     <div class="margin-top-2"></div>
     <div class="form-group mx-auto" style="max-width: 40%;">
