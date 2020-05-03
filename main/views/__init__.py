@@ -3,7 +3,7 @@ from .profile import profile_page, profile_edit_page, delete_avatar, change_pass
 from .search import search_page
 from .track import track_view, popular_tracks
 from .project import new_project, project_home, projects_list, editor
-from .instrument import instruments, new_instrument, edit_instrument
+from .instrument import instruments, new_instrument, edit_instrument, manage_instrument, delete_instrument
 
 from .util import get_base_context, render
 
