@@ -53,18 +53,18 @@
     <link rel="stylesheet" href="{% static 'styles/base.css' %}">
 
     <div class="piano" draggable="false">
-        <div note="C"  class="not-draggable key white"></div>
-        <div note="C#" class="not-draggable key black"></div>
-        <div note="D"  class="not-draggable key white"></div>
-        <div note="D#" class="not-draggable key black"></div>
-        <div note="E"  class="not-draggable key white"></div>
-        <div note="F"  class="not-draggable key white"></div>
-        <div note="F#" class="not-draggable key black"></div>
-        <div note="G"  class="not-draggable key white"></div>
-        <div note="G#" class="not-draggable key black"></div>
-        <div note="A"  class="not-draggable key white"></div>
-        <div note="A#" class="not-draggable key black"></div>
-        <div note="B"  class="not-draggable key white"></div>
+        <div note="C"  key="Z" class="not-draggable key white"></div>
+        <div note="C#" key="S" class="not-draggable key black"></div>
+        <div note="D"  key="X" class="not-draggable key white"></div>
+        <div note="D#" key="D" class="not-draggable key black"></div>
+        <div note="E"  key="C" class="not-draggable key white"></div>
+        <div note="F"  key="V" class="not-draggable key white"></div>
+        <div note="F#" key="G" class="not-draggable key black"></div>
+        <div note="G"  key="B" class="not-draggable key white"></div>
+        <div note="G#" key="H" class="not-draggable key black"></div>
+        <div note="A"  key="N" class="not-draggable key white"></div>
+        <div note="A#" key="J" class="not-draggable key black"></div>
+        <div note="B"  key="M" class="not-draggable key white"></div>
     </div>
 </template>
 
@@ -78,18 +78,40 @@
             this.piano = piano;
             this.element = element;
 
-            const playEvent = ({ which }) => {
+            this.key = this.element.getAttribute('key');
+
+            const play = () => {
+                if (this.piano.lastKey && this.piano.lastKey != this) {
+                    this.piano.lastKey.deactivate();
+                }
+                this.play();
+                this.piano.lastKey = this;
+            }
+
+            const playMouseEvent = ({ which }) => {
                 if (which != 0) {
-                    if (this.piano.lastKey && this.piano.lastKey != this) {
-                        this.piano.lastKey.deactivate();
-                    }
-                    this.play();
-                    this.piano.lastKey = this;
+                    play();
                 }
             };
 
-            this.element.addEventListener('mousedown', playEvent);
-            this.element.addEventListener('mousemove', playEvent);
+            const validateKeyEvent = (repeat, keyCode) => !repeat && keyCode.startsWith('Key') && keyCode.endsWith(this.key);
+
+            const playKeydownEvent = ({ code: keyCode, repeat }) => {
+                if (validateKeyEvent(repeat, keyCode)) {
+                    play();
+                }
+            }
+
+            const playKeyupEvent = ({ code: keyCode, repeat }) => {
+                if (validateKeyEvent(repeat, keyCode) && this.piano.isPlaying && this.piano.lastKey == this) {
+                    this.piano.stop();
+                }
+            }
+
+            this.element.addEventListener('mousedown', playMouseEvent);
+            this.element.addEventListener('mousemove', playMouseEvent);
+            document.addEventListener('keydown', playKeydownEvent);
+            document.addEventListener('keyup', playKeyupEvent);
         }
 
         get isWhite() {
@@ -112,7 +134,7 @@
             this.element.classList.remove('active');
         }
 
-        isActive() {
+        get isActive() {
             return this.element.classList.contains('active');
         }
 
@@ -121,7 +143,12 @@
             const hasNote = !(this.piano.synth instanceof Tone.NoiseSynth);
             const note = hasNote ? this.note : undefined;
             if (!this.piano.isPlaying || this.piano.lastKey != this) {
-                this.piano.synth.triggerAttack(note);
+                if (!this.piano.isPlaying || !hasNote) {
+                    this.piano.synth.triggerAttack(note);
+                }
+                else {
+                    this.piano.synth.setNote(note);
+                }
                 this.piano.isPlaying = true;
             }
         }
@@ -147,28 +174,19 @@
 
             window.addEventListener('mouseup', () => this.stop());
             this.addEventListener('dragstart', () => this.stop());
+        }
 
-            window.addEventListener('keydown', ({ code: keyCode, repeat }) => {
-                if (repeat) return;
-                
-                const key = keyCode.replace('Key', '');
-
-                const whiteKeyIndex = PianoKeys.whiteKeyboardKeys.indexOf(key);
-                const blackKeyIndex = PianoKeys.blackKeyboardKeys.indexOf(key);
-
-                if (whiteKeyIndex > -1) this.whiteKeys[whiteKeyIndex].play();
-                if (blackKeyIndex > -1) this.blackKeys[blackKeyIndex].play();
-            }, true);
-
-            window.addEventListener('keyup', ({ code: keyCode }) => {
-                const key = keyCode.replace('Key', '');
-
-                const whiteKeyIndex = PianoKeys.whiteKeyboardKeys.indexOf(key);
-                const blackKeyIndex = PianoKeys.blackKeyboardKeys.indexOf(key);
-                if (whiteKeyIndex > -1 || blackKeyIndex > -1) {
-                    this.stop();
-                }
-            });
+        /**
+         * @param {string} synthType
+         * @returns {Tone.PolySynth} new piano's synth
+         */
+        setSynth(synthType) {
+            const constructor = Tone[synthType];
+            if (typeof constructor != 'function') {
+                throw new Error(`invalid Tone.js synth type '${synthType}'`);
+            }
+            this.synth = new constructor();
+            return this.synth;
         }
 
         get octave() {
@@ -195,9 +213,6 @@
             this.activeKeys.forEach(key => key.deactivate());
         }
     }
-
-    PianoKeys.whiteKeyboardKeys = ['Z', 'X', 'C', 'V', 'B', 'N', 'M'];
-    PianoKeys.blackKeyboardKeys = ['S', 'D', 'G', 'H', 'J'];
 
     customElements.define('piano-keys', PianoKeys);
 </script>
