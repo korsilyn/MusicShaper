@@ -5,19 +5,18 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div class="margin-top-10"></div>
-    <div class="text-center">
-            <div class="block">
-                <h2>Для Администраторов</h2>
-                <br>
-                    <a class="btn btn-primary" href="{% url 'test_track' %}">
-                        Создать пробный трек
-                    </a>
-                <br>
-                <br>
-                    <a class="btn btn-info" href="{% url 'admin:index' %}">
-                        Django-admin
-                    </a>
-            </div>
+    <div class="text-center margin-top-10">
+        <div class="block">
+            <h2>Панель администрации</h2>
+            <br>
+                <a class="btn btn-primary" href="{% url 'test_track' %}">
+                    Создать пробный трек
+                </a>
+            <br>
+            <br>
+                <a class="btn btn-info" href="{% url 'admin:index' %}">
+                    Django-admin
+                </a>
+        </div>
     </div>
 {% endblock %}

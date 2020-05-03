@@ -1,24 +1,29 @@
 {% extends 'base.html' %}
 
-{% block 'title' %}Создание пробного трека{% endblock %}
-
-{% block 'head' %}
-    <style>
-        form {
-            width: 40%;
-            display: block;
-            margin: auto;
-            margin-top: 30vh;
-        }
-    </style>
+{% block 'title' %}
+    Создание пробного трека
 {% endblock %}
 
 {% block 'body' %}
-    <form method="POST">
+    <form method="POST" class="margin-top-20 mx-auto" style="max-width: 40%;">
         {% csrf_token %}
         <h1 class="text-center">Создание пробного трека</h1><br>
-        {{ form }}
+        {% for field in form.visible_fields %}
+            {% if field.field.widget.input_type != 'checkbox' %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% else %}
+                <div class="form-check">
+                    {{ field }}
+                    <label>{{ field.label }}</label>
+                </div>
+            {% endif %}
+        {% endfor %}
         <br>
-        <div class="text-center"><button type="submit" class="btn btn-success">Создать пробный трек</button></div>
+        <div class="text-center">
+            <input type="submit" value="Создать пробный трек" class="btn btn-success"></input>
+        </div>
     </form>
 {% endblock %}

@@ -1,4 +1,5 @@
 from .util import render, get_base_context, redirect
+from django.contrib.messages import add_message, SUCCESS, ERROR
 from ..forms import CreateTestTrack
 from ..models import MusicTrack, TrackSettings
 from datetime import datetime
@@ -16,13 +17,8 @@ def test_track(request):
     :return: страница создания пробного трека
     :rtype: HttpResponse
     '''
-    is_test_track = request.method == 'POST'
-    context = {
-        "is_test_track": is_test_track,
-        "is_valid": False,
-        "form": CreateTestTrack(),
-    }
-    if is_test_track:
+
+    if request.method == 'POST':
         form = CreateTestTrack(request.POST)
         if form.is_valid():
             name = form.data['name']
@@ -41,4 +37,15 @@ def test_track(request):
                 allow_reusing=allow_reusing,
                 allow_comments=allow_comments,
             )
+            add_message(request, SUCCESS, 'Трек успешно создан')
+            return redirect('track', id=track.id)
+        else:
+            add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = CreateTestTrack()
+
+    context = get_base_context(request, {
+        'form': form
+    })
+
     return render(request, 'admin/test_track.html', context)

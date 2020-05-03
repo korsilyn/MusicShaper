@@ -41,7 +41,7 @@ class CreateTestTrack(forms.Form):
         label='Доступ к лайкам',
         widget=forms.CheckboxInput(
             attrs={
-                'class': 'form-control'
+                'class': 'form-check-input'
             }
         )
     )
@@ -51,7 +51,7 @@ class CreateTestTrack(forms.Form):
         label='Доступ к свободному использованию',
         widget=forms.CheckboxInput(
             attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }
         )
     )
@@ -61,7 +61,7 @@ class CreateTestTrack(forms.Form):
         label='Доступ к комментированию',
         widget=forms.CheckboxInput(
             attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }
         )
     )
