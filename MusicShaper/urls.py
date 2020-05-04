@@ -34,6 +34,8 @@ urlpatterns = [
     path('projects', views.projects_list, name='projects'),
     path('project/new', views.new_project, name='new_project'),
     path('project/<int:id>/home', views.project_home, name='project_home'),
+    path('project/<int:id>/manage', views.manage_project, name='manage_project'),
+    path('project/<int:id>/delete', views.delete_project, name='delete_project'),
     path('project/<int:id>/instruments', views.instruments, name='instruments'),
     path('project/<int:id>/instrument/new',
          views.new_instrument, name='new_instrument'),

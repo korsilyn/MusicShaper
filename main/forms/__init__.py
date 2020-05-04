@@ -1,4 +1,4 @@
 from .login import LoginForm
-from .project import CreateProjectForm
+from .project import ProjectForm
 from .instrument import MusicInstrumentForm
 from .settings import SettingsModelForm

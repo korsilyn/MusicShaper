@@ -2,7 +2,7 @@ from .util import render, redirect, get_base_context, get_object_or_404, JsonRes
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from ..models import MusicTrackProject
-from ..forms import CreateProjectForm
+from ..forms import ProjectForm
 from datetime import datetime
 
 
@@ -33,7 +33,7 @@ def new_project(request):
     '''
 
     if request.method == 'POST':
-        form = CreateProjectForm(request.POST)
+        form = ProjectForm(request.POST)
         if form.is_valid():
             project = form.save(commit=False)
             project.author = request.user
@@ -44,7 +44,7 @@ def new_project(request):
         else:
             add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = CreateProjectForm()
+        form = ProjectForm()
 
     context = get_base_context(request, {
         'form': form
@@ -88,6 +88,61 @@ def project_home(request, id: int):
     })
 
     return render(request, 'project/home.html', context)
+
+
+@login_required
+def manage_project(request, id: int):
+    '''
+    Страница управления проектом
+
+    :param request: запрос клиента
+    :param id: id проекта в БД
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, id)
+
+    if request.method == 'POST':
+        form = ProjectForm(instance=project, data=request.POST)
+        if form.is_valid():
+            form.save()
+            add_message(request, SUCCESS, 'Изменения успешно сохранены')
+            return redirect('project_home', id=project.id)
+        else:
+            add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = ProjectForm(instance=project)
+
+    context = get_base_context(request, {
+        'project': project,
+        'form': form,
+    })
+
+    return render(request, 'project/manage.html', context)
+
+
+@login_required
+def delete_project(request, id: int):
+    '''
+    Страница удаления проекта
+
+    :param request: запрос клиента
+    :param id: id проекта в БД
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, id)
+
+    if request.method == 'POST':
+        project.delete()
+        add_message(request, SUCCESS, 'Проект успешно удалён')
+        return redirect('projects')
+
+    context = get_base_context(request, {
+        'project': project
+    })
+
+    return render(request, 'project/delete.html', context)
 
 
 def editor(request):

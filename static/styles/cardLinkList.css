@@ -15,6 +15,7 @@
 .card-link-list a {
     position: relative;
     text-align: center;
+    overflow-y: auto;
     margin: 10px;
     min-width: 200px;
     min-height: 140px;
@@ -26,6 +27,11 @@
     transition-property: background-color, border-radius;
     transition-duration: 0.2s, 0.1s;
     transition-timing-function: ease-out, ease-in;
+}
+
+.card-link-list a::-webkit-scrollbar {
+    visibility: hidden;
+    width: 0;
 }
 
 .card-link-list a:hover {
@@ -40,7 +46,6 @@
     width: 100%;
     left: 0;
     top: calc(50% - 2em);
-    overflow-wrap: break-word;
 }
 
 .card-link-list a .card-title-center {
