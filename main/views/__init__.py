@@ -1,9 +1,10 @@
 from .auth import register_page, login_page, logout_page
 from .profile import profile_page, profile_edit_page, delete_avatar, change_password
 from .search import search_page
-from .track import music_track_page, popular_tracks
+from .track import track_view, popular_tracks
 from .project import new_project, project_home, projects_list, editor
-from .instrument import instruments, new_instrument
+from .instrument import instruments, new_instrument, edit_instrument, manage_instrument, delete_instrument
+from .admin import admin_home, create_test_track
 
 from .util import get_base_context, render
 

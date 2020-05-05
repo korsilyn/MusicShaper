@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 
 
-def get_base_context(request):
+def get_base_context(request, update=None):
     '''
     Возвращает базовый контекст для всех страниц сайта
 
@@ -11,7 +11,12 @@ def get_base_context(request):
     :return: словарь контекста
     '''
 
-    return {
+    context = {
         'request': request,
         'user': request.user,
     }
+
+    if isinstance(update, dict):
+        context.update(update)
+
+    return context

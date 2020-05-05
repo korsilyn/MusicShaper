@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-from .settings import ModelWithSettings, JSONSetting
+from .settings import ModelWithSettings, FloatSettingValue
 
 
 class MusicTrackProject(models.Model):
@@ -31,13 +31,18 @@ class MusicInstrument(ModelWithSettings):
     '''
 
     name = models.CharField(max_length=25)
-    type = models.CharField(max_length=10)
     project = models.ForeignKey(
         MusicTrackProject, models.CASCADE, 'instruments'
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(MusicInstrumentSetting, 'instrument', *args, **kwargs)
+    @classmethod
+    def define(cls, definition_name, default_settings):
+        if 'volume' not in default_settings:
+            default_settings = {
+                'volume': FloatSettingValue(initial=-10.0, min=-20, max=5, step=0.5),
+                **default_settings
+            }
+        return super().define(definition_name, default_settings)
 
 
 class MusicInstrumentEffect(ModelWithSettings):
@@ -48,36 +53,8 @@ class MusicInstrumentEffect(ModelWithSettings):
     :param instrument: инструмент
     '''
 
-    type = models.CharField(max_length=25)
     instrument = models.ForeignKey(
         MusicInstrument, models.CASCADE, 'effects'
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(MusicInstrumentEffectSetting, 'effect', *args, **kwargs)
-
-
-class MusicInstrumentSetting(JSONSetting):
-    '''
-    Модель настройки музыкального инструмента
-
-    :param instrument: инструмент
-    '''
-
-    instrument = models.ForeignKey(
-        MusicInstrument, models.CASCADE, 'settings'
-    )
-
-
-class MusicInstrumentEffectSetting(JSONSetting):
-    '''
-    Модель настройки эффекта музыкального инструмента
-
-    :param effect: эффект инструмента
-    '''
-
-    effect = models.ForeignKey(
-        MusicInstrumentEffect, models.CASCADE, 'settings'
     )
 
 

@@ -1,51 +1,39 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block 'title' %}Профиль {{ user.username }}{% endblock %}
+{% block 'title' %}
+    {% if user == profile.user %}
+        Ваш профиль
+    {% else %}
+        Профиль {{ user.username }}
+    {% endif %}
+{% endblock %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'styles/trackCard.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
     <style>
-        h2 {
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-
         #account-img {
             display: block;
-            margin-left: auto;
-            margin-right: auto;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .tracksGrid {
-            display: flex;
-            justify-content: center;
-        }
-
-        .tracksGrid > * {
-            max-width: 200px;
-            margin: 5px;
-        }
-
-        div > #actions {
-            margin-top: 40px;
-            margin-bottom: 40px;
         }
     </style>
 {% endblock %}
 
 {% block 'body' %}
+    <div class="margin-top-5"></div>
     <h2 class="text-center">Профиль пользователя {{ profile.user }}</h2>
-    <img id="account-img" class="rounded-circle"
+    {% if user == profile.user %}
+        <h5 class="text-center text-secondary"><i>Это вы!</i></h5>
+    {% endif %}
+    <img id="account-img" class="rounded-circle margin-top-2 mx-auto"
         src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'img/default_avatar.jpg' %}{% endif %}"
         width="150px" height="150px">
     <br>
     {% if profile.status %}
-        <p class="text-secondary text-center">“{{ profile.status }}”</p>
+        <p class="text-secondary text-center quotes">{{ profile.status }}</p>
     {% endif %}
 
-    <div class="text-center">
+    <div class="text-center margin-top-2">
         <div id="actions" class="btn-group-vertical">
             {% if request.user == profile.user %}
                 <a class="btn btn-primary" href="{% url 'profile_edit' %}">
@@ -53,15 +41,19 @@
                 </a>
             {% endif %}
         </div>
+        <div class="margin-top-5"></div>
     </div>
 
     <div class="text-center">
         <b>Треки пользователя</b>
     </div>
     {% if tracks|length > 0 %}
-        <div class="tracksGrid mx-auto">
+        <div class="card-link-list card-link-list-center">
             {% for track in tracks %}
-                {% include 'track/card.html' %}
+                <a href="{% url 'track' id=track.id %}">
+                    <b class="card-title">{{ track.name }}</b>
+                    <i class="card-desc quotes">{{ track.desc }}</i>
+                </a>
             {% endfor %}
         </div>
     {% else %}
@@ -75,9 +67,12 @@
         <b>Лайки пользователя</b>
     </div>
     {% if likes|length > 0 %}
-        <div class="tracksGrid mx-auto">
+        <div class="card-link-list card-link-list-center">
             {% for track in likes %}
-                {% include 'track/card.html' %}
+                <a href="{% url 'track' id=track.id %}">
+                    <b class="card-title">{{ track.name }}</b>
+                    <i class="card-desc quotes">{{ track.desc }}</i>
+                </a>
             {% endfor %}
         </div>
     {% else %}

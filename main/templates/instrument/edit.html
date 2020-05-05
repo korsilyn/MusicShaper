@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block 'title' %}
+    Настройки инструмента
+{% endblock %}
+
+{% block 'head' %}
+    <script src="{% static 'libs/Tone.js' %}"></script>
+    {% include 'components/piano-keys.html' %}
+    <style>
+        label + input + label {
+            margin-top: 7px;
+        }
+
+        .card {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease-in;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center margin-top-5">
+        <h2>Настройки инструмента</h2>
+        <h3 class="quotes">{{ instrument.name }}</h3>
+        <h5 class="text-secondary">{{ instrument.type }}</h5>
+        <div class="margin-top-2"></div>
+        <a href="{% url 'instruments' id=project.id %}">Назад к списку инструментов</a> <br>
+        <a href="{% url 'manage_instrument' proj_id=project.id id=instrument.id %}"
+            class="btn btn-outline-primary" style="margin-top: 1em;">
+            Управление инструментом
+        </a>
+    </div>
+    <div class="margin-top-2"></div>
+    <div class="form-group mx-auto" style="max-width: 40%;">
+        <input id="octaveInput" type="number" min="2" max="7" class="form-control" placeholder="Октава (4)">
+    </div>
+    <piano-keys></piano-keys>
+    <form id="instrumentForm" method="POST" class="margin-top-2 mx-auto" style="max-width: 75%;">
+        {% csrf_token %}
+        {% for group, fields in form.grouped_fields.items %}
+            <div class="card form-group">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        {% if group != '.' %}
+                            {% trans group|capfirst %}
+                        {% else %}
+                            {% trans 'main'|capfirst %}
+                        {% endif %}
+                    </h6>
+                    {% for field in fields %}
+                        <label>{% trans field.label|capfirst %}</label> {{ field }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="margin-top-5 text-center">
+            <input id="submitBtn" type="submit" value="Сохранить изменения" class="btn btn-outline-success">
+        </div>
+    </form>
+    <div class="margin-top-10"></div>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        (function(){
+            const sbtn = document.getElementById('submitBtn');
+            const numberInputs = sbtn.form.querySelectorAll('input[type=number][step]');
+
+            const steps = new Map();
+            numberInputs.forEach(input => steps.set(input, input.step))
+
+            sbtn.onclick = function () {
+                numberInputs.forEach(input => input.step = 'any');
+            }
+
+            sbtn.form.addEventListener('invalid', function () {
+                numberInputs.forEach(input => input.step = steps.get(input))
+            }, true);
+        })();
+        (function(){
+            const piano = document.getElementsByTagName('piano-keys').item(0);
+            if (!(piano instanceof PianoKeys)) {
+                console.error('piano-keys tag is invalid or not found');
+                return;
+            }
+
+            const synth = piano.setSynth('{{ instrument.type }}').toMaster();
+
+            document.getElementById('octaveInput').addEventListener('change', function () {
+                if (this.value !== undefined) {
+                    piano.setAttribute('octave', Number(this.value));
+                }
+            });
+
+            const settingInputs = document.querySelectorAll('#instrumentForm .form-control[name]');
+
+            function onSettingChange() {
+                if (this.__destObj === undefined || this.__destKey === undefined) {
+                    const keys = this.name.slice(1).split('.');
+
+                    const search = (keyIndex, obj) => {
+                        const key = keys[keyIndex];
+                        if (obj[key] === undefined) {
+                            console.error(`invalid setting path '${this.name}'`);
+                            return null;
+                        }
+                        if (keyIndex == keys.length - 1) {
+                            return obj;
+                        }
+                        return search(keyIndex + 1, obj[key]);
+                    }
+
+                    this.__destObj = search(0, synth);
+                    if (this.__destObj === null) return;
+
+                    this.__destKey = keys[keys.length - 1];
+                    if (this.__destObj[this.__destKey].value !== undefined) {
+                        this.__destObj = this.__destObj[this.__destKey];
+                        this.__destKey = 'value';
+                    }
+                }
+
+                if (this.min !== undefined && Number(this.value) < Number(this.min)) {
+                    this.value = Number(this.min);
+                    console.log('min');
+                }
+
+                if (this.max !== undefined && Number(this.value) > Number(this.max)) {
+                    this.value = Number(this.max);
+                    console.log('max');
+                }
+
+                this.__destObj[this.__destKey] = this.value;
+            }
+
+            settingInputs.forEach(input => {
+                input.addEventListener('change', onSettingChange);
+                onSettingChange.call(input);
+            });
+        })();
+    </script>
+{% endblock %}

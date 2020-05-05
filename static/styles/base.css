@@ -26,3 +26,11 @@
     -webkit-user-select: none;
     -ms-user-select: none;
 }
+
+.quotes::before {
+    content: "“";
+}
+
+.quotes::after {
+    content: "”";
+}

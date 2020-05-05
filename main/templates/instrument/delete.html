@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Удаление инструмента
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center margin-top-20">
+        <h1>Удаление инструмента</h1>
+        <h2 class="quotes">{{ instrument.name }}</h2>
+    </div>
+    <form method="POST" class="text-center">
+        {% csrf_token %}
+        <p class="margin-top-5">
+            Это действие нельзя отменить. <br>
+            <small>Никак.</small>
+        </p>
+        <input type="submit" value="Удалить инструмент" class="btn btn-outline-danger margin-top-5"> <br>
+        <div class="margin-top-5"></div>
+        <a href="{% url 'manage_instrument' proj_id=project.id id=instrument.id %}" class="btn btn-outline-primary">
+            Назад к настройкам
+        </a>
+    </form>
+{% endblock %}
