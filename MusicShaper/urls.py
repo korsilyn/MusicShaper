@@ -46,4 +46,6 @@ urlpatterns = [
         views.delete_instrument, name='delete_instrument'),
     path('track/<int:id>', views.track_view, name='track'),
     path('search/', views.search_page, name='search'),
+    path('admin_home/create_test_track', views.create_test_track, name='create_test_track'),
+    path('admin_home/', views.admin_home, name='admin_home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
