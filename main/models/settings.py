@@ -51,6 +51,25 @@ class FloatSettingValue(SettingValue):
         return isinstance(value, (float, int)) and self.min <= value <= self.max
 
 
+class IntSettingValue(SettingValue):
+    '''
+    Числовое (int) поле настройки объекта
+    '''
+
+    def __init__(self, *, initial, min_v=None, max_v=None):
+        super().__init__(
+            _type='int',
+            initial=int(initial),
+            min=int(min_v) if min_v is not None else None,
+            max=int(max_v) if max_v is not None else None,
+        )
+
+    def validate_value(self, value):
+        min_v = self.min if self.min is not None else -inf
+        max_v = self.max if self.max is not None else inf
+        return isinstance(value, int) and min_v <= value <= max_v
+
+
 class ChoiceSettingValue(SettingValue):
     '''
     Поле настройки объекта с выбором значения

@@ -5,8 +5,9 @@
 на объявлени настроек объекта (`<model>.definition`)
 '''
 
-from django.forms import ModelForm, FloatField, NumberInput, ChoiceField, Select
-from ..models.settings import ModelWithSettings, SettingValue, FloatSettingValue, ChoiceSettingValue
+from django.forms import ModelForm, FloatField, IntegerField, NumberInput, ChoiceField, Select
+from ..models.settings import ModelWithSettings, SettingValue,\
+    IntSettingValue, FloatSettingValue, ChoiceSettingValue
 
 
 class SettingsModelForm(ModelForm):
@@ -35,6 +36,21 @@ class SettingsModelForm(ModelForm):
         )
 
     @staticmethod
+    def make_int_field(sname: str, setting: IntSettingValue):
+        '''
+        Возвращает IntegerField основываясь на `IntSettingValue`
+        '''
+
+        return IntegerField(
+            max_value=setting.max,
+            min_value=setting.min,
+            label=sname,
+            widget=NumberInput(attrs={
+                'class': 'form-control',
+            })
+        )
+
+    @staticmethod
     def make_choice_field(sname: str, setting: ChoiceSettingValue):
         '''
         Возвращает ChoiceField основываясь на `ChoiceSettingValue`
@@ -56,6 +72,7 @@ class SettingsModelForm(ModelForm):
 
         self.field_makers_map = {
             'float': self.make_float_field,
+            'int': self.make_int_field,
             'choice': self.make_choice_field
         }
 
