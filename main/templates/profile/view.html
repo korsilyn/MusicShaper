@@ -50,7 +50,7 @@
     {% if tracks|length > 0 %}
         <div class="card-link-list card-link-list-center">
             {% for track in tracks %}
-                <a href="{% url 'track' id=track.id %}">
+                <a href="{% url 'track' track_id=track.id %}">
                     <b class="card-title">{{ track.name }}</b>
                     <i class="card-desc quotes">{{ track.desc }}</i>
                 </a>
@@ -69,7 +69,7 @@
     {% if likes|length > 0 %}
         <div class="card-link-list card-link-list-center">
             {% for track in likes %}
-                <a href="{% url 'track' id=track.id %}">
+                <a href="{% url 'track' track_id=track.id %}">
                     <b class="card-title">{{ track.name }}</b>
                     <i class="card-desc quotes">{{ track.desc }}</i>
                 </a>

@@ -1,3 +1,7 @@
+'''
+Модуль формы `CreateTestTrack`
+'''
+
 from django import forms
 
 

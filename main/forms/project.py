@@ -1,4 +1,8 @@
-from django.forms import ModelForm, CharField, TextInput, Textarea
+'''
+Модуль формы редактирования проекта (имя, описание)
+'''
+
+from django.forms import ModelForm, TextInput, Textarea
 from ..models import MusicTrackProject
 
 

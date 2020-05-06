@@ -1,3 +1,7 @@
+'''
+Модуль моделей для проектов
+'''
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
@@ -39,7 +43,7 @@ class MusicInstrument(ModelWithSettings):
     def define(cls, definition_name, default_settings):
         if 'volume' not in default_settings:
             default_settings = {
-                'volume': FloatSettingValue(initial=-10.0, min=-20, max=5, step=0.5),
+                'volume': FloatSettingValue(initial=-10.0, min_v=-20, max_v=5, step=0.5),
                 **default_settings
             }
         return super().define(definition_name, default_settings)
@@ -85,12 +89,12 @@ class MusicNote(models.Model):
     '''
 
     NOTATION_CHOICES = [
-        (1,  'C'),  (2, 'C#'),
-        (3,  'D'),  (4, 'D#'),
-        (5,  'E'),
-        (6,  'F'),  (7,  'F#'),
-        (8,  'G'),  (9,  'G#'),
-        (10, 'A'),  (11, 'A#'),
+        (1, 'C'), (2, 'C#'),
+        (3, 'D'), (4, 'D#'),
+        (5, 'E'),
+        (6, 'F'), (7, 'F#'),
+        (8, 'G'), (9, 'G#'),
+        (10, 'A'), (11, 'A#'),
         (12, 'B'),
     ]
 

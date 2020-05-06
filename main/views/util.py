@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.contrib import messages
+'''
+Вспомогательный модуль для view-модулей
+'''
 
 
 def get_base_context(request, update=None):

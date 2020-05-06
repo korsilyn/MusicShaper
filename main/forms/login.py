@@ -1,3 +1,7 @@
+'''
+Модуль формы авторизации
+'''
+
 from django import forms
 
 
