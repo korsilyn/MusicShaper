@@ -2,7 +2,7 @@ from django.forms import ModelForm, CharField, TextInput, Textarea
 from ..models import MusicTrackProject
 
 
-class CreateProjectForm(ModelForm):
+class ProjectForm(ModelForm):
     '''
     Форма создания проекта
     '''
