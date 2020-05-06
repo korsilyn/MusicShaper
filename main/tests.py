@@ -1,3 +1,5 @@
-from django.test import TestCase
+'''
+Модуль тестирования (unittest) сайта
+'''
 
-# Create your tests here.
+# from django.test import TestCase

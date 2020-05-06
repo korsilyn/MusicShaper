@@ -17,12 +17,12 @@
             </tr>
         </thead>
         <tbody align="center">
-            {% for item in tracks %}
+            {% for track in tracks %}
                 <tr>
-                    <td><a href="{% url 'track' id=item.id %}">{{ item.name }}</a></td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.likes.count }}</td>
-                    <td>{{ item.count }}</td>
+                    <td><a href="{% url 'track' track_id=track.id %}">{{ track.name }}</a></td>
+                    <td>{{ track.desc }}</td>
+                    <td>{{ track.likes.count }}</td>
+                    <td>{{ track.count }}</td>
                 </tr>
             {% empty %}
                 <tr>

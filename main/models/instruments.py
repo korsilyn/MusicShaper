@@ -1,6 +1,9 @@
+'''
+Модуль объявления настроек музыкальных инструментов
+'''
+
 from .project import MusicInstrument
 from .settings import FloatSettingValue, ChoiceSettingValue
-from math import inf
 
 
 MusicInstrument.define('Synth', {
@@ -11,10 +14,10 @@ MusicInstrument.define('Synth', {
         )
     },
     'envelope': {
-        'attack':  FloatSettingValue(initial=0.005, min=0),
-        'decay':   FloatSettingValue(initial=0.1,   min=0),
-        'sustain': FloatSettingValue(initial=0.3,   min=0, max=1),
-        'release': FloatSettingValue(initial=1,     min=0.01),
+        'attack':  FloatSettingValue(initial=0.005, min_v=0),
+        'decay':   FloatSettingValue(initial=0.1, min_v=0),
+        'sustain': FloatSettingValue(initial=0.3, min_v=0, max_v=1),
+        'release': FloatSettingValue(initial=1, min_v=0.01),
     }
 })
 
@@ -27,15 +30,15 @@ MusicInstrument.define('NoiseSynth', {
         )
     },
     'envelope': {
-        'attack':  FloatSettingValue(initial=0.005, min=0),
-        'decay':   FloatSettingValue(initial=0.1, min=0),
-        'sustain': FloatSettingValue(initial=0, min=0, max=1),
+        'attack':  FloatSettingValue(initial=0.005, min_v=0),
+        'decay':   FloatSettingValue(initial=0.1, min_v=0),
+        'sustain': FloatSettingValue(initial=0, min_v=0, max_v=1),
     }
 })
 
 
 MusicInstrument.define('AMSynth', {
-    'harmonicity': FloatSettingValue(initial=3, min=0),
+    'harmonicity': FloatSettingValue(initial=3, min_v=0),
     'detune':      FloatSettingValue(initial=0, step=100),
     'oscillator': {
         'type': ChoiceSettingValue(
@@ -50,15 +53,15 @@ MusicInstrument.define('AMSynth', {
         )
     },
     'envelope': {
-        'attack':  FloatSettingValue(initial=0.01, min=0),
-        'decay':   FloatSettingValue(initial=0.01, min=0),
-        'sustain': FloatSettingValue(initial=1,    min=0, max=1),
-        'release': FloatSettingValue(initial=0.5,  min=0.01),
+        'attack':  FloatSettingValue(initial=0.01, min_v=0),
+        'decay':   FloatSettingValue(initial=0.01, min_v=0),
+        'sustain': FloatSettingValue(initial=1, min_v=0, max_v=1),
+        'release': FloatSettingValue(initial=0.5, min_v=0.01),
     },
     'modulationEnvelope': {
-        'attack':  FloatSettingValue(initial=0.5, min=0),
-        'decay':   FloatSettingValue(initial=0.0, min=0),
-        'sustain': FloatSettingValue(initial=1,   min=0, max=1),
-        'release': FloatSettingValue(initial=0.5, min=0.01),
+        'attack':  FloatSettingValue(initial=0.5, min_v=0),
+        'decay':   FloatSettingValue(initial=0.0, min_v=0),
+        'sustain': FloatSettingValue(initial=1, min_v=0, max_v=1),
+        'release': FloatSettingValue(initial=0.5, min_v=0.01),
     }
 })

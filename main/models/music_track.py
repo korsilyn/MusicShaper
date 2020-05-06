@@ -1,6 +1,11 @@
+'''
+Модуль моделей для музыкальных треков
+'''
+
 from django.db import models
 from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
+
 
 class TrackComment(models.Model):
     '''
@@ -55,7 +60,9 @@ class MusicTrack(models.Model):
         :rtype: dict
         '''
 
-        return model_to_dict(self, fields=('id', 'name', 'desc', 'author', 'creation_date', 'settings'))
+        return model_to_dict(self, fields=(
+            'id', 'name', 'desc', 'author', 'creation_date', 'settings'
+        ))
 
 
 class TrackSettings(models.Model):

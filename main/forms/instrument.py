@@ -1,3 +1,7 @@
+'''
+Модуль форм для музыкальных инструментов
+'''
+
 from django.forms import ModelForm, TextInput, Select
 from ..models import MusicInstrument
 
@@ -31,9 +35,10 @@ class MusicInstrumentForm(ModelForm):
         choices = [(type, type) for type in MusicInstrument.DEFINITIONS]
         self.fields['type'].widget.choices = choices
 
-    def save(self, *args, **kwargs):
+    def save(self, commit=True):
         instrument = super().save(commit=False)
         if instrument.pk and 'type' in self.changed_data:
             instrument.reset()
-        instrument.save(*args, **kwargs)
+        if commit:
+            instrument.save()
         return instrument

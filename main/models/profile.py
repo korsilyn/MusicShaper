@@ -1,6 +1,11 @@
+'''
+Модуль модели профиля пользователя
+'''
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+
 
 class Profile(models.Model):
     '''
@@ -33,6 +38,11 @@ class Profile(models.Model):
 
 
 def create_profile(sender, **kwargs):
+    '''
+    Обработчик сигнала, который срабатывает при создании
+    модели User (нужно для автоматической связи User и Profile)
+    '''
+
     if kwargs['created']:
         Profile.objects.create(user=kwargs['instance'])
 

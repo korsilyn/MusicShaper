@@ -17,7 +17,7 @@
         </p>
         <input type="submit" value="Удалить инструмент" class="btn btn-outline-danger margin-top-5"> <br>
         <div class="margin-top-5"></div>
-        <a href="{% url 'manage_instrument' proj_id=project.id id=instrument.id %}" class="btn btn-outline-primary">
+        <a href="{% url 'manage_instrument' proj_id=project.id instr_id=instrument.id %}" class="btn btn-outline-primary">
             Назад к настройкам
         </a>
     </form>

@@ -125,7 +125,7 @@
         }
 
         function getTrackElementHTML(track) {
-            const trackUrl = "{% url 'track' id=0 %}".replace('/0', '/' + track.id);
+            const trackUrl = "{% url 'track' track_id=0 %}".replace('/0', '/' + track.id);
             return `<b class="track-link"><a href="${trackUrl}">${track.name}</a></b><br>
             <i class="quotes">${track.desc}</i>`;
         }

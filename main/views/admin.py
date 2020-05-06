@@ -1,9 +1,14 @@
-from .util import render, get_base_context, redirect
+'''
+Модуль view-функций для вкладки `Администрация`
+'''
+
+from datetime import datetime
+from django.shortcuts import render, redirect
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import user_passes_test, login_required
+from .util import get_base_context
 from ..forms import CreateTestTrack
 from ..models import MusicTrack, TrackSettings
-from datetime import datetime
 
 
 superuser_check = lambda u: u.is_superuser
@@ -53,9 +58,8 @@ def create_test_track(request):
                 allow_comments=allow_comments,
             )
             add_message(request, SUCCESS, 'Трек успешно создан')
-            return redirect('track', id=track.id)
-        else:
-            add_message(request, ERROR, 'Некорректные данные формы')
+            return redirect('track', track_id=track.id)
+        add_message(request, ERROR, 'Некорректные данные формы')
     else:
         form = CreateTestTrack()
 

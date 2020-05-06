@@ -9,7 +9,7 @@
         <h2>Управление инструментом</h2>
         <h3 class="quotes">{{ instrument.name }}</h3>
         <h5 class="text-secondary">{{ instrument.type }}</h5>
-        <a href="{% url 'edit_instrument' proj_id=project.id id=instrument.id %}">Назад к настройкам</a>
+        <a href="{% url 'edit_instrument' proj_id=project.id instr_id=instrument.id %}">Назад к настройкам</a>
     </div>
     <form method="POST" style="max-width: 45%;" class="mx-auto margin-top-2">
         {% csrf_token %}
@@ -23,7 +23,7 @@
             <smal class="text-secondary">Изменение типа инструмента сбросит его текущие настройки</small> <br>
             <input type="submit" value="Сохранить изменения" class="btn btn-outline-success margin-top-10">
             <div class="margin-top-10"></div>
-            <a href="{% url 'delete_instrument' proj_id=project.id id=instrument.id %}"
+            <a href="{% url 'delete_instrument' proj_id=project.id instr_id=instrument.id %}"
                 class="btn btn-outline-danger">
                 Удалить инструмент
             </a>
