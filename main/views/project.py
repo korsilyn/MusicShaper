@@ -143,15 +143,3 @@ def delete_project(request, id: int):
     })
 
     return render(request, 'project/delete.html', context)
-
-
-def editor(request):
-    '''
-    Страница редактора мелодии
-
-    :param request: запрос клиента
-    :return: страница редактора мелодии
-    :rtype: HttpResponse
-    '''
-
-    return render(request, 'pattern/editor.html', get_base_context(request))
