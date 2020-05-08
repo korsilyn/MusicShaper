@@ -1,8 +1,14 @@
-from .util import render, redirect, get_base_context, get_object_or_404, messages
+'''
+Модуль view-функций для профиля пользователя
+'''
+
+from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
+from .util import get_base_context
 from ..models import Profile, MusicTrack
 
 
@@ -43,6 +49,7 @@ def profile_edit_page(request):
     '''
 
     profile = get_object_or_404(Profile, user=request.user)
+
     if request.method == 'POST':
         status = request.POST.get('status', '')
         image = request.FILES.get('image', None)
@@ -54,14 +61,13 @@ def profile_edit_page(request):
             profile.image = image
 
         profile.save()
-        messages.add_message(request, messages.SUCCESS,
-                             'Профиль успешно обновлён')
+        add_message(request, SUCCESS, 'Профиль успешно обновлён')
         return redirect('profile')
-    else:
-        context = get_base_context(request, {
-            'profile': profile
-        })
-        return render(request, 'profile/edit.html', context)
+
+    context = get_base_context(request, {
+        'profile': profile
+    })
+    return render(request, 'profile/edit.html', context)
 
 
 @login_required
@@ -76,24 +82,20 @@ def change_password(request):
 
     if request.method == 'POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)
-
         if form.is_valid():
             form.save()
             update_session_auth_hash(request, form.user)
-            messages.add_message(request, messages.SUCCESS,
-                                 'Пароль успешно изменён')
+            add_message(request, SUCCESS, 'Пароль успешно изменён')
             return redirect('profile')
-        else:
-            messages.add_message(request, messages.ERROR,
-                                 'Некорректные данные формы')
-            return render(request, 'profile/change_password.html', {
-                'form': form
-            })
-    else:
-        context = get_base_context(request, {
-            'form': PasswordChangeForm(user=request.user)
+        add_message(request, ERROR, 'Некорректные данные формы')
+        return render(request, 'profile/change_password.html', {
+            'form': form
         })
-        return render(request, 'profile/change_password.html', context)
+
+    context = get_base_context(request, {
+        'form': PasswordChangeForm(user=request.user)
+    })
+    return render(request, 'profile/change_password.html', context)
 
 
 @login_required
@@ -110,8 +112,14 @@ def delete_avatar(request):
 
     if request.method == 'POST':
         profile.image.delete(save=True)
-        messages.add_message(request, messages.SUCCESS,
-                             'Аватар успешно удалён')
+        add_message(request, SUCCESS, 'Аватар успешно удалён')
         return redirect('profile')
 
-    return render(request, 'profile/delete_avatar.html')
+    context = get_base_context(request, {
+        'title': 'Удаление аватара',
+        'confirm_title': 'Удалить аватар',
+        'cancel_title': 'Назад к настройкам',
+        'cancel_url': reverse('profile_edit'),
+    })
+
+    return render(request, 'delete.html', context)

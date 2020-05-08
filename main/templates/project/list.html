@@ -26,7 +26,7 @@
     <h1 class="text-center">Список ваших проектов</h1>
     <div class="card-link-list card-link-list-center margin-top-2">
         {% for p in projects %}
-            <a href="{% url 'project_home' id=p.id %}">
+            <a href="{% url 'project_home' proj_id=p.id %}">
                 <b class="card-title">{{ p.name }}</b>
                 <i class="card-desc quotes">{{ p.desc }}</i>
             </a>

@@ -1,21 +1,27 @@
-from .util import render, redirect, get_base_context, get_object_or_404, JsonResponse
+'''
+Модуль view-функций для проектов
+'''
+
+from datetime import datetime
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
+from .util import get_base_context
 from ..models import MusicTrackProject
-from ..forms import CreateProjectForm
-from datetime import datetime
+from ..forms import ProjectForm
 
 
-def get_project_or_404(request, id: int):
+def get_project_or_404(request, proj_id: int):
     '''
     Возвращает проект с нужным id + проверка на автора
 
     :param request: запрос клиента
-    :param id: id проека в базе данных
+    :param proj_id: id проека в базе данных
     :rtype: MusicTrackProject
     '''
 
-    project = get_object_or_404(MusicTrackProject, pk=id)
+    project = get_object_or_404(MusicTrackProject, pk=proj_id)
     if project.author != request.user:
         raise Http404
 
@@ -33,18 +39,14 @@ def new_project(request):
     '''
 
     if request.method == 'POST':
-        form = CreateProjectForm(request.POST)
+        form = ProjectForm(request.user, request.POST)
         if form.is_valid():
-            project = form.save(commit=False)
-            project.author = request.user
-            project.creation_date = datetime.now()
-            project.save()
+            project = form.save()
             add_message(request, SUCCESS, 'Проект успешно создан')
-            return redirect('project_home', id=project.id)
-        else:
-            add_message(request, ERROR, 'Некорректные данные формы')
+            return redirect('project_home', proj_id=project.id)
+        add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = CreateProjectForm()
+        form = ProjectForm(request.user)
 
     context = get_base_context(request, {
         'form': form
@@ -71,17 +73,17 @@ def projects_list(request):
 
 
 @login_required
-def project_home(request, id: int):
+def project_home(request, proj_id: int):
     '''
     Главная страница проекта
 
     :param request: запрос клиента
-    :param id: id проекта в базе данных
+    :param proj_id: id проекта в базе данных
     :return: главная страница проекта
     :rtype: HttpResponse
     '''
 
-    project = get_project_or_404(request, id)
+    project = get_project_or_404(request, proj_id)
 
     context = get_base_context(request, {
         'project': project
@@ -90,13 +92,61 @@ def project_home(request, id: int):
     return render(request, 'project/home.html', context)
 
 
-def editor(request):
+@login_required
+def manage_project(request, proj_id: int):
     '''
-    Страница редактора мелодии
+    Страница управления проектом
 
     :param request: запрос клиента
-    :return: страница редактора мелодии
+    :param proj_id: id проекта в БД
     :rtype: HttpResponse
     '''
 
-    return render(request, 'pattern/editor.html', get_base_context(request))
+    project = get_project_or_404(request, proj_id)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.user, instance=project, data=request.POST)
+        if form.is_valid():
+            form.save()
+            add_message(request, SUCCESS, 'Изменения успешно сохранены')
+            return redirect('project_home', proj_id=proj_id)
+        add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = ProjectForm(request.user, instance=project)
+
+    context = get_base_context(request, {
+        'project': project,
+        'form': form,
+    })
+
+    return render(request, 'project/manage.html', context)
+
+
+@login_required
+def delete_project(request, proj_id: int):
+    '''
+    Страница удаления проекта
+
+    :param request: запрос клиента
+    :param proj_id: id проекта в БД
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, proj_id)
+
+    if request.method == 'POST':
+        project.delete()
+        add_message(request, SUCCESS, 'Проект успешно удалён')
+        return redirect('projects')
+
+    context = get_base_context(request, {
+        'title': 'Удаление проекта',
+        'item_name': project.name,
+        'confirm_title': 'Удалить проект',
+        'cancel_title': 'Назад к настройкам',
+        'cancel_url': reverse('manage_project', kwargs={
+            'proj_id': project.pk
+        })
+    })
+
+    return render(request, 'delete.html', context)

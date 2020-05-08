@@ -1,29 +1,49 @@
-from django.db import models
-from abc import ABC, abstractmethod
-from jsonfield import JSONField
-from typing import List
+'''
+Модуль абстрактной модели ModelWithSettings
+
+Модель нужна для эффективного хранения различных настроект
+моделей в базе данных
+
+От этой модели наследуются музыкальные инструменты и эффекты
+'''
+
 from math import inf
+from abc import ABC, abstractmethod
+from django.db import models
+from jsonfield import JSONField
 
 
 class SettingValue(ABC):
-    def __init__(self, *, type, initial, **values):
-        self.type = type
+    '''
+    Абстрактный класс поля настройки объекта
+    '''
+
+    def __init__(self, *, _type, initial, **values):
+        self.type = _type
         self.initial = initial
-        for k, v in values.items():
-            setattr(self, k, v)
+        for key, value in values.items():
+            setattr(self, key, value)
 
     @abstractmethod
     def validate_value(self, value) -> bool:
-        pass
+        '''
+        Абстрактный метод, проверяющий значение `value`
+
+        :param value: значение для проверки
+        '''
 
 
 class FloatSettingValue(SettingValue):
-    def __init__(self, *, initial, min=-inf, max=inf, step=0.1):
+    '''
+    Числовое (float) поле настройки объекта
+    '''
+
+    def __init__(self, *, initial, min_v=-inf, max_v=inf, step=0.1):
         super().__init__(
-            type='float',
+            _type='float',
             initial=float(initial),
-            min=float(min),
-            max=float(max),
+            min=float(min_v),
+            max=float(max_v),
             step=float(step),
         )
 
@@ -31,12 +51,35 @@ class FloatSettingValue(SettingValue):
         return isinstance(value, (float, int)) and self.min <= value <= self.max
 
 
+class IntSettingValue(SettingValue):
+    '''
+    Числовое (int) поле настройки объекта
+    '''
+
+    def __init__(self, *, initial, min_v=None, max_v=None):
+        super().__init__(
+            _type='int',
+            initial=int(initial),
+            min=int(min_v) if min_v is not None else None,
+            max=int(max_v) if max_v is not None else None,
+        )
+
+    def validate_value(self, value):
+        min_v = self.min if self.min is not None else -inf
+        max_v = self.max if self.max is not None else inf
+        return isinstance(value, int) and min_v <= value <= max_v
+
+
 class ChoiceSettingValue(SettingValue):
+    '''
+    Поле настройки объекта с выбором значения
+    '''
+
     def __init__(self, *, initial, choices):
         if initial not in choices:
             raise ValueError(f'initial \'{initial}\' not found in choices')
         super().__init__(
-            type='choice',
+            _type='choice',
             initial=initial,
             choices=choices,
         )
@@ -60,6 +103,8 @@ class ModelWithSettings(models.Model):
 
     type = models.CharField(max_length=25)
     json_settings = JSONField()
+
+    DEFINITIONS = dict()
 
     def __init_subclass__(cls):
         super().__init_subclass__()
@@ -91,6 +136,11 @@ class ModelWithSettings(models.Model):
 
     @property
     def definition(self):
+        '''
+        Сокращение для быстрого доступа к текущему
+        объявлению настроек объекта
+        '''
+
         return self.DEFINITIONS[self.type]
 
     def reset(self):
@@ -101,17 +151,32 @@ class ModelWithSettings(models.Model):
         self.json_settings.clear()
 
     def get_settings_recursive(self, definition, json_settings):
+        '''
+        Рекурсивно возвращает словарь настроек
+
+        :param definition: текущий словарь объявления
+        :param json_settings: текущий словарь с настройками
+        '''
+
         for sname, vdef in definition.items():
             if isinstance(vdef, dict):
-                yield sname, dict(self.get_settings_recursive(vdef, json_settings.get(sname, dict())))
+                value = json_settings.get(sname, dict())
+                yield sname, dict(self.get_settings_recursive(vdef, value))
             elif not isinstance(vdef, SettingValue):
                 raise ValueError(f'invalid setting definition {sname}')
             else:
                 yield sname, json_settings.get(sname, vdef.initial)
 
     def get_settings_generator(self):
+        '''
+        Возвращает текущие настройки объекта (генератор)
+        '''
+
         self.assert_type()
         yield from self.get_settings_recursive(self.definition, self.json_settings)
 
     def get_settings(self):
+        '''
+        Возвращает текущие настройки объекта
+        '''
         return dict(self.get_settings_generator())

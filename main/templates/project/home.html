@@ -4,22 +4,30 @@
     Проект {{ project.name }}
 {% endblock %}
 
-{% block 'head' %}
-    <style>
-        .block {
-            margin-top: 10%;
-        }
-    </style>
-{% endblock %}
-
 {% block 'body' %}
-    <div class="block text-center">
-        <h1>Проект {{ project.name }}</h1>
-        <h5 class="text-secondary quotes">{{ project.desc }}</h5>
+    <div class="text-center margin-top-10">
+        <h1>Проект</h1>
+        <h2 class="quotes">{{ project.name }}</h2>
+        <h5 class="text-secondary quotes margin-top-2 mx-auto" style="max-width: 45%;">{{ project.desc }}</h5>
+        <div class="margin-top-2"></div>
         <a href="{% url 'projects' %}">Назад к списку проектов</a>
     </div>
-    <div class="block text-center">
-        <a class="btn btn-secondary" href="{% url 'instruments' id=project.id %}">
+    <div class="text-center margin-top-2">
+        <a class="btn btn-outline-primary" href="{% url 'manage_project' proj_id=project.id %}">
+            Управление проектом
+        </a>
+    </div>
+    <div class="text-center margin-top-10">
+        {% if not project.instruments %}
+            <p>
+                В проекте ещё нет музыкальных инструментов, <br>
+                а без них сложно будет трек сделать
+            </p>
+            <a class="btn btn-outline-primary" href="{% url 'new_instrument' proj_id=project.id %}">
+                Создать первый инструмент
+            </a>
+        {% endif %}
+        <a class="btn btn-secondary" href="{% url 'instruments' proj_id=project.id %}">
             Музыкальные инструменты
         </a>
     </div>

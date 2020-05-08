@@ -1,8 +1,19 @@
-from django.forms import ModelForm, FloatField, NumberInput, ChoiceField, Select
-from ..models.settings import ModelWithSettings, SettingValue, FloatSettingValue, ChoiceSettingValue
+'''
+Модуль формы для модели `ModelWithSettings`
+
+Это динамическая форма, генерирующая свои поля основываясь
+на объявлени настроек объекта (`<model>.definition`)
+'''
+
+from django.forms import ModelForm, FloatField, IntegerField, NumberInput, ChoiceField, Select
+from ..models.settings import ModelWithSettings, SettingValue,\
+    IntSettingValue, FloatSettingValue, ChoiceSettingValue
 
 
 class SettingsModelForm(ModelForm):
+    '''
+    Форма редактирования настроект модели `ModelWithSettings`
+    '''
 
     class Meta:
         model = ModelWithSettings
@@ -10,6 +21,10 @@ class SettingsModelForm(ModelForm):
 
     @staticmethod
     def make_float_field(sname: str, setting: FloatSettingValue):
+        '''
+        Возвращает FloatField основываясь на `FloatSettingValue`
+        '''
+
         return FloatField(
             max_value=setting.max,
             min_value=setting.min,
@@ -21,7 +36,26 @@ class SettingsModelForm(ModelForm):
         )
 
     @staticmethod
+    def make_int_field(sname: str, setting: IntSettingValue):
+        '''
+        Возвращает IntegerField основываясь на `IntSettingValue`
+        '''
+
+        return IntegerField(
+            max_value=setting.max,
+            min_value=setting.min,
+            label=sname,
+            widget=NumberInput(attrs={
+                'class': 'form-control',
+            })
+        )
+
+    @staticmethod
     def make_choice_field(sname: str, setting: ChoiceSettingValue):
+        '''
+        Возвращает ChoiceField основываясь на `ChoiceSettingValue`
+        '''
+
         return ChoiceField(
             label=sname,
             choices=list(zip(setting.choices, setting.choices)),
@@ -38,6 +72,7 @@ class SettingsModelForm(ModelForm):
 
         self.field_makers_map = {
             'float': self.make_float_field,
+            'int': self.make_int_field,
             'choice': self.make_choice_field
         }
 
@@ -47,6 +82,11 @@ class SettingsModelForm(ModelForm):
             raise ValueError('invalid instrument type')
 
     def grouped_fields(self):
+        '''
+        Возвращает словарь полей, в котором все поля
+        объеденены по свойству `group`
+        '''
+
         groups = dict()
         visible_fields = self.visible_fields()
         for bound in visible_fields:
@@ -54,27 +94,35 @@ class SettingsModelForm(ModelForm):
         return groups
 
     def generate_fields(self, definition, settings, path=''):
-        ipath = path
-        for sname, d in definition.items():
-            v = settings[sname]
-            path = ipath + '.' + sname
-            if isinstance(v, dict):
-                self.generate_fields(d, v, path)
-            elif not isinstance(d, SettingValue):
-                raise ValueError(f'invalid definition value: {d}')
-            else:
-                make_f = self.field_makers_map.get(d.type, None)
-                if make_f is None:
-                    raise ValueError(f'unsupported setting value {d.type}')
+        '''
+        Рекурсивно генерирует поля формы
 
-                field = make_f(sname, d)
+        :param definition: текущий словарь объявления настроек
+        :param settings: текущий словрь с настройками
+        :param path: 'путь' до настройки (нужно для аттрибута name в html)
+        '''
+
+        ipath = path
+        for sname, vdef in definition.items():
+            val = settings[sname]
+            path = ipath + '.' + sname
+            if isinstance(val, dict):
+                self.generate_fields(vdef, val, path)
+            elif not isinstance(vdef, SettingValue):
+                raise ValueError(f'invalid definition value: {vdef}')
+            else:
+                make_f = self.field_makers_map.get(vdef.type, None)
+                if make_f is None:
+                    raise ValueError(f'unsupported setting value {vdef.type}')
+
+                field = make_f(sname, vdef)
                 field.required = False
                 group = path.split('.')[-2] or '.'
                 field.group = group
                 self.fields[path] = field
-                self.initial[path] = v
+                self.initial[path] = val
 
-    def save(self, *args, **kwargs):
+    def save(self, commit=True):
         instance = super().save(commit=False)
         definition = instance.definition
 
@@ -107,5 +155,6 @@ class SettingsModelForm(ModelForm):
                     s_dict = s_dict.setdefault(key, dict())
                 s_dict[keys[-1]] = value
 
-        instance.save(*args, **kwargs)
+        if commit:
+            instance.save()
         return instance
