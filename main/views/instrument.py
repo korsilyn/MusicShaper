@@ -2,7 +2,7 @@
 Модуль view-функций для музыкальных инструментов
 '''
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from .util import get_base_context
@@ -165,7 +165,14 @@ def delete_instrument(request, proj_id: int, instr_id: int):
 
     context = get_base_context(request, {
         'project': project,
-        'instrument': instrument,
+        'title': 'Удаление инструмента',
+        'item_name': instrument.name,
+        'confirm_title': 'Удалить инструмент',
+        'cancel_title': 'Назад к настройкам',
+        'cancel_url': reverse('manage_instrument', kwargs={
+            'proj_id': project.pk,
+            'instr_id': instrument.pk
+        })
     })
 
-    return render(request, 'instrument/delete.html', context)
+    return render(request, 'delete.html', context)

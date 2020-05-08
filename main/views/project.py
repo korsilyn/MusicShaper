@@ -3,7 +3,7 @@
 '''
 
 from datetime import datetime
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -39,17 +39,14 @@ def new_project(request):
     '''
 
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.user, request.POST)
         if form.is_valid():
-            project = form.save(commit=False)
-            project.author = request.user
-            project.creation_date = datetime.now()
-            project.save()
+            project = form.save()
             add_message(request, SUCCESS, 'Проект успешно создан')
             return redirect('project_home', proj_id=project.id)
         add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = ProjectForm()
+        form = ProjectForm(request.user)
 
     context = get_base_context(request, {
         'form': form
@@ -108,14 +105,14 @@ def manage_project(request, proj_id: int):
     project = get_project_or_404(request, proj_id)
 
     if request.method == 'POST':
-        form = ProjectForm(instance=project, data=request.POST)
+        form = ProjectForm(request.user, instance=project, data=request.POST)
         if form.is_valid():
             form.save()
             add_message(request, SUCCESS, 'Изменения успешно сохранены')
             return redirect('project_home', proj_id=proj_id)
         add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = ProjectForm(instance=project)
+        form = ProjectForm(request.user, instance=project)
 
     context = get_base_context(request, {
         'project': project,
@@ -143,7 +140,13 @@ def delete_project(request, proj_id: int):
         return redirect('projects')
 
     context = get_base_context(request, {
-        'project': project
+        'title': 'Удаление проекта',
+        'item_name': project.name,
+        'confirm_title': 'Удалить проект',
+        'cancel_title': 'Назад к настройкам',
+        'cancel_url': reverse('manage_project', kwargs={
+            'proj_id': project.pk
+        })
     })
 
-    return render(request, 'project/delete.html', context)
+    return render(request, 'delete.html', context)
