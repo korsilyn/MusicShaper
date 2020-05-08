@@ -22,7 +22,7 @@
     border-radius: 14px;
     color: black;
     text-decoration: none;
-    background-color: white;
+    background-color: var(--bg-secondary);
     box-shadow: 0 0 8px rgba(10, 10, 10, 0.2);
     transition-property: background-color, border-radius;
     transition-duration: 0.2s, 0.1s;
@@ -35,7 +35,7 @@
 }
 
 .card-link-list a:hover {
-    background-color: rgb(245, 245, 245);
+    background-color: hsl(var(--bg-secondary), 30%);
     border-radius: 20px;
 }
 
@@ -46,6 +46,7 @@
     width: 100%;
     left: 0;
     top: calc(50% - 2em);
+    color: var(--text);
 }
 
 .card-link-list a .card-title-center {
@@ -54,5 +55,5 @@
 
 .card-link-list a .card-desc {
     top: 50%;
-    color: var(--secondary);
+    color: var(--text-secondary);
 }

@@ -188,6 +188,11 @@
             </li>
             {% endif %}
             <div class="nav-item-bottom">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="themeBtn">
+                        <span class="link-text">Цветовая тема</span>
+                    </a>
+                </li>
                 {% if user.is_authenticated %}
                     {% if user.is_superuser %}
                         <li class="nav-item">
@@ -242,7 +247,24 @@
                 if (this.opened && !this.nav.contains(relatedTarget)) {
                     this.close();
                 }
-            })
+            });
+
+            let theme = localStorage.getItem('theme');
+            if (theme) {
+                document.body.classList.add(theme);
+            }
+            else {
+                theme = 'light';
+            }
+
+            const getOppositeTheme = () => theme == 'light' ? 'dark' : 'light';
+
+            this.shadowRoot.querySelector('#themeBtn').addEventListener('click', () => {
+                const newTheme = getOppositeTheme();
+                document.body.classList.replace(theme, newTheme);
+                theme = newTheme;
+                localStorage.setItem('theme', newTheme);
+            });
         }
 
         get opened() {

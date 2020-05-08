@@ -43,28 +43,24 @@
             placeholder='Поисковой запрос' required>
     </div>
     <div id="searchSettings" class="card mx-auto">
-        <div class="card-header">
-            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSettings">
+        <div class="card-body">
+            <h5 class="card-title">
                 Настройки поиска
-            </button>
-        </div>
-        <div id="collapseSettings" class="collapse">
-            <div class="card-body">
-                <label>Искать</label>
-                <select id="resultType" class="form-control">
-                    <option value="track" selected>Треки</option>
-                    <option value="user">Пользователей</option>
-                </select>
-                <br>
-                <label>Сортировать по</label>
-                <select id="sortBy" class="form-control">
-                    <option value="relevant" selected>Релевантности</option>
-                    <option value="popularity">Популярности</option>
-                    <option value="likes">Лайкам</option>
-                    <option value="new">Сначала новое</option>
-                    <option value="old">Сначала старое</option>
-                </select>
-            </div>
+            </h5>
+            <label>Искать</label>
+            <select id="resultType" class="form-control">
+                <option value="track" selected>Треки</option>
+                <option value="user">Пользователей</option>
+            </select>
+            <br>
+            <label>Сортировать по</label>
+            <select id="sortBy" class="form-control">
+                <option value="relevant" selected>Релевантности</option>
+                <option value="popularity">Популярности</option>
+                <option value="likes">Лайкам</option>
+                <option value="new">Сначала новое</option>
+                <option value="old">Сначала старое</option>
+            </select>
         </div>
     </div>
     <div class="text-center">
