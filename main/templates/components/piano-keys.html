@@ -145,7 +145,7 @@
             const hasNote = !(this.piano.synth instanceof Tone.NoiseSynth);
             const note = hasNote ? this.note : undefined;
             if (!this.piano.isPlaying || this.piano.lastKey != this) {
-                if (!this.piano.isPlaying || !hasNote) {
+                if (!this.piano.isPlaying || !hasNote || !this.piano.synth.setNote) {
                     this.piano.synth.triggerAttack(note);
                 }
                 else {

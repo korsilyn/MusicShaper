@@ -2,7 +2,7 @@
 Модуль view-функций для профиля пользователя
 '''
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -115,4 +115,11 @@ def delete_avatar(request):
         add_message(request, SUCCESS, 'Аватар успешно удалён')
         return redirect('profile')
 
-    return render(request, 'profile/delete_avatar.html')
+    context = get_base_context(request, {
+        'title': 'Удаление аватара',
+        'confirm_title': 'Удалить аватар',
+        'cancel_title': 'Назад к настройкам',
+        'cancel_url': reverse('profile_edit'),
+    })
+
+    return render(request, 'delete.html', context)

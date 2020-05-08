@@ -3,7 +3,7 @@
 '''
 
 from .project import MusicInstrument
-from .settings import FloatSettingValue, ChoiceSettingValue
+from .settings import IntSettingValue, FloatSettingValue, ChoiceSettingValue
 
 
 MusicInstrument.define('Synth', {
@@ -64,4 +64,53 @@ MusicInstrument.define('AMSynth', {
         'sustain': FloatSettingValue(initial=1, min_v=0, max_v=1),
         'release': FloatSettingValue(initial=0.5, min_v=0.01),
     }
+})
+
+
+MusicInstrument.define('PluckSynth', {
+    'attackNoise': FloatSettingValue(initial=1, min_v=0.1, max_v=20),
+    'dampening': FloatSettingValue(initial=4000, min_v=0, step=100),
+    'resonance': FloatSettingValue(initial=0.7, min_v=0, max_v=0.99),
+})
+
+
+MusicInstrument.define('MonoSynth', {
+    'frequency': FloatSettingValue(initial=261, min_v=0, step=100),
+    'detune': FloatSettingValue(initial=0, step=10),
+    'oscillator': {
+        'type': ChoiceSettingValue(
+            initial='sine',
+            choices=['sine', 'square', 'triangle', 'sawtooth']
+        )
+    },
+    'filter': {
+        'Q': FloatSettingValue(initial=6, min_v=0),
+        'type': ChoiceSettingValue(
+            initial='lowpass',
+            choices=[
+                "lowpass", "highpass", "bandpass",
+                "lowshelf", "highshelf", "notch",
+                "allpass", "peaking",
+            ]
+        ),
+        'rolloff': ChoiceSettingValue(
+            initial=-24,
+            choices=[-12, -24, -48, -96]
+        )
+    },
+    'envelope': {
+        'attack':  FloatSettingValue(initial=0.005, min_v=0),
+        'decay':   FloatSettingValue(initial=0.1, min_v=0),
+        'sustain': FloatSettingValue(initial=0.9, min_v=0, max_v=1),
+        'release': FloatSettingValue(initial=1, min_v=0.01),
+    },
+    'filterEnvelope': {
+        'attack':  FloatSettingValue(initial=0.06, min_v=0),
+        'decay':   FloatSettingValue(initial=0.2, min_v=0),
+        'sustain': FloatSettingValue(initial=0.5, min_v=0, max_v=1),
+        'release': FloatSettingValue(initial=2, min_v=0.01),
+        'baseFrequency': FloatSettingValue(initial=200, min_v=0, step=100),
+        'octaves': FloatSettingValue(initial=7, min_v=0),
+        'exponent': FloatSettingValue(initial=2),
+    },
 })
