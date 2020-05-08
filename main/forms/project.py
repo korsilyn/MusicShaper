@@ -3,7 +3,7 @@
 '''
 
 from django.forms import ModelForm, TextInput, Textarea
-from ..models import MusicTrackProject
+from ..models import MusicTrackProject, TrackProjectSettings
 
 
 class ProjectForm(ModelForm):
@@ -33,3 +33,14 @@ class ProjectForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['desc'].required = False
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        TrackProjectSettings.objects.create(
+            project=instance,
+            duration=256,
+            bpm=120,
+        )
+        if commit:
+            instance.save()
+        return instance
