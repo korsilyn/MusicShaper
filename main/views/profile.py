@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from .util import get_base_context
 from ..models import Profile, MusicTrack
 
@@ -26,6 +27,9 @@ def profile_page(request):
         user = get_object_or_404(User, username=username)
     else:
         user = request.user
+
+    if user.is_anonymous:
+        return redirect('login')
 
     profile = get_object_or_404(Profile, user=user)
 
