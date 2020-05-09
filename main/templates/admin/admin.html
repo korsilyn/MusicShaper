@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Администрация
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center margin-top-10">
+        <div class="block">
+            <h2>Панель администрации</h2>
+            <br>
+                <a class="btn btn-primary" href="{% url 'create_test_track' %}">
+                    Создать пробный трек
+                </a>
+            <br>
+            <br>
+                <a class="btn btn-info" href="{% url 'admin:index' %}">
+                    Django-admin
+                </a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,3 +1,7 @@
+'''
+Модуль тестирования (unittest) сайта
+'''
+
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -8,7 +12,6 @@ print('rabotaet')
 class LoginTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-
 
     def check_if_loads(self, url):
         response = self.client.get(reverse(url))

@@ -1,20 +1,26 @@
-from .util import render, get_base_context, JsonResponse
-from django.contrib.auth.models import User
-from ..models import MusicTrack, user_to_dict
+'''
+Модуль view-функций для поиска
+'''
+
 from difflib import SequenceMatcher
 from operator import itemgetter
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.http.response import HttpResponseBadRequest, JsonResponse
+from .util import get_base_context
+from ..models import MusicTrack, user_to_dict
 
 
-def similar(a, b):
+def similar(first, second):
     '''
-    Возвращает число, показывающее на сколько похожи последовательности a и b
+    Возвращает число, показывающее на сколько похожи последовательности first и second
 
-    :param a: первая последовательность
-    :param b: второе последовательность
+    :param first: первая последовательность
+    :param second: второе последовательность
     :return: число от 0 до 1
     '''
 
-    return SequenceMatcher(None, a, b).ratio()
+    return SequenceMatcher(None, first, second).ratio()
 
 
 def filter_similar(items, comp_value, threshold, key=None):
@@ -32,7 +38,8 @@ def filter_similar(items, comp_value, threshold, key=None):
     '''
 
     if key is None:
-        def key(item): return item
+        def key(item):
+            return item
 
     for item in items:
         similarity = similar(key(item), comp_value)
@@ -93,7 +100,7 @@ def search_page(request):
                 key_lambda = lambda r: r[0].likes.count() + r[0].dislikes.count() # temp fix
             elif sort_by == 'likes':
                 key_lambda = lambda r: r[0].likes.count()
-            elif sort_by == 'new' or sort_by == 'old':
+            elif sort_by in ('new', 'old'):
                 key_lambda = lambda r: r[0].creation_date
             else:
                 raise HttpResponseBadRequest
@@ -105,4 +112,4 @@ def search_page(request):
             "results": results,
         })
 
-    return render(request, 'search.html')
+    return render(request, 'search.html', get_base_context(request))

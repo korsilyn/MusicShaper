@@ -1,8 +1,13 @@
-from django.forms import ModelForm, CharField, TextInput, Textarea
-from ..models import MusicTrackProject
+'''
+Модуль формы редактирования проекта (имя, описание)
+'''
+
+from datetime import datetime
+from django.forms import ModelForm, TextInput, Textarea
+from ..models import MusicTrackProject, TrackProjectSettings
 
 
-class CreateProjectForm(ModelForm):
+class ProjectForm(ModelForm):
     '''
     Форма создания проекта
     '''
@@ -26,6 +31,19 @@ class CreateProjectForm(ModelForm):
             })
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
         self.fields['desc'].required = False
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.author = self.user
+        instance.creation_date = datetime.now()
+        instance.save()
+        TrackProjectSettings.objects.create(
+            project=instance,
+            duration=256,
+            bpm=120,
+        )
+        return instance

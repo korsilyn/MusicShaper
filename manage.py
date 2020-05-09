@@ -5,6 +5,10 @@ import sys
 
 
 def main():
+    '''
+    Главная функция Django-сайта
+    '''
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MusicShaper.settings')
     try:
         from django.core.management import execute_from_command_line

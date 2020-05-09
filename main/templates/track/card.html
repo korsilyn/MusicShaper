@@ -1,7 +1,0 @@
-<div class="card track-card">
-    <div class="card-body">
-        <h5 class="card-title">{{ track.name }}</h5>
-        <p class="card-text">{{ track.desc|default:"<i>нет описания</i>" }}</p>
-        <a href="{% url 'track' id=track.id %}">Открыть</a>
-    </div>
-</div>

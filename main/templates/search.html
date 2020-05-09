@@ -42,29 +42,25 @@
         <input id='searchBar' type="search" class="form-control mx-auto"
             placeholder='Поисковой запрос' required>
     </div>
-    <div id="searchSettings" class="card mx-auto">
-        <div class="card-header">
-            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSettings">
+    <div id="searchSettings" class="card mx-auto theme-transition">
+        <div class="card-body">
+            <h5 class="card-title">
                 Настройки поиска
-            </button>
-        </div>
-        <div id="collapseSettings" class="collapse">
-            <div class="card-body">
-                <label>Искать</label>
-                <select id="resultType" class="form-control">
-                    <option value="track" selected>Треки</option>
-                    <option value="user">Пользователей</option>
-                </select>
-                <br>
-                <label>Сортировать по</label>
-                <select id="sortBy" class="form-control">
-                    <option value="relevant" selected>Релевантности</option>
-                    <option value="popularity">Популярности</option>
-                    <option value="likes">Лайкам</option>
-                    <option value="new">Сначала новое</option>
-                    <option value="old">Сначала старое</option>
-                </select>
-            </div>
+            </h5>
+            <label>Искать</label>
+            <select id="resultType" class="form-control">
+                <option value="track" selected>Треки</option>
+                <option value="user">Пользователей</option>
+            </select>
+            <br>
+            <label>Сортировать по</label>
+            <select id="sortBy" class="form-control">
+                <option value="relevant" selected>Релевантности</option>
+                <option value="popularity">Популярности</option>
+                <option value="likes">Лайкам</option>
+                <option value="new">Сначала новое</option>
+                <option value="old">Сначала старое</option>
+            </select>
         </div>
     </div>
     <div class="text-center">
@@ -119,15 +115,15 @@
             let html = `<img class="rounded-circle avatar" width="40px" height="40px" src="${avatarUrl}">
                 <b class="profile-link"><a href="${profileUrl}">${user.username}</a></b>`;
             if (user.profile.status) {
-                html += ` - <small>“<i>${user.profile.status}</i>”</small>`;
+                html += ` - <small><i class="quotes">${user.profile.status}</i></small>`;
             }
             return html;
         }
 
         function getTrackElementHTML(track) {
-            const trackUrl = "{% url 'track' id=0 %}".replace('/0', '/' + track.id);
+            const trackUrl = "{% url 'track' track_id=0 %}".replace('/0', '/' + track.id);
             return `<b class="track-link"><a href="${trackUrl}">${track.name}</a></b><br>
-            “<i>${track.desc}</i>”`;
+            <i class="quotes">${track.desc}</i>`;
         }
 
         const errorEl = document.getElementById("error");

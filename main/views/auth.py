@@ -1,7 +1,13 @@
-from .util import render, redirect, messages, get_base_context
+'''
+Модуль view-функций для регистрации и авторизации
+'''
+
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.messages import add_message, SUCCESS, ERROR
+from .util import get_base_context
 from ..forms import LoginForm
 
 
@@ -22,21 +28,17 @@ def login_page(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.add_message(
-                    request, messages.SUCCESS, 'Авторизация успешна')
+                add_message(request, SUCCESS, 'Авторизация успешна')
                 return redirect('index')
-            else:
-                messages.add_message(
-                    request, messages.ERROR, 'Неправильный логин или пароль')
-                return redirect('login')
-        else:
-            messages.add_message(request, messages.ERROR,
-                                 'Некорректные данные в форме авторизации')
+            add_message(request, ERROR, 'Неправильный логин или пароль')
             return redirect('login')
-    else:
-        context = get_base_context(request)
-        context['form'] = LoginForm()
-        return render(request, 'auth/login.html', context)
+        add_message(request, ERROR, 'Некорректные данные в форме авторизации')
+        return redirect('login')
+
+    context = get_base_context(request, {
+        'form': LoginForm()
+    })
+    return render(request, 'auth/login.html', context)
 
 
 def register_page(request):
@@ -57,21 +59,17 @@ def register_page(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.add_message(
-                    request, messages.SUCCESS, 'Регистрация успешна')
+                add_message(request, SUCCESS, 'Регистрация успешна')
                 return redirect('index')
-            else:
-                messages.add_message(
-                    request, messages.ERROR, 'Ошибка регистрации')
-                return redirect('register')
-        else:
-            messages.add_message(request, messages.ERROR,
-                                 'Некорректные данные')
+            add_message(request, ERROR, 'Ошибка регистрации')
             return redirect('register')
-    else:
-        context = get_base_context(request)
-        context['form'] = UserCreationForm()
-        return render(request, 'auth/register.html', context)
+        add_message(request, ERROR, 'Некорректные данные')
+        return redirect('register')
+
+    context = get_base_context(request, {
+        'form': UserCreationForm()
+    })
+    return render(request, 'auth/register.html', context)
 
 
 @login_required
@@ -85,6 +83,5 @@ def logout_page(request):
     '''
 
     logout(request)
-    messages.add_message(request, messages.SUCCESS,
-                         "Вы успешно вышли из аккаунта")
+    add_message(request, SUCCESS, "Вы успешно вышли из аккаунта")
     return redirect('index')

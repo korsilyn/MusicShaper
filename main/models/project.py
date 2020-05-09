@@ -1,7 +1,11 @@
+'''
+Модуль моделей для проектов
+'''
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-from .settings import ModelWithSettings, JSONSetting
+from .settings import ModelWithSettings, FloatSettingValue
 
 
 class MusicTrackProject(models.Model):
@@ -21,6 +25,23 @@ class MusicTrackProject(models.Model):
     creation_date = models.DateTimeField()
 
 
+class TrackProjectSettings(models.Model):
+    '''
+    Модель настроек проекта
+
+    :param project: проект
+    :param duration: продолжительность проекта
+    :param bpm: темп итогового трека
+    '''
+
+    project = models.OneToOneField(MusicTrackProject, models.CASCADE, related_name='settings')
+    duration = models.PositiveIntegerField()
+    bpm = models.PositiveIntegerField(validators=[
+        MinValueValidator(20),
+        MaxValueValidator(999)
+    ])
+
+
 class MusicInstrument(ModelWithSettings):
     '''
     Модель музыкального инстурмента
@@ -31,13 +52,18 @@ class MusicInstrument(ModelWithSettings):
     '''
 
     name = models.CharField(max_length=25)
-    type = models.CharField(max_length=10)
     project = models.ForeignKey(
         MusicTrackProject, models.CASCADE, 'instruments'
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(MusicInstrumentSetting, 'instrument', *args, **kwargs)
+    @classmethod
+    def define(cls, definition_name, default_settings):
+        if 'volume' not in default_settings:
+            default_settings = {
+                'volume': FloatSettingValue(initial=-10.0, min_v=-20, max_v=20, step=0.5),
+                **default_settings
+            }
+        return super().define(definition_name, default_settings)
 
 
 class MusicInstrumentEffect(ModelWithSettings):
@@ -48,37 +74,19 @@ class MusicInstrumentEffect(ModelWithSettings):
     :param instrument: инструмент
     '''
 
-    type = models.CharField(max_length=25)
-    instrument = models.ForeignKey(
-        MusicInstrument, models.CASCADE, 'effects'
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(MusicInstrumentEffectSetting, 'effect', *args, **kwargs)
+    instrument = models.ForeignKey(MusicInstrument, models.CASCADE, 'effects')
 
 
-class MusicInstrumentSetting(JSONSetting):
+class InstrumentSoundTrack(models.Model):
     '''
-    Модель настройки музыкального инструмента
+    Модель звуковой дорожки проекта
 
-    :param instrument: инструмент
+    :param project: проект
+    :param instrument: инструмент, использующийся на этой дорожке
     '''
 
-    instrument = models.ForeignKey(
-        MusicInstrument, models.CASCADE, 'settings'
-    )
-
-
-class MusicInstrumentEffectSetting(JSONSetting):
-    '''
-    Модель настройки эффекта музыкального инструмента
-
-    :param effect: эффект инструмента
-    '''
-
-    effect = models.ForeignKey(
-        MusicInstrumentEffect, models.CASCADE, 'settings'
-    )
+    project = models.ForeignKey(MusicTrackProject, models.CASCADE, 'soundtracks')
+    instrument = models.ForeignKey(MusicInstrument, models.CASCADE, 'soundtracks')
 
 
 class MusicTrackPattern(models.Model):
@@ -93,7 +101,21 @@ class MusicTrackPattern(models.Model):
     project = models.ForeignKey(MusicTrackProject, models.CASCADE, 'patterns')
     name = models.CharField(max_length=25)
     color = models.CharField(max_length=25)
-    duration = models.FloatField()
+    duration = models.PositiveIntegerField()
+
+
+class TrackPatternInstance(models.Model):
+    '''
+    Модель образца паттерна, который находиться на звуковой дорожке
+
+    :param pattern: паттерн
+    :param soundtrack: звуковая дорожка, на которой лежит образец паттерна
+    :param position: момент времени, в который должен начать играть паттерн
+    '''
+
+    pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'instances')
+    soundtrack = models.ForeignKey(InstrumentSoundTrack, models.CASCADE, 'pattern_instances')
+    position = models.PositiveIntegerField()
 
 
 class MusicNote(models.Model):
@@ -101,25 +123,25 @@ class MusicNote(models.Model):
     Модель музыкальной ноты в паттерне
 
     :param pattern: паттерн
-    :param position: момент времени, в который должна играть нота
+    :param position: момент времени, в который должна начать играть нота
     :param duration: длительность ноты
     :param notation: буквенная нотация ноты
     :param octave: октава
     '''
 
     NOTATION_CHOICES = [
-        (1,  'C'),  (2, 'C#'),
-        (3,  'D'),  (4, 'D#'),
-        (5,  'E'),
-        (6,  'F'),  (7,  'F#'),
-        (8,  'G'),  (9,  'G#'),
-        (10, 'A'),  (11, 'A#'),
+        (1, 'C'), (2, 'C#'),
+        (3, 'D'), (4, 'D#'),
+        (5, 'E'),
+        (6, 'F'), (7, 'F#'),
+        (8, 'G'), (9, 'G#'),
+        (10, 'A'), (11, 'A#'),
         (12, 'B'),
     ]
 
     pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'notes')
-    position = models.FloatField(validators=[MinValueValidator(0)])
-    duration = models.FloatField(validators=[MinValueValidator(0.05)])
+    position = models.PositiveIntegerField()
+    duration = models.PositiveIntegerField()
     notation = models.PositiveIntegerField(choices=NOTATION_CHOICES)
     octave = models.PositiveIntegerField(
         validators=[MinValueValidator(2), MaxValueValidator(7)]

@@ -1,78 +1,114 @@
-from django.db import models
-from abc import ABC, abstractmethod
-from jsonfield import JSONField
-from typing import Union
+'''
+Модуль абстрактной модели ModelWithSettings
+
+Модель нужна для эффективного хранения различных настроект
+моделей в базе данных
+
+От этой модели наследуются музыкальные инструменты и эффекты
+'''
+
 from math import inf
+from abc import ABC, abstractmethod
+from django.db import models
+from jsonfield import JSONField
 
 
-NumberType = Union[int, float]
-
-
-class JSONSetting(models.Model):
+class SettingValue(ABC):
     '''
-    Абстрактная модель настройки в формате json
-
-    :param name: имя настройки
-    :param data: данные настройки в json
+    Абстрактный класс поля настройки объекта
     '''
 
-    class Meta:
-        abstract = True
-
-    name = models.CharField(max_length=25)
-    data = JSONField()
-
-
-class BaseSettingValue(ABC):
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, *, _type, initial, **values):
+        self.type = _type
+        self.initial = initial
+        for key, value in values.items():
+            setattr(self, key, value)
 
     @abstractmethod
-    def to_json(self) -> tuple:
-        pass
+    def validate_value(self, value) -> bool:
+        '''
+        Абстрактный метод, проверяющий значение `value`
+
+        :param value: значение для проверки
+        '''
 
 
-class NumberSetting(BaseSettingValue):
-    def __init__(self, value: NumberType, min: NumberType = -inf, max: NumberType = inf, step: NumberType = 0.1):
-        super().__init__((value if value <= max else max) if value >= min else min)
-        self.min = min
-        self.max = max
-        self.step = step
+class FloatSettingValue(SettingValue):
+    '''
+    Числовое (float) поле настройки объекта
+    '''
 
-    def to_json(self) -> tuple:
-        return (self.value, self.min, self.max, self.step)
+    def __init__(self, *, initial, min_v=-inf, max_v=inf, step=0.1):
+        super().__init__(
+            _type='float',
+            initial=float(initial),
+            min=float(min_v),
+            max=float(max_v),
+            step=float(step),
+        )
+
+    def validate_value(self, value):
+        return isinstance(value, (float, int)) and self.min <= value <= self.max
 
 
-class ChoiceSetting(BaseSettingValue):
-    def __init__(self, value, *choices):
-        super().__init__(value)
-        self.choices = choices + (value,) if value not in choices else choices
+class IntSettingValue(SettingValue):
+    '''
+    Числовое (int) поле настройки объекта
+    '''
 
-    def to_json(self) -> tuple:
-        return (self.choices)
+    def __init__(self, *, initial, min_v=None, max_v=None):
+        super().__init__(
+            _type='int',
+            initial=int(initial),
+            min=int(min_v) if min_v is not None else None,
+            max=int(max_v) if max_v is not None else None,
+        )
+
+    def validate_value(self, value):
+        min_v = self.min if self.min is not None else -inf
+        max_v = self.max if self.max is not None else inf
+        return isinstance(value, int) and min_v <= value <= max_v
+
+
+class ChoiceSettingValue(SettingValue):
+    '''
+    Поле настройки объекта с выбором значения
+    '''
+
+    def __init__(self, *, initial, choices):
+        if initial not in choices:
+            raise ValueError(f'initial \'{initial}\' not found in choices')
+        super().__init__(
+            _type='choice',
+            initial=initial,
+            choices=choices,
+        )
+
+    def validate_value(self, value):
+        return value in self.choices
 
 
 class ModelWithSettings(models.Model):
     '''
     Абстрактная модель *кхм* модели, у которой
-    есть список настроек (JSONSetting)
+    есть словарь настроек
 
     У класса дочерней модели также появляется метод
-    define, с помощью которого можно задать стандартные
+    `define`, с помощью которого можно задать стандартные
     настройки для определённого 'типа' объекта модели
     '''
 
     class Meta:
         abstract = True
 
+    type = models.CharField(max_length=25)
+    json_settings = JSONField()
+
+    DEFINITIONS = dict()
+
     def __init_subclass__(cls):
         super().__init_subclass__()
         setattr(cls, 'DEFINITIONS', dict())
-
-    def __init__(self, settingModel, related_name, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.settingModel = settingModel
-        self.settingRelatedName = related_name
 
     @classmethod
     def define(cls, definition_name: str, default_settings: dict):
@@ -87,7 +123,7 @@ class ModelWithSettings(models.Model):
             raise NameError(f'definition {definition_name} already exists')
         cls.DEFINITIONS[definition_name] = default_settings.copy()
 
-    def assert_type(self, error_class=NameError):
+    def assert_type(self, error_class=TypeError):
         '''
         Кидает error_class в случае, если тип инструмента
         объявлен некорректно
@@ -98,85 +134,49 @@ class ModelWithSettings(models.Model):
         if self.type not in self.DEFINITIONS:
             raise error_class(f'type {self.type} is not defined')
 
+    @property
+    def definition(self):
+        '''
+        Сокращение для быстрого доступа к текущему
+        объявлению настроек объекта
+        '''
+
+        return self.DEFINITIONS[self.type]
+
     def reset(self):
         '''
         Сбрасывает все текущие настройки инструмента
         '''
 
-        self.settingModel.objects.filter(
-            **{self.settingRelatedName: self}).delete()
+        self.json_settings.clear()
 
-    def get_setting_value(self, json_setting):
+    def get_settings_recursive(self, definition, json_settings):
         '''
-        Превращает значение настройки из 'формата define'
-        в простое значение
+        Рекурсивно возвращает словарь настроек
 
-        пример:
-        { 'value': (0.5, 0, 1) }
-        после функции станет
-        { 'value': 0.5 }
+        :param definition: текущий словарь объявления
+        :param json_settings: текущий словарь с настройками
         '''
 
-        if len(json_setting) < 2:
-            return None
-
-        v = json_setting[0]
-        if isinstance(v, str):
-            return ChoiceSetting(*json_setting).value
-        if isinstance(v, int) or isinstance(v, float):
-            return NumberSetting(*json_setting).value
-        return None
-
-    def clean_setting_dict(self, setting: dict) -> dict:
-        '''
-        Превращает словарь настроек из 'формата define'
-        в словарь, содержащий только значения
-
-        пример:
-        { 's': { 'value': (0.5, 0, 1) } }
-        после функции станет
-        { 's': { 'value': 0.5 } }
-        '''
-
-        rs = {}
-        for key, value in setting.items():
-            if isinstance(value, dict):
-                rs[key] = self.clean_setting_dict(value)
+        for sname, vdef in definition.items():
+            if isinstance(vdef, dict):
+                value = json_settings.get(sname, dict())
+                yield sname, dict(self.get_settings_recursive(vdef, value))
+            elif not isinstance(vdef, SettingValue):
+                raise ValueError(f'invalid setting definition {sname}')
             else:
-                rs[key] = self.get_setting_value(value)
-        return rs
+                yield sname, json_settings.get(sname, vdef.initial)
 
-    def get_setting_lazy(self, name: str, assert_type=True) -> dict:
-        if assert_type:
-            self.assert_type()
-        try:
-            return self.settingModel.objects.get(**{self.settingRelatedName: self}, name=name).data
-        except self.settingModel.DoesNotExist:
-            return self.DEFINITIONS[self.type][name]
-
-    def get_json_settings(self) -> dict:
+    def get_settings_generator(self):
         '''
-        Возвращает словарь текущих настроек инструмента
+        Возвращает текущие настройки объекта (генератор)
         '''
 
         self.assert_type()
-        rsettings = {}
-        for sname in self.DEFINITIONS[self.type]:
-            rsettings[sname] = self.get_setting_lazy(sname)
-        return self.clean_setting_dict(rsettings)
+        yield from self.get_settings_recursive(self.definition, self.json_settings)
 
-    def get_setting_by_path(self, path: str, default):
-        keys = path.split('.')
-        if len(keys) == 0:
-            return default
-
-        settings = self.get_setting_lazy(keys[0])
-        for key in keys[1:]:
-            settings = settings.get(key, None)
-            if settings is None:
-                return default
-
-        if isinstance(settings, dict):
-            return default
-
-        return settings
+    def get_settings(self):
+        '''
+        Возвращает текущие настройки объекта
+        '''
+        return dict(self.get_settings_generator())

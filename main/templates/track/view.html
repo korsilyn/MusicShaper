@@ -33,9 +33,7 @@
     <h1 class="margin-top-10 text-center">
         {{ track.name }}
     </h1>
-    <h5 class="text-secondary text-center margin-top-2">
-        “{{ track.desc }}”
-    </h5>
+    <h5 class="text-secondary text-center margin-top-2 quotes">{{ track.desc }}</h5>
     <p class="text-center margin-top-2">
         <b>
             Автор:
@@ -71,7 +69,7 @@
         <br>
         <textarea id="comm" placeholder="Содержание" required
                   class="form-control" style="min-height: 40px; max-height: 180px;"></textarea>
-        <button onclick="send_comment()" class="btn btn-outline-dark" id="sendbtn">
+        <button onclick="send_comment()" class="btn btn-success" id="sendbtn">
             Отправить
         </button>
         <div class="list-group" id="comments">
@@ -114,7 +112,7 @@
         for (const comment of my_comments) {
             const button = document.createElement("button");
             button.innerHTML = "Отредактировать";
-            button.classList.add("btn", "btn-outline-dark");
+            button.classList.add("btn", "btn-success");
             comment.appendChild(button);
             const d_button = document.createElement("button")
             d_button.innerHTML = "Удалить";

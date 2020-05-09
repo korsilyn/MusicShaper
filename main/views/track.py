@@ -1,6 +1,12 @@
-from .util import render, get_base_context, get_object_or_404, JsonResponse
-from ..models import MusicTrack, TrackComment
+'''
+Модуль view-функций для музыкальных треков
+'''
+
 from datetime import datetime
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .util import get_base_context
+from ..models import MusicTrack, TrackComment
 
 
 def popular_tracks(request):
@@ -12,26 +18,26 @@ def popular_tracks(request):
     :rtype: HttpResponse
     '''
 
-    context = get_base_context(request)
     all_tracks = MusicTrack.objects.all()
-
-    context['tracks'] = [{'name': tr.name, 'id': tr.id, 'likes': tr.likes, 'desc': tr.desc,
-                          'count': tr.listeners.count()} for tr in all_tracks]
-    context['tracks'].sort(key=lambda i: i['count'], reverse=True)
-    context['tracks'] = context['tracks'][:15]
+    context = get_base_context(request, {
+        'tracks': sorted([{
+            'name': tr.name, 'desc': tr.desc, 'id': tr.id,
+            'likes': tr.likes, 'count': tr.listeners.count()
+        } for tr in all_tracks], key=lambda i: i['count'], reverse=True)[:15]
+    })
 
     return render(request, 'track/popular.html', context)
 
 
-def track_view(request, id):
+def track_view(request, track_id: int):
     '''
     Страница прослушивания музыкального трека
 
     :param request: запрос клиента
-    :return: 
+    :returns: страница трека
     '''
 
-    track = get_object_or_404(MusicTrack, pk=id)
+    track = get_object_or_404(MusicTrack, pk=track_id)
 
     if request.is_ajax():
         response = {'success': False}
@@ -75,8 +81,7 @@ def track_view(request, id):
             track.save()
         return JsonResponse(response)
 
-    context = get_base_context(request)
-    context.update({
+    context = get_base_context(request, {
         'track': track,
         'liked': track.likes.filter(pk=request.user.id).exists(),
         'disliked': track.dislikes.filter(pk=request.user.id).exists(),
