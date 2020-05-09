@@ -2,7 +2,6 @@
 Модуль view-функций для проектов
 '''
 
-from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required

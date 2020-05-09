@@ -35,7 +35,7 @@
 }
 
 .card-link-list a:hover {
-    background-color: hsl(var(--bg-secondary), 30%);
+    background-color: hsl(var(--bg-secondary));
     border-radius: 20px;
 }
 
@@ -49,7 +49,8 @@
 }
 
 .card-link-list a .card-title:only-child {
-    top: calc(50% - 1em);
+    top: 70px;
+    transform: translateY(-50%);
 }
 
 .card-link-list a .card-title:not(:only-child) {

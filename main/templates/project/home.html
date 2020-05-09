@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block 'title' %}
     Проект {{ project.name }}
+{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
 {% endblock %}
 
 {% block 'body' %}
@@ -29,8 +34,17 @@
                 Создать первый инструмент
             </a>
         {% endif %}
-        <a class="btn btn-secondary" href="{% url 'instruments' proj_id=project.id %}">
-            Музыкальные инструменты
-        </a>
+        <div class="card-link-list card-link-list-center">
+            <a href="{% url 'instruments' proj_id=project.id %}">
+                <div class="card-title">
+                    Музыкальные инструменты
+                </div>
+            </a>
+            <a href="{% url 'patterns' proj_id=project.id %}">
+                <div class="card-title">
+                    Паттерны
+                </div>
+            </a>
+        </div>
     </div>
 {% endblock %}
