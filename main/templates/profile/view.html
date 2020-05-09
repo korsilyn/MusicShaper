@@ -43,7 +43,11 @@
         </div>
         <div class="margin-top-5"></div>
     </div>
-
+    {% if profile != user and not profile in user.subscribers %}
+    <a class="btn btn-success" href="{% url 'subscribe' username=profile.user.username %}">Добавить друга</a>
+    {% else %}
+    <a class="btn btn-outline-danger" href="{% url 'unsubscribe' username=profile.user.username %}">Удалить друга</a>
+    {% endif %}
     <div class="text-center">
         <b>Треки пользователя</b>
     </div>

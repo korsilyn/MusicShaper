@@ -28,13 +28,15 @@ def profile_page(request):
         user = request.user
 
     profile = get_object_or_404(Profile, user=user)
+    request_profile = get_object_or_404(Profile, user = request.user)
 
     context = get_base_context(request, {
         "profile": profile,
         "tracks": MusicTrack.objects.filter(author=user),
         "likes": MusicTrack.objects.filter(likes=user),
+        "user": request_profile,
     })
-
+    
     return render(request, 'profile/view.html', context)
 
 
@@ -123,3 +125,21 @@ def delete_avatar(request):
     })
 
     return render(request, 'delete.html', context)
+
+
+@login_required
+def subscribe(request, username):
+    profile = get_object_or_404(Profile, user=request.user)
+    user = get_object_or_404(Profile, user=username)
+    profile.subscribers.add(user)
+    response = redirect('profile')
+    response['username'] += '?username=' + username
+    return response
+
+
+@login_required
+def unsubscribe(request, username):
+    profile = get_object_or_404(Profile, user=request.user)
+    user = get_object_or_404(Profile, user=username)
+    profile.subscribers.remove(user)
+    return redirect('profile')
