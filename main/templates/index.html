@@ -8,7 +8,6 @@
     <style>
         .description {
             font-size: 17pt;
-            color: rgb(50, 50, 50);
             word-wrap: break-word;
         }
         
@@ -72,14 +71,12 @@
         {% else %}
             <div class="block">
                 <h2>Ещё раз здравствуйте!</h2>
-                <p>
-                    <div class="description">
-                        Похоже, что пришло время творить
-                    </div>
-                    <a class="btn btn-outline-success" href="{% url 'new_project' %}">
-                        Создать проект
-                    </a>
+                <p class="description">
+                    Похоже, что пришло время творить
                 </p>
+                <a class="btn btn-outline-success" href="{% url 'new_project' %}">
+                    Создать проект
+                </a>
             </div>
         {% endif %}
     </div>

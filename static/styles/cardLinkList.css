@@ -22,7 +22,7 @@
     border-radius: 14px;
     color: black;
     text-decoration: none;
-    background-color: white;
+    background-color: var(--bg-secondary);
     box-shadow: 0 0 8px rgba(10, 10, 10, 0.2);
     transition-property: background-color, border-radius;
     transition-duration: 0.2s, 0.1s;
@@ -35,24 +35,38 @@
 }
 
 .card-link-list a:hover {
-    background-color: rgb(245, 245, 245);
+    background-color: hsl(var(--bg-secondary));
     border-radius: 20px;
 }
 
-.card-link-list a .card-title,
-.card-link-list a .card-title-center,
-.card-link-list a .card-desc {
+.card-link-list a .card-desc,
+.card-link-list a .card-title {
     position: absolute;
     width: 100%;
     left: 0;
-    top: calc(50% - 2em);
+    color: var(--text);
+    --title-top: 25%;
 }
 
-.card-link-list a .card-title-center {
-    top: calc(50% - 0.9em);
+.card-link-list a .card-title:only-child {
+    top: 70px;
+    transform: translateY(-50%);
 }
 
-.card-link-list a .card-desc {
-    top: 50%;
-    color: var(--secondary);
+.card-link-list a .card-title:not(:only-child) {
+    top: var(--title-top);
+}
+
+.card-link-list a .card-title + .card-desc {
+    top: calc(var(--title-top) + 2em);
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 1em;
+    max-height: 3em;
+    max-width: 90%;
+    margin-left: 5%;
 }

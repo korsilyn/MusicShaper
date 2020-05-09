@@ -1,0 +1,50 @@
+:root {
+    --white1: rgb(245, 245, 245);
+    --white2: rgb(218, 218, 218);
+    --grey1: rgb(77, 80, 87);
+    --grey2: rgb(34, 34, 34);
+    --darkblue: rgb(10, 18, 42);
+    --black: rgb(13, 10, 11);
+}
+
+.light {
+    --bg: var(--white1);
+    --bg-secondary: var(--white2);
+    --text: var(--black);
+    --text-secondary: var(--grey1);
+    --text-nav: var(--white1);
+}
+
+.dark {
+    --bg: #3d3d53;
+    --bg-secondary: #4e4e6b;
+    --text: var(--white1);
+    --text-secondary: var(--white2);
+    --text-nav: var(--white2);
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+
+body {
+    background-color: var(--bg) !important;
+}
+
+body, .theme-transition {
+    transition: background-color 0.3s ease-out;
+}
+
+h1, h2, h3, h4, h5, h6, label, small, p, .text-center,
+table, table.table tbody tr:hover, li {
+    color: var(--text) !important;
+}
+
+table, .card, .list-group-item {
+    background-color: var(--bg-secondary);
+}
+
+.card {
+    border-width: 0;
+}

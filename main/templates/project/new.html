@@ -4,26 +4,18 @@
     Новый проект
 {% endblock %}
 
-{% block 'head' %}
-    <style>
-        #createForm {
-            max-width: 40%;
-        }
-    </style>
-{% endblock %}
-
 {% block 'body' %}
-    <div class="margin-top-20"></div>
-    <h1 class="text-center">Создание проекта</h1> <br>
-    <form id="createForm" class="mx-auto" method="POST">
+    <div class="margin-top-20 text-center">
+        <h1>Создание проекта</h1> <br>
+        <a href="{% url 'projects' %}">
+            Назад к списку проектов
+        </a>
+    </div>
+    <form id="createForm" class="mx-auto" method="POST" style="max-width: 40%;">
         {% csrf_token %}
         {% for field in form.visible_fields %}
             <div class="form-group">
-                {% if field.errors %}
-                    {{ field.errors }}
-                {% endif %}
-                {{ field.label }}:
-                {{ field }}
+                <label>{{ field.label }}</label>: {{ field }}
             </div>
         {% endfor %}
         <div class="text-center">
