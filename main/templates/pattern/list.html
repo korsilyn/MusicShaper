@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}
+    Список паттернов
+{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center margin-top-10">
+        <h1>Список паттернов</h1>
+        <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
+    </div>
+    {% if patterns.count == 0 %}
+        <div class="text-center margin-top-5">
+            В проекте ещё нет паттернов!
+        </div>
+    {% else %}
+        <div class="card-link-list card-link-list-center margin-top-5">
+            {% for p in patterns %}
+                <a href="{% url 'pattern_editor' proj_id=project.id pat_id=p.id %}"
+                class="theme-transition">
+                    <b class="card-title">{{ p.name }}</b>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="text-center margin-top-5">
+        <a href="{% url 'new_pattern' proj_id=project.id %}"
+        class="btn btn-outline-primary">
+            Новый паттерн
+        </a>
+    </div>
+{% endblock %}
