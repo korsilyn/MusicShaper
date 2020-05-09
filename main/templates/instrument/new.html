@@ -20,11 +20,7 @@
         {% csrf_token %}
         {% for field in form.visible_fields %}
             <div class="form-group">
-                {% if field.errors %}
-                    {{ field.errors }}
-                {% endif %}
-                {{ field.label }}:
-                {{ field }}
+                <label>{{ field.label }}</label>: {{ field }}
             </div>
         {% endfor %}
         <div class="text-center">

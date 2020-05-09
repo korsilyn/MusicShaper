@@ -8,7 +8,9 @@
     <div class="text-center margin-top-10">
         <h1>Проект</h1>
         <h2 class="quotes">{{ project.name }}</h2>
-        <h5 class="text-secondary quotes margin-top-2 mx-auto" style="max-width: 45%;">{{ project.desc }}</h5>
+        {% if project.desc %}
+            <h5 class="text-secondary quotes margin-top-2 mx-auto" style="max-width: 45%;">{{ project.desc }}</h5>
+        {% endif %}
         <div class="margin-top-2"></div>
         <a href="{% url 'projects' %}">Назад к списку проектов</a>
     </div>

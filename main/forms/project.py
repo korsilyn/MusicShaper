@@ -41,9 +41,9 @@ class ProjectForm(ModelForm):
         instance.author = self.user
         instance.creation_date = datetime.now()
         instance.save()
-        TrackProjectSettings.objects.create(
-            project=instance,
-            duration=256,
-            bpm=120,
-        )
+        if not hasattr(instance, 'settings'):
+            TrackProjectSettings.objects.create(
+                project=instance,
+                bpm=120,
+            )
         return instance
