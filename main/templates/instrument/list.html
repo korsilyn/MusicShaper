@@ -23,7 +23,7 @@
     {% else %}
         <div class="card-link-list card-link-list-center">
             {% for i in instruments.all %}
-                <a href="{% url 'edit_instrument' proj_id=project.id instr_id=i.id %}">
+                <a href="{% url 'edit_instrument' proj_id=project.id instr_id=i.id %}" class="theme-transition">
                     <b class="card-title">
                         {{ i.name }}
                     </b>
