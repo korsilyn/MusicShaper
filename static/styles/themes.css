@@ -32,7 +32,7 @@ body {
     background-color: var(--bg) !important;
 }
 
-* {
+body, .theme-transition {
     transition: background-color 0.3s ease-out;
 }
 
