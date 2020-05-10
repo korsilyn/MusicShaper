@@ -111,7 +111,7 @@
 
         function getUserElementHTML(user) {
             const avatarUrl = user.profile.image || "{% static 'img/default_avatar.jpg'  %}";
-            const profileUrl = `{% url 'profile' %}?username=${user.username}`;
+            const profileUrl = "{% url 'profile' username=0 %}".replace('0', user.username);
             let html = `<img class="rounded-circle avatar" width="40px" height="40px" src="${avatarUrl}">
                 <b class="profile-link"><a href="${profileUrl}">${user.username}</a></b>`;
             if (user.profile.status) {
