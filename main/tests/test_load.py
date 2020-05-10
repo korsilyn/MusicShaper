@@ -82,13 +82,37 @@ class LoginTestCase(TestCase):
         self.check_if_loads('new_project')
         self.check_login_required('new_project', True)
 
-    '''def test_project_home_loads(self):
+    def test_project_home_loads(self):
         self.check_if_loads('project_home', proj_id=1)
-        self.check_login_required('project_home', True, proj_id=1)'''
+        self.check_login_required('project_home', True, proj_id=1)
 
-    '''def test_manage_project_loads(self):
+    def test_manage_project_loads(self):
         self.check_if_loads('manage_project', proj_id=1)
-        self.check_login_required('manage_project', True, proj_id=1)'''
+        self.check_login_required('manage_project', True, proj_id=1)
+
+    def test_delete_project_loads(self):
+        self.check_if_loads('delete_project', proj_id=1)
+        self.check_login_required('delete_project', True, proj_id=1)
+
+    def test_new_instruments_loads(self):
+        self.check_if_loads('new_instrument', proj_id=1)
+        self.check_login_required('new_instrument', True, proj_id=1)
+
+    def test_edit_instrument_loads(self):
+        self.check_if_loads('edit_instrument', proj_id=1, instr_id=1)
+        self.check_login_required('edit_instrument', True, proj_id=1, instr_id=1)
+
+    def test_manage_instrument_loads(self):
+        self.check_if_loads('manage_instrument', proj_id=1, instr_id=1)
+        self.check_login_required('manage_instrument', True, proj_id=1, instr_id=1)
+
+    def test_delete_instrument_loads(self):
+        self.check_if_loads('delete_instrument', proj_id=1, instr_id=1)
+        self.check_login_required('delete_instrument', True, proj_id=1, instr_id=1)
+
+    def test_instruments_loads(self):
+        self.check_if_loads('instruments', proj_id=1)
+        self.check_login_required('instruments', True, proj_id=1)
 
     def test_search_loads(self):
         self.check_if_loads('search')
