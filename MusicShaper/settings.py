@@ -25,10 +25,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'd1&r@y9%g&0)pn!#)ootv%*4zu73acnp8w=8p-%hlwntm@l)41'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = bool(os.environ.get('MS_DEBUG', True))
 
+if DEBUG:
+    ALLOWED_HOSTS = []
+    SECRET_KEY = 'd1&r@y9%g&0)pn!#)ootv%*4zu73acnp8w=8p-%hlwntm@l)41'
+else:
+    ALLOWED_HOSTS = ['127.0.0.1', 'music-shaper.tk']
+    SECRET_KEY = os.environ.get("MS_SECRET_KEY", 'Dummy secret key')
 
 # Application definition
 
@@ -79,12 +84,25 @@ WSGI_APPLICATION = 'MusicShaper.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get("MS_MYSQL_DATABASE", 'define me'),
+            'USER': os.environ.get("MS_MYSQL_USER", 'define me'),
+            'PASSWORD': os.environ.get("MS_MYSQL_PASSWORD", 'define me'),
+            'HOST': os.environ.get("MS_MYSQL_HOST", 'localhost'),
+            'PORT': os.environ.get("MS_MYSQL_PORT", '3306'),
+        }
+    }
+
 
 
 # Password validation
@@ -145,6 +163,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+STATIC_ROOT = 'staticroot/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
