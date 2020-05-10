@@ -3,7 +3,7 @@
 '''
 
 from .project import MusicInstrument
-from .settings import IntSettingValue, FloatSettingValue, ChoiceSettingValue
+from .settings import FloatSettingValue, ChoiceSettingValue
 
 
 MusicInstrument.define('Synth', {

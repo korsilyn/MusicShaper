@@ -1,6 +1,6 @@
 :root {
     --white1: rgb(245, 245, 245);
-    --white2: rgb(235, 235, 235);
+    --white2: rgb(218, 218, 218);
     --grey1: rgb(77, 80, 87);
     --grey2: rgb(34, 34, 34);
     --darkblue: rgb(10, 18, 42);
@@ -37,7 +37,7 @@ body, .theme-transition {
 }
 
 h1, h2, h3, h4, h5, h6, label, small, p, .text-center,
-table, table.table tbody tr:hover {
+table, table.table tbody tr:hover, li {
     color: var(--text) !important;
 }
 

@@ -52,6 +52,7 @@ urlpatterns = [
         path('', views.project_home, name='project_home'),
         path('manage/', views.manage_project, name='manage_project'),
         path('delete/', views.delete_project, name='delete_project'),
+
         path('instrument/', include([
             path('list/', views.instruments, name='instruments'),
             path('new/', views.new_instrument, name='new_instrument'),
@@ -60,6 +61,14 @@ urlpatterns = [
             path('', views.edit_instrument, name='edit_instrument'),
             path('manage/', views.manage_instrument, name='manage_instrument'),
             path('delete/', views.delete_instrument, name='delete_instrument'),
+        ])),
+
+        path('pattern/', include([
+            path('list/', views.patterns_list, name='patterns'),
+            path('new/', views.new_pattern, name='new_pattern'),
+        ])),
+        path('pattern/<int:pat_id>/', include([
+            path('', views.pattern_editor, name='pattern_editor'),
         ])),
     ])),
 
