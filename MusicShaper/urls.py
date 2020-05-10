@@ -37,44 +37,46 @@ urlpatterns = [
         path('edit/', views.profile_edit_page, name='profile_edit'),
         path('delete_avatar/', views.delete_avatar, name='delete_avatar'),
         path('change_password/', views.change_password, name='change_password'),
-    ])),
-    path('profile/<str:username>/', include([
-        path('', views.profile_page, name='profile'),
-        path('sub', views.subscribe, name='subscribe'),
-        path('unsub', views.unsubscribe, name='unsubscribe'),
-    ])),
-
-    path('project/', include([
-        path('list/', views.projects_list, name='projects'),
-        path('new/', views.new_project, name='new_project')
-    ])),
-    path('project/<int:proj_id>/', include([
-        path('', views.project_home, name='project_home'),
-        path('manage/', views.manage_project, name='manage_project'),
-        path('delete/', views.delete_project, name='delete_project'),
-
-        path('instrument/', include([
-            path('list/', views.instruments, name='instruments'),
-            path('new/', views.new_instrument, name='new_instrument'),
-        ])),
-        path('instrument/<int:instr_id>/', include([
-            path('', views.edit_instrument, name='edit_instrument'),
-            path('manage/', views.manage_instrument, name='manage_instrument'),
-            path('delete/', views.delete_instrument, name='delete_instrument'),
-        ])),
-
-        path('pattern/', include([
-            path('list/', views.patterns_list, name='patterns'),
-            path('new/', views.new_pattern, name='new_pattern'),
-        ])),
-        path('pattern/<int:pat_id>/', include([
-            path('', views.pattern_editor, name='pattern_editor'),
+        path('<str:username>/', include([
+            path('', views.profile_page, name='profile'),
+            path('sub', views.subscribe, name='subscribe'),
+            path('unsub', views.unsubscribe, name='unsubscribe'),
         ])),
     ])),
 
-    path('track/popular/', views.popular_tracks, name='popular_tracks'),
-    path('track/<int:track_id>/', include([
-        path('', views.track_view, name='track'),
+    path('projects/', include([
+        path('', views.projects_list, name='projects'),
+        path('new/', views.new_project, name='new_project'),
+        path('<int:proj_id>/', include([
+            path('', views.project_home, name='project_home'),
+            path('manage/', views.manage_project, name='manage_project'),
+            path('delete/', views.delete_project, name='delete_project'),
+
+            path('instruments/', include([
+                path('', views.instruments, name='instruments'),
+                path('new/', views.new_instrument, name='new_instrument'),
+                path('<int:instr_id>/', include([
+                    path('', views.edit_instrument, name='edit_instrument'),
+                    path('manage/', views.manage_instrument, name='manage_instrument'),
+                    path('delete/', views.delete_instrument, name='delete_instrument'),
+                ])),
+            ])),
+
+            path('patterns/', include([
+                path('', views.patterns_list, name='patterns'),
+                path('new/', views.new_pattern, name='new_pattern'),
+                path('<int:pat_id>/', include([
+                    path('', views.pattern_editor, name='pattern_editor'),
+                ])),
+            ])),
+        ])),
+    ])),
+
+    path('tracks/', include([
+        path('', views.popular_tracks, name='popular_tracks'),
+        path('<int:track_id>/', include([
+            path('', views.track_view, name='track'),
+        ])),
     ])),
 
     path('search/', views.search_page, name='search'),
