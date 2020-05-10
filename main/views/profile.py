@@ -28,13 +28,12 @@ def profile_page(request):
         user = request.user
 
     profile = get_object_or_404(Profile, user=user)
-    request_profile = get_object_or_404(Profile, user = request.user)
 
     context = get_base_context(request, {
         "profile": profile,
         "tracks": MusicTrack.objects.filter(author=user),
         "likes": MusicTrack.objects.filter(likes=user),
-        "user": request_profile,
+        "user": get_object_or_404(Profile, user=request.user)
     })
     
     return render(request, 'profile/view.html', context)
@@ -128,18 +127,15 @@ def delete_avatar(request):
 
 
 @login_required
-def subscribe(request, username):
-    profile = get_object_or_404(Profile, user=request.user)
-    user = get_object_or_404(Profile, user=username)
-    profile.subscribers.add(user)
-    response = redirect('profile')
-    response['username'] += '?username=' + username
-    return response
-
-
-@login_required
-def unsubscribe(request, username):
-    profile = get_object_or_404(Profile, user=request.user)
-    user = get_object_or_404(Profile, user=username)
-    profile.subscribers.remove(user)
+def subscribe_actions(request, action, pk):
+    if action == 'sub':
+        profile = get_object_or_404(Profile, user=request.user)
+        subscriber = get_object_or_404(Profile, user=pk)
+        profile.subscribers.add(subscriber)
+        profile.save()
+    elif action == 'unsub':
+        profile = get_object_or_404(Profile, user=request.user)
+        subscriber = get_object_or_404(Profile, user=pk)
+        profile.subscribers.remove(subscriber)
+        profile.save()
     return redirect('profile')

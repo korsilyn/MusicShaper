@@ -21,7 +21,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='', upload_to='profile_pics')
     status = models.CharField(max_length=100, default='')
-    subscibers = models.ManyToManyField("Profile")
+    subscribers = models.ManyToManyField("Profile")
 
     def to_dict(self):
         '''

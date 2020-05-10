@@ -40,14 +40,28 @@
                     Редактировать Профиль
                 </a>
             {% endif %}
+            {% if not request.user.is_authenticated and profile != user and not profile in user.subscribers %}
+            <a class="btn btn-success" href="{% url 'subscribe' pk=profile.user.pk action='sub' %}">Добавить друга</a>
+            {% elif not request.user.is_authenticated and profile != user %}
+            <a class="btn btn-outline-danger" href="{% url 'subscribe' pk=profile.user.pk action='unsub' %}">Удалить друга</a>
+            {% endif %}
         </div>
         <div class="margin-top-5"></div>
     </div>
-    {% if profile != user and not profile in user.subscribers %}
-    <a class="btn btn-success" href="{% url 'subscribe' username=profile.user.username %}">Добавить друга</a>
+    <div class="text-center">
+        <b>Друзья пользователя</b>
+    </div>
+    {% if profile.subscribers|length > 0 %}
+        {% for sub in profile.subscribers %}
+                <p>{{ sub.user }}</p>
+        {% endfor %}
     {% else %}
-    <a class="btn btn-outline-danger" href="{% url 'unsubscribe' username=profile.user.username %}">Удалить друга</a>
+        <div class="text-center">
+            <i>У пользователя нет друзей :(</i>
+        </div>
     {% endif %}
+    <br>
+
     <div class="text-center">
         <b>Треки пользователя</b>
     </div>
