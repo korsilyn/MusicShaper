@@ -12,7 +12,7 @@ from .util import get_base_context
 from ..models import Profile, MusicTrack
 
 
-def profile_page(request):
+def profile_page(request, username):
     '''
     Страница профиля
 
@@ -21,19 +21,18 @@ def profile_page(request):
     :rtype: HttpResponse
     '''
 
-    username = request.GET.get('username', '')
-    if username:
-        user = get_object_or_404(User, username=username)
-    else:
-        user = request.user
-
-    profile = get_object_or_404(Profile, user=user)
+    view_my_profile = not isinstance(username, str)
+    user = request.user if view_my_profile else get_object_or_404(User, username=username)
 
     context = get_base_context(request, {
-        "profile": profile,
+        "profile": user.profile,
         "tracks": MusicTrack.objects.filter(author=user),
         "likes": MusicTrack.objects.filter(likes=user),
     })
+
+    if not view_my_profile:
+        is_sub = user.profile.subscribers.filter(pk=request.user.profile.pk).exists()
+        context['is_sub'] = is_sub
 
     return render(request, 'profile/view.html', context)
 
@@ -48,7 +47,7 @@ def profile_edit_page(request):
     :rtype: HttpResponse
     '''
 
-    profile = get_object_or_404(Profile, user=request.user)
+    profile = request.user.profile
 
     if request.method == 'POST':
         status = request.POST.get('status', '')
@@ -108,7 +107,7 @@ def delete_avatar(request):
     :rtype: HttpResponse
     '''
 
-    profile = get_object_or_404(Profile, user=request.user)
+    profile = request.user.profile
 
     if request.method == 'POST':
         profile.image.delete(save=True)
@@ -123,3 +122,51 @@ def delete_avatar(request):
     })
 
     return render(request, 'delete.html', context)
+
+
+@login_required
+def subscribe(request, username):
+    '''
+    Функция для добавления пользователя в подписки
+
+    :param request: запрос клиента
+    :param username: юзернейм другого пользователя
+    '''
+
+    subscriber = request.user.profile
+    target = get_object_or_404(Profile, user__username=username)
+
+    already_sub = target.subscribers.filter(pk=subscriber.pk).exists()
+    if target == subscriber or already_sub:
+        add_message(request, ERROR, 'Недопустимая операция')
+        return redirect('profile', username=username)
+
+    target.subscribers.add(subscriber)
+    target.save()
+
+    add_message(request, SUCCESS, f'{username} был добавлен в ваши подписки')
+    return redirect('profile', username=username)
+
+
+@login_required
+def unsubscribe(request, username):
+    '''
+    Функция для удаления пользователя из подпискок
+
+    :param request: запрос клиента
+    :param username: юзернейм другого пользователя
+    '''
+
+    subscriber = request.user.profile
+    target = get_object_or_404(Profile, user__username=username)
+
+    not_sub = not target.subscribers.filter(pk=subscriber.pk).exists()
+    if target == subscriber or not_sub:
+        add_message(request, ERROR, 'Недопустимая операция')
+        return redirect('profile', username=username)
+
+    target.subscribers.remove(subscriber)
+    target.save()
+
+    add_message(request, SUCCESS, f'{username} был удалён из ваших подписок')
+    return redirect('profile', username=username)

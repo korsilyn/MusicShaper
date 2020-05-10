@@ -3,3 +3,9 @@ Pillow==7.0.0
 django-jsonfield==1.4.0
 pylint==2.5.0
 pylint-django==2.0.15
+
+# webserver
+daphne==2.5.0
+
+# Database
+mysqlclient==1.4.6
