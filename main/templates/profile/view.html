@@ -34,36 +34,45 @@
     {% endif %}
 
     <div class="text-center margin-top-2">
-        <div id="actions" class="btn-group-vertical">
-            {% if request.user == profile.user %}
-                <a class="btn btn-primary" href="{% url 'profile_edit' %}">
-                    Редактировать Профиль
+        {% if user == profile.user %}
+            <a class="btn btn-primary" href="{% url 'profile_edit' %}">
+                Редактировать Профиль
+            </a>
+        {% elif user.is_authenticated %}
+            {% if is_sub %}
+                <a href="{% url 'unsubscribe' username=profile.user.username %}"
+                class="btn btn-outline-danger">
+                    Вы подписаны ({{ profile.subscribers.count }})
+                </a>
+            {% else %}
+                <a href="{% url 'subscribe' username=profile.user.username %}"
+                class="btn btn-danger">
+                    Подписаться ({{ profile.subscribers.count }})
                 </a>
             {% endif %}
-            {% if request.user.is_authenticated and profile.user != user and not profile in user.profile.subscribers.all %}
-            <a class="btn btn-success" href="{% url 'subscribe' pk=profile.user.pk %}">Добавить друга</a>
-            {% elif request.user.is_authenticated and profile.user != user %}
-            <a class="btn btn-outline-danger" href="{% url 'unsubscribe' pk=profile.user.pk %}">Удалить друга</a>
-            {% endif %}
-        </div>
-        <div class="margin-top-5"></div>
+        {% endif %}
     </div>
+
     {% if request.user == profile.user %}
-    <div class="text-center">
-        <b>Ваши подписки</b>
-    </div>
-        <div class="text-center">
-        {% for sub in profile.subscribers.all %}
-            <b><i>{{ sub.user.username }}</i></b>
-            <a class="btn btn-outline-danger" href="{% url 'unsubscribe' pk=sub.user.pk %}">Удалить друга</a><br>
-        {% empty %}
-            <i>Вы ни на кого не подписаны :(</i>
-        {% endfor %}
+        <div class="text-center margin-top-2">
+            {% with sub_count=profile.subscriptions.count max_count=5 %}
+                <b>Ваши подписки ({{ sub_count }})</b> <br>
+                {% for sub in profile.subscriptions.all|slice:":max_count" %}
+                    <a href="{% url 'profile' username=sub.user.username %}">
+                        {{ sub.user.username }}
+                    </a>
+                    <br>
+                    {% if forloop.last and forloop.counter == max_count %}
+                        <i>...</i>
+                    {% endif %}
+                {% empty %}
+                    <i>Вы ни на кого не подписаны :/</i>
+                {% endfor %}
+            {% endwith %}
         </div>
-    <br>
     {% endif %}
 
-    <div class="text-center">
+    <div class="text-center margin-top-2">
         <b>Треки пользователя</b>
     </div>
     {% if tracks|length > 0 %}
@@ -80,9 +89,8 @@
             <i>Пользователь не создавал треков</i>
         </div>
     {% endif %}
-    <br>
 
-    <div class="text-center">
+    <div class="text-center margin-top-2">
         <b>Лайки пользователя</b>
     </div>
     {% if likes|length > 0 %}
@@ -97,4 +105,5 @@
     {% else %}
         <div class="text-center"><i>Пользователь не лайкал треки</i></div>
     {% endif %}
+    <div class="margin-top-5"></div>
 {% endblock %}
