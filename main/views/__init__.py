@@ -5,7 +5,7 @@
 from django.shortcuts import render
 
 from .auth import register_page, login_page, logout_page
-from .profile import profile_page, profile_edit_page, delete_avatar, change_password, subscribe_actions
+from .profile import profile_page, profile_edit_page, delete_avatar, change_password, subscribe, unsubscribe
 from .search import search_page
 from .track import track_view, popular_tracks
 from .project import new_project, project_home, manage_project, delete_project, projects_list

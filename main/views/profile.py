@@ -127,15 +127,18 @@ def delete_avatar(request):
 
 
 @login_required
-def subscribe_actions(request, action, pk):
-    if action == 'sub':
-        profile = get_object_or_404(Profile, user=request.user)
-        subscriber = get_object_or_404(Profile, user=pk)
-        profile.subscribers.add(subscriber)
-        profile.save()
-    elif action == 'unsub':
-        profile = get_object_or_404(Profile, user=request.user)
-        subscriber = get_object_or_404(Profile, user=pk)
-        profile.subscribers.remove(subscriber)
-        profile.save()
+def subscribe(request, pk):
+    profile = get_object_or_404(Profile, user=request.user)
+    subscriber = get_object_or_404(Profile, user=pk)
+    profile.subscribers.add(subscriber)
+    profile.save()
+    return redirect('profile')
+
+
+@login_required
+def unsubscribe(request, pk):
+    profile = get_object_or_404(Profile, user=request.user)
+    subscriber = get_object_or_404(Profile, user=pk)
+    profile.subscribers.remove(subscriber)
+    profile.save()
     return redirect('profile')

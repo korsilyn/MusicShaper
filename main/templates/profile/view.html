@@ -40,10 +40,10 @@
                     Редактировать Профиль
                 </a>
             {% endif %}
-            {% if request.user.is_authenticated and profile.user != request.user and not profile in user.profile.subscribers.all %}
-            <a class="btn btn-success" href="{% url 'subscribe' pk=profile.user.pk action='sub' %}">Добавить друга</a>
-            {% elif request.user.is_authenticated and profile.user != request.user %}
-            <a class="btn btn-outline-danger" href="{% url 'subscribe' pk=profile.user.pk action='unsub' %}">Удалить друга</a>
+            {% if request.user.is_authenticated and profile.user != user and not profile in user.profile.subscribers.all %}
+            <a class="btn btn-success" href="{% url 'subscribe' pk=profile.user.pk %}">Добавить друга</a>
+            {% elif request.user.is_authenticated and profile.user != user %}
+            <a class="btn btn-outline-danger" href="{% url 'unsubscribe' pk=profile.user.pk %}">Удалить друга</a>
             {% endif %}
         </div>
         <div class="margin-top-5"></div>
@@ -55,7 +55,7 @@
         <div class="text-center">
         {% for sub in profile.subscribers.all %}
             <b><i>{{ sub.user.username }}</i></b>
-            <a class="btn btn-outline-danger" href="{% url 'subscribe' pk=sub.user.pk action='unsub' %}">Удалить друга</a><br>
+            <a class="btn btn-outline-danger" href="{% url 'unsubscribe' pk=sub.user.pk %}">Удалить друга</a><br>
         {% empty %}
             <i>Вы ни на кого не подписаны :(</i>
         {% endfor %}
