@@ -52,3 +52,52 @@ class LoginTestCase(TestCase):
     def test_projects_load(self):
         self.check_if_loads('projects')
         self.check_login_required('projects', True)
+
+    def test_login_loads(self):
+        self.check_if_loads('login')
+        self.check_login_required('login', False)
+
+    def test_register_loads(self):
+        self.check_if_loads('register')
+        self.check_login_required('register', False)
+
+    def test_logout_loads(self):
+        response = self.client.get('logout')
+        self.assertEqual(response.status_code, 404)
+        self.check_login_required('logout', True)
+
+    def test_profile_edit_loads(self):
+        self.check_if_loads('profile_edit')
+        self.check_login_required('profile_edit', True)
+
+    def test_delete_avatar_loads(self):
+        self.check_if_loads('delete_avatar')
+        self.check_login_required('delete_avatar', True)
+
+    def test_change_password_loads(self):
+        self.check_if_loads('change_password')
+        self.check_login_required('change_password', True)
+
+    def test_new_project_loads(self):
+        self.check_if_loads('new_project')
+        self.check_login_required('new_project', True)
+
+    '''def test_project_home_loads(self):
+        self.check_if_loads('project_home', proj_id=1)
+        self.check_login_required('project_home', True, proj_id=1)'''
+
+    '''def test_manage_project_loads(self):
+        self.check_if_loads('manage_project', proj_id=1)
+        self.check_login_required('manage_project', True, proj_id=1)'''
+
+    def test_search_loads(self):
+        self.check_if_loads('search')
+        self.check_login_required('search', False)
+
+    def test_admin_create_tests_loads(self):
+        self.check_if_loads('create_test_track')
+        self.check_login_required('create_test_track', True)
+
+    def test_admin_loads(self):
+        self.check_if_loads('admin_home')
+        self.check_login_required('admin_home', True)
