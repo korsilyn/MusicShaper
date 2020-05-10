@@ -33,7 +33,7 @@ def profile_page(request):
         "profile": profile,
         "tracks": MusicTrack.objects.filter(author=user),
         "likes": MusicTrack.objects.filter(likes=user),
-        "user": get_object_or_404(Profile, user=request.user)
+        "user_profile": get_object_or_404(Profile, user=request.user)
     })
     
     return render(request, 'profile/view.html', context)

@@ -40,27 +40,28 @@
                     Редактировать Профиль
                 </a>
             {% endif %}
-            {% if not request.user.is_authenticated and profile != user and not profile in user.subscribers %}
+            {% if request.user.is_authenticated and profile.user != request.user and not profile in user.profile.subscribers.all %}
             <a class="btn btn-success" href="{% url 'subscribe' pk=profile.user.pk action='sub' %}">Добавить друга</a>
-            {% elif not request.user.is_authenticated and profile != user %}
+            {% elif request.user.is_authenticated and profile.user != request.user %}
             <a class="btn btn-outline-danger" href="{% url 'subscribe' pk=profile.user.pk action='unsub' %}">Удалить друга</a>
             {% endif %}
         </div>
         <div class="margin-top-5"></div>
     </div>
+    {% if request.user == profile.user %}
     <div class="text-center">
-        <b>Друзья пользователя</b>
+        <b>Ваши подписки</b>
     </div>
-    {% if profile.subscribers|length > 0 %}
-        {% for sub in profile.subscribers %}
-                <p>{{ sub.user }}</p>
-        {% endfor %}
-    {% else %}
         <div class="text-center">
-            <i>У пользователя нет друзей :(</i>
+        {% for sub in profile.subscribers.all %}
+            <b><i>{{ sub.user.username }}</i></b>
+            <a class="btn btn-outline-danger" href="{% url 'subscribe' pk=sub.user.pk action='unsub' %}">Удалить друга</a><br>
+        {% empty %}
+            <i>Вы ни на кого не подписаны :(</i>
+        {% endfor %}
         </div>
-    {% endif %}
     <br>
+    {% endif %}
 
     <div class="text-center">
         <b>Треки пользователя</b>
