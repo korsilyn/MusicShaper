@@ -2,81 +2,46 @@
 {% load static %}
 
 {% block 'title' %}
-    Создание трека
+    Паттерн {{ pattern.name }}
 {% endblock %}
-
-{% block 'head' %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/editor.css' %}">
-{% endblock %}
-
-{% block 'body_attrs' %}{% endblock %}
 
 {% block 'body' %}
-    <div style="display: grid; height: 100vh; grid-template-rows: auto auto;">
-        {% include './settings.html' %}
-        {% include './notesEditor.html' %}
+    <div style="width: inherit; height: inherit; overflow: scroll;">
+        <canvas id="testCanvas">
+            Ваш браузер не поддерживает canvas :/
+        </canvas>
     </div>
 {% endblock %}
 
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
-    <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
-    <script src="{% static 'scripts/grid.js' %}"></script>
-    <script src="{% static 'scripts/patternMousePainter.js' %}"></script>
-    <script src="{% static 'scripts/patternGrid.js' %}"></script>
-    <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
-    <script src="{% static 'scripts/musicNotes.js' %}"></script>
-    <script src="{% static 'scripts/patternPlayer.js' %}"></script>
+    <script async src="{% static 'libs/paper.js' %}"></script>
     <script>
-        const notes = getNotes(7, 2);
-        const noteSize = [50, 25];
+        const container = document.getElementById('_mainContainer');
+        container.classList.remove('container');
 
-        const cheatsheetGrid = new PatternGrid('cheatsheet', [1, notes.length], noteSize, {
-            grid: "black"
-        }, true);
+        const sidebarWidth = document.getElementsByTagName('side-bar')
+            .item(0).clientWidth;
 
-        const trackGrid = new PatternGrid('track', [100, notes.length], noteSize, {
-            note: "#fc4141"
-        }, false, 1);
+        container.style = `
+            width: ${document.body.clientWidth - sidebarWidth}px;
+            height: 100vh;
+        `;
 
-        function renderCheatsheet() {
-            cheatsheetGrid.bgContext.font = '25px Consolas';
-            for (let i = 0; i < notes.length; i++) {
-                cheatsheetGrid.bgContext.fillText(notes[i], 4, i * noteSize[1] + 21);
-            }
-        }
+        // global
+        var noteNotations = new Array(6).fill([
+            'C', 'C#',
+            'D', 'D#',
+            'E',
+            'F', 'F#',
+            'G', 'G#',
+            'A', 'A#',
+            'B',
+        ]).map((arr, i) => arr.map(note => note + (i + 2))).flat();
 
-        const thumbs = document.getElementsByClassName("scrollbar-thumb");
-        new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
-        new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
-        
-        cheatsheetGrid.renderBackground();
-        trackGrid.renderBackground(getNoteNames().length);
-        renderCheatsheet();
-
-        const synth = new Tone.PolySynth(notes.length);
-        const gain = new Tone.Gain(0.5);
-        
-        synth.connect(gain);
-        gain.toMaster();
-
-        const noteDuration = '8n';
-        
-        const oldOnCellUpdate = trackGrid.oncellupdate;
-        trackGrid.oncellupdate = (x, y, value) => {
-            oldOnCellUpdate(x, y, value);
-            if (!value) return;
-
-            synth.triggerAttackRelease(notes[y], noteDuration);
-        }
-
-        const player = new PatternPlayer(trackGrid, synth, {
-            noteDuration
-        });
-
-        trackGrid.mousePainter.onenddraw = () => {
-            player.stop();
-        }
+        var notes = [];
 
     </script>
+    <script async type="text/paperscript" canvas="testCanvas"
+    src="{% static 'scripts/noteEditor.js' %}"></script>
 {% endblock %}
