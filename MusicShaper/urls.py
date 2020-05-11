@@ -14,42 +14,72 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from main import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('popular_tracks/', views.popular_tracks, name='popular_tracks'),
-    path('login/', views.login_page, name='login'),
+
+    path('admin/', include([
+        path('', views.admin_home, name='admin_home'),
+        path('django/', admin.site.urls),
+        path('create_test_track', views.create_test_track, name='create_test_track'),
+    ])),
+
     path('register/', views.register_page, name='register'),
+    path('login/', views.login_page, name='login'),
     path('logout/', views.logout_page, name='logout'),
-    path('profile/', views.profile_page, name='profile'),
-    path('profile/edit', views.profile_edit_page, name='profile_edit'),
-    path('profile/delete_avatar', views.delete_avatar, name='delete_avatar'),
-    path('profile/change_password', views.change_password, name='change_password'),
-    path('projects', views.projects_list, name='projects'),
-    path('project/new', views.new_project, name='new_project'),
-    path('project/<int:proj_id>/home', views.project_home, name='project_home'),
-    path('project/<int:proj_id>/manage',
-         views.manage_project, name='manage_project'),
-    path('project/<int:proj_id>/delete',
-         views.delete_project, name='delete_project'),
-    path('project/<int:proj_id>/instruments',
-         views.instruments, name='instruments'),
-    path('project/<int:proj_id>/instrument/new',
-         views.new_instrument, name='new_instrument'),
-    path('project/<int:proj_id>/instrument/<int:instr_id>',
-         views.edit_instrument, name='edit_instrument'),
-    path('project/<int:proj_id>/instrument/<int:instr_id>/manage',
-         views.manage_instrument, name='manage_instrument'),
-    path('project/<int:proj_id>/instrument/<int:instr_id>/delete',
-         views.delete_instrument, name='delete_instrument'),
-    path('track/<int:track_id>', views.track_view, name='track'),
+
+    path('profile/', include([
+        path('', views.profile_page, {'username': None}, name='profile'),
+        path('edit/', views.profile_edit_page, name='profile_edit'),
+        path('delete_avatar/', views.delete_avatar, name='delete_avatar'),
+        path('change_password/', views.change_password, name='change_password'),
+        path('<str:username>/', include([
+            path('', views.profile_page, name='profile'),
+            path('sub', views.subscribe, name='subscribe'),
+            path('unsub', views.unsubscribe, name='unsubscribe'),
+        ])),
+    ])),
+
+    path('projects/', include([
+        path('', views.projects_list, name='projects'),
+        path('new/', views.new_project, name='new_project'),
+        path('<int:proj_id>/', include([
+            path('', views.project_home, name='project_home'),
+            path('manage/', views.manage_project, name='manage_project'),
+            path('delete/', views.delete_project, name='delete_project'),
+
+            path('instruments/', include([
+                path('', views.instruments, name='instruments'),
+                path('new/', views.new_instrument, name='new_instrument'),
+                path('<int:instr_id>/', include([
+                    path('', views.edit_instrument, name='edit_instrument'),
+                    path('manage/', views.manage_instrument, name='manage_instrument'),
+                    path('delete/', views.delete_instrument, name='delete_instrument'),
+                ])),
+            ])),
+
+            path('patterns/', include([
+                path('', views.patterns_list, name='patterns'),
+                path('new/', views.new_pattern, name='new_pattern'),
+                path('<int:pat_id>/', include([
+                    path('', views.pattern_editor, name='pattern_editor'),
+                ])),
+            ])),
+        ])),
+    ])),
+
+    path('tracks/', include([
+        path('', views.popular_tracks, name='popular_tracks'),
+        path('<int:track_id>/', include([
+            path('', views.track_view, name='track'),
+        ])),
+    ])),
+
     path('search/', views.search_page, name='search'),
-    path('admin_home/create_test_track',
-         views.create_test_track, name='create_test_track'),
-    path('admin_home/', views.admin_home, name='admin_home'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

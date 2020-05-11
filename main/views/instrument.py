@@ -47,7 +47,7 @@ def new_instrument(request, proj_id: int):
     project = get_project_or_404(request, proj_id)
 
     if request.method == 'POST':
-        form = MusicInstrumentForm(request.POST)
+        form = MusicInstrumentForm(project, data=request.POST)
         if form.is_valid():
             try:
                 existed_i = MusicInstrument.objects.filter(
@@ -56,9 +56,7 @@ def new_instrument(request, proj_id: int):
                 if existed_i:
                     raise LookupError
 
-                instrument = form.instance
-                instrument.project = project
-                instrument.save()
+                instrument = form.save()
             except TypeError:
                 add_message(request, ERROR, 'Неизвестный тип инструмента')
             except LookupError:
@@ -71,7 +69,7 @@ def new_instrument(request, proj_id: int):
         else:
             add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = MusicInstrumentForm()
+        form = MusicInstrumentForm(project)
 
     context = get_base_context(request, {
         'project': project,
@@ -127,14 +125,14 @@ def manage_instrument(request, proj_id: int, instr_id: int):
     instrument = get_object_or_404(MusicInstrument, pk=instr_id)
 
     if request.method == 'POST':
-        form = MusicInstrumentForm(instance=instrument, data=request.POST)
+        form = MusicInstrumentForm(project, instance=instrument, data=request.POST)
         if form.is_valid():
             form.save()
             add_message(request, SUCCESS, 'Изменения успешно сохранены')
             return redirect('edit_instrument', proj_id=proj_id, instr_id=instr_id)
         add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = MusicInstrumentForm(instance=instrument)
+        form = MusicInstrumentForm(project, instance=instrument)
 
     context = get_base_context(request, {
         'project': project,

@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block 'title' %}
     Проект {{ project.name }}
+{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
 {% endblock %}
 
 {% block 'body' %}
     <div class="text-center margin-top-10">
         <h1>Проект</h1>
         <h2 class="quotes">{{ project.name }}</h2>
-        <h5 class="text-secondary quotes margin-top-2 mx-auto" style="max-width: 45%;">{{ project.desc }}</h5>
+        {% if project.desc %}
+            <h5 class="text-secondary quotes margin-top-2 mx-auto" style="max-width: 45%;">{{ project.desc }}</h5>
+        {% endif %}
         <div class="margin-top-2"></div>
         <a href="{% url 'projects' %}">Назад к списку проектов</a>
     </div>
@@ -27,8 +34,17 @@
                 Создать первый инструмент
             </a>
         {% endif %}
-        <a class="btn btn-secondary" href="{% url 'instruments' proj_id=project.id %}">
-            Музыкальные инструменты
-        </a>
+        <div class="card-link-list card-link-list-center">
+            <a href="{% url 'instruments' proj_id=project.id %}">
+                <div class="card-title">
+                    Музыкальные инструменты
+                </div>
+            </a>
+            <a href="{% url 'patterns' proj_id=project.id %}">
+                <div class="card-title">
+                    Паттерны
+                </div>
+            </a>
+        </div>
     </div>
 {% endblock %}

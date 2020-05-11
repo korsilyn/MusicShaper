@@ -10,8 +10,7 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div class="margin-top-10"></div>
-    <div class="text-center title">
+    <div class="text-center margin-top-10">
         <h2>Список инструментов</h2>
         <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
     </div>
@@ -34,8 +33,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    <div class="margin-top-5"></div>
-    <div class="text-center">
+    <div class="text-center margin-top-5">
         <a class="btn btn-outline-primary" href="{% url 'new_instrument' proj_id=project.id %}">
             Новый инструмент
         </a>
