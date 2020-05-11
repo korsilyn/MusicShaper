@@ -7,7 +7,8 @@
 
 {% block 'body' %}
     <div style="width: inherit; height: inherit; overflow: scroll;">
-        <canvas id="testCanvas">
+        <canvas id="testCanvas" oncontextmenu="return false"
+        style="display: none;">
             Ваш браузер не поддерживает canvas :/
         </canvas>
     </div>
@@ -20,13 +21,19 @@
         const container = document.getElementById('_mainContainer');
         container.classList.remove('container');
 
-        const sidebarWidth = document.getElementsByTagName('side-bar')
-            .item(0).clientWidth;
-
-        container.style = `
-            width: ${document.body.clientWidth - sidebarWidth}px;
-            height: 100vh;
-        `;
+        window.onresize = function () {
+            const p = document.querySelector('script[type="text/paperscript"]');
+            const cId = p.getAttribute('canvas');
+            const canvas = document.querySelector(`canvas#${cId}`);
+            canvas.style.display = 'block';
+            canvas.focus();
+            const sidebarWidth = document.getElementsByTagName('side-bar')
+                .item(0).clientWidth;
+            container.style = `
+                width: ${document.body.clientWidth - sidebarWidth}px;
+                height: 100vh;
+            `;
+        }
 
         // global
         var noteNotations = new Array(6).fill([
@@ -38,9 +45,6 @@
             'A', 'A#',
             'B',
         ]).map((arr, i) => arr.map(note => note + (i + 2))).flat();
-
-        var notes = [];
-
     </script>
     <script async type="text/paperscript" canvas="testCanvas"
     src="{% static 'scripts/noteEditor.js' %}"></script>
