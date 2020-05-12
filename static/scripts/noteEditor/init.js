@@ -33,6 +33,10 @@ var baseNoteNotations = [
 var noteNotations = new Array(octaves).fill(baseNoteNotations)
     .map((arr, i) => arr.map(note => note + (i + octavesFrom))).flat();
 
+var availableInstrumentNames = JSON.parse(
+    document.getElementById('allInstrumentNames').innerText
+);
+
 var instrumentSettings = JSON.parse(
     document.getElementById('usedInstruments').innerText
 );
@@ -67,6 +71,7 @@ async function loadInstrument(name) {
     try {
         const settings = await requestInstrument(name);
         instrumentSettings[name] = settings;
+        return { name, ...settings };
     }
     catch (err) {
         console.error(`failed to request instrument: ${err}`);
@@ -74,6 +79,24 @@ async function loadInstrument(name) {
 }
 
 var currentInstrument = Object.keys(instrumentSettings)[0];
+
+if (!currentInstrument) {
+    if (availableInstrumentNames.length == 0) {
+        alert('В вашем проекте нет музыкальных иснтрументов');
+    }
+    else {
+        loadInstrument(availableInstrumentNames[0]).then(instr => {
+            currentInstrument = instr.name;
+        }).catch(() => {
+            alert('Произошла ошибка при загрузке музыкального инструмента');
+            alert('Попробуйте зайти на эту страницу позже');
+        });
+    }
+}
+
+document.getElementById('instrumentSelect').onchange = function () {
+    currentInstrument = this.value;
+};
 
 /** @type {Map<string, MusicNote[]>} */
 var musicNotes = new Map();
@@ -92,10 +115,24 @@ class MusicNote {
         this.length = duration;
         this.note = noteId;
         this.octave = octave;
+    }
 
-        console.log(this.note, this.octave);
+    remove() {
+        if (!musicNotes.has(this.instrument)) {
+            return;
+        }
+        const arr = musicNotes.get(this.instrument);
+        const index = arr.findIndex(n => n == this);
+        arr.splice(index);
+    }
 
-        MusicNote.register(this);
+    /**
+     * @returns {boolean}
+     */
+    checkIntersections() {
+        const related_notes = (musicNotes.get(this.instrument) || [])
+            .filter(n => this.octave == n.octave && this.note == n.note && this.time < n.time);
+        return related_notes.some(n => this.time + this.length > n.time);
     }
 
     /**
@@ -106,14 +143,22 @@ class MusicNote {
             musicNotes.set(note.instrument, []);
         }
         musicNotes.get(note.instrument).push(note);
+        return note;
     }
 
-    remove() {
-        if (!musicNotes.has(this.instrument)) {
-            return;
-        }
-        const arr = musicNotes.get(this.instrument);
-        const index = arr.findIndex(n => n == this);
-        arr.splice(index);
+    /**
+     * @param {paper.Path.Rectangle} path
+     * @param {paper.Size} cellSize
+     * @param {string} instrument
+     */
+    static makeNoteFromPath(path, cellSize, instrument = undefined) {
+        const coordY = Math.floor(path.bounds.top / cellSize.height);
+        return new MusicNote(
+            instrument || currentInstrument,
+            Math.floor(path.bounds.left / cellSize.width),
+            Math.floor(path.bounds.width / cellSize.width),
+            baseNoteNotations.length - coordY % baseNoteNotations.length,
+            octavesFrom + octaves - Math.floor(coordY / baseNoteNotations.length) - 1
+        );
     }
 }

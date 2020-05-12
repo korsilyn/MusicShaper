@@ -27,7 +27,7 @@
             <div class="seperator"></div>
 
             <label>Текущий инструмент:</label>
-            <select>
+            <select id="instrumentSelect">
                 {% for name in allInstruments %}
                     <option value="{{ name }}">{{ name }}</option>
                 {% endfor %}
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div style="width: inherit; height: 93vh; overflow: scroll;">
-        <canvas id="testCanvas" oncontextmenu="return false"
+        <canvas id="mainCanvas" oncontextmenu="return false"
         style="display: none;">
             Ваш браузер не поддерживает canvas :/
         </canvas>
@@ -52,10 +52,14 @@
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
 
+    <script>
+        var patternDuration = Number('{{ pattern.duration }}');
+    </script>
+
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
     <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/draw.js' %}"
-    async type="text/paperscript" canvas="testCanvas"></script>
+    async type="text/paperscript" canvas="mainCanvas"></script>
 {% endblock %}
