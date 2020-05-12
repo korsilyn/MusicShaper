@@ -1,0 +1,41 @@
+#settingsPanel {
+    height: 7vh;
+    background-color: var(--bg-secondary);
+    padding: 10px;
+    box-shadow: 0 1px 14px 4px rgba(0, 0, 0, 0.3);
+}
+
+select, input, button {
+    border-radius: 5px;
+    margin-left: 5px;
+    height: 30px;
+}
+
+#settingsPanel label {
+    margin-bottom: 4px;
+}
+
+#settingsPanel .inputs {
+    display: flex;
+    align-items: center;
+}
+
+#settingsPanel .seperator {
+    background-color: var(--text);
+    border: 2px solid var(--text);
+    opacity: 0.5;
+    border-radius: 3px;
+    height: 20px;
+    width: 3px;
+    --margin: 10px;
+    margin-left: var(--margin);
+    margin-right: var(--margin);
+}
+
+#playBtn {
+    background-color: greenyellow;
+}
+
+#topBtn {
+    background-color: gray;
+}

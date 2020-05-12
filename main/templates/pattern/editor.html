@@ -5,8 +5,42 @@
     Паттерн {{ pattern.name }}
 {% endblock %}
 
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/noteEditor.css' %}">
+{% endblock %}
+
 {% block 'body' %}
-    <div style="width: inherit; height: inherit; overflow: scroll;">
+    <div id="settingsPanel" class="theme-transition">
+        <h4 class="inputs">
+            Редактор паттерна
+            <span style="margin-left: 5px;"
+            class="quotes">{{ pattern.name }}</span>
+            <div class="seperator"></div>
+            <a href="{% url 'patterns' proj_id=project.id %}">
+                Назад к списку паттернов
+            </a>
+        </h4>
+        <div id="settings" class="inputs">
+            <button id="playBtn">Играть</button>
+            <button id="stopBtn">Стоп</button>
+
+            <div class="seperator"></div>
+
+            <label>Текущий инструмент:</label>
+            <select>
+                {% for name in allInstruments %}
+                    <option value="{{ name }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="seperator"></div>
+
+            <label>Темп:</label>
+            <input type="number" min="20" max="999"
+            value="{{ project.settings.bpm }}">
+        </div>
+    </div>
+    <div style="width: inherit; height: 93vh; overflow: scroll;">
         <canvas id="testCanvas" oncontextmenu="return false"
         style="display: none;">
             Ваш браузер не поддерживает canvas :/
@@ -16,36 +50,12 @@
 
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
-    <script async src="{% static 'libs/paper.js' %}"></script>
-    <script>
-        const container = document.getElementById('_mainContainer');
-        container.classList.remove('container');
+    <script src="{% static 'libs/paper.js' %}"></script>
 
-        window.onresize = function () {
-            const p = document.querySelector('script[type="text/paperscript"]');
-            const cId = p.getAttribute('canvas');
-            const canvas = document.querySelector(`canvas#${cId}`);
-            canvas.style.display = 'block';
-            canvas.focus();
-            const sidebarWidth = document.getElementsByTagName('side-bar')
-                .item(0).clientWidth;
-            container.style = `
-                width: ${document.body.clientWidth - sidebarWidth}px;
-                height: 100vh;
-            `;
-        }
+    {{ allInstruments|json_script:"allInstrumentNames" }}
+    {{ usedInstruments|json_script:"usedInstruments" }}
 
-        // global
-        var noteNotations = new Array(6).fill([
-            'C', 'C#',
-            'D', 'D#',
-            'E',
-            'F', 'F#',
-            'G', 'G#',
-            'A', 'A#',
-            'B',
-        ]).map((arr, i) => arr.map(note => note + (i + 2))).flat();
-    </script>
-    <script async type="text/paperscript" canvas="testCanvas"
-    src="{% static 'scripts/noteEditor.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/draw.js' %}"
+    async type="text/paperscript" canvas="testCanvas"></script>
 {% endblock %}

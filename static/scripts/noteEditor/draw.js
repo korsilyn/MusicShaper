@@ -1,5 +1,5 @@
-/// <reference path="../libs/@types/paper.d.ts" />
-/// <reference path="../libs/@types/Tone.d.ts" />
+/// <reference path="../../libs/@types/paper.d.ts" />
+/// <reference path="../../libs/@types/Tone.d.ts" />
 
 /** @type {paper.Project} */
 var project;
@@ -87,6 +87,7 @@ function getCellId(point, offsetX, offsetY) {
 
 /** @param {paper.Path.Rectangle} path */
 function NoteRect(path) {
+    /** @type {paper.Point} */
     this.coords = (path.bounds.topLeft / cellSizePoint + onePoint).floor();
     this.length = Math.floor(path.bounds.width / cellSize.width);
 
@@ -100,6 +101,14 @@ function NoteRect(path) {
         this.cellIds.push(id);
     }
 
+    this.note = new MusicNote(
+        currentInstrument,
+        this.coords.x,
+        this.length,
+        this.coords.y % baseNoteNotations.length + 1,
+        octavesFrom + octaves - Math.floor(this.coords.y / baseNoteNotations.length) - 1
+    );
+
     this.path = path.clone();
     this.path.opacity = 1;
 
@@ -108,6 +117,7 @@ function NoteRect(path) {
             delete occupiedCells[this.cellIds[i]];
         }
         this.path.remove();
+        this.note.remove();
     }
 }
 

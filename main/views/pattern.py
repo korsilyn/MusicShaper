@@ -5,6 +5,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
+from django.http import JsonResponse
 from ..models import MusicTrackPattern
 from ..forms import MusicPatternForm
 from .project import get_project_or_404
@@ -71,9 +72,30 @@ def pattern_editor(request, proj_id: int, pat_id: int):
     project = get_project_or_404(request, proj_id)
     pattern = get_object_or_404(MusicTrackPattern, pk=pat_id, project=project)
 
+    if request.method == 'GET' and request.is_ajax():
+        operation = request.GET.get('operation', None)
+        response = {'success': False}
+
+        if operation == 'loadInstrument':
+            name = request.GET.get('instrumentName', '')
+            instr = project.instruments.filter(name=name).first()
+            if instr is not None:
+                response.update({
+                    'success': True,
+                    name: instr.get_settings()
+                })
+
+        return JsonResponse(response)
+
     context = get_base_context(request, {
         'project': project,
-        'pattern': pattern
+        'pattern': pattern,
+        'usedInstruments': {},
+        'allInstruments': list(project.instruments\
+            .values_list('name', flat=True))
     })
+
+    for instrument in pattern.get_instruments():
+        context['usedInstruments'][instrument.name] = instrument.get_settings()
 
     return render(request, 'pattern/editor.html', context)

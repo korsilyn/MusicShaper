@@ -95,6 +95,16 @@ class MusicTrackPattern(models.Model):
     color = models.CharField(max_length=25)
     duration = models.PositiveIntegerField()
 
+    def get_instruments(self):
+        '''
+        Возвращает инструменты, использующиеся в паттерне (генератор)
+        '''
+
+        pks = MusicNote.objects.filter(pattern=self)\
+            .values_list('instrument', flat=True).distinct()
+        for i_pk in pks:
+            yield MusicInstrument.objects.get(pk=i_pk)
+
 
 class TrackPatternInstance(models.Model):
     '''
