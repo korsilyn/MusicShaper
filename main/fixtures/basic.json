@@ -172,7 +172,6 @@
     "pk": 1,
     "fields": {
         "project": 2,
-        "duration": 256,
         "bpm": 120
     }
 },
