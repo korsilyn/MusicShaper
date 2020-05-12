@@ -38,6 +38,9 @@ sphinx:
   - pip install -r ci/sphinx_requirements.txt
   script:
   - sphinx-build -b html . public
+  artifacts:
+    paths:
+      - public/
 
 
 pep8:
