@@ -37,7 +37,7 @@
     <p class="text-center margin-top-2">
         <b>
             Автор:
-            <a href="{% url 'profile' %}?username={{ track.author }}">
+            <a href="{% url 'profile' username=track.author.username %}">
                 {{ track.author }}
             </a>
         </b>
