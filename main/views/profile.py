@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import Http404
 from .util import get_base_context
 from ..models import Profile, MusicTrack
 
@@ -25,13 +25,16 @@ def profile_page(request, username):
     view_my_profile = not isinstance(username, str)
     user = request.user if view_my_profile else get_object_or_404(User, username=username)
 
+    if view_my_profile and request.user.is_anonymous:
+        raise Http404
+
     context = get_base_context(request, {
         "profile": user.profile,
         "tracks": MusicTrack.objects.filter(author=user),
         "likes": MusicTrack.objects.filter(likes=user),
     })
 
-    if not view_my_profile:
+    if not view_my_profile and not request.user.is_anonymous:
         is_sub = user.profile.subscribers.filter(pk=request.user.profile.pk).exists()
         context['is_sub'] = is_sub
 
