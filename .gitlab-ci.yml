@@ -37,7 +37,7 @@ sphinx:
   before_script:
   - pip install -r ci/sphinx_requirements.txt
   script:
-  - sphinx-build -b html public
+  - sphinx-build -b html . public
 
 
 pep8:
