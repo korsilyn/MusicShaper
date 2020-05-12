@@ -16,6 +16,30 @@ stages:
   - deploy
 
 
+coverage:
+  stage: test
+  before_script:
+  - pip install -r requirements.txt
+  - pip install coverage
+  script:
+  - coverage run manage.py test
+  - coverage report --omit=manage.py
+  - coverage html --omit=manage.py
+  - mkdir public
+  - mv htmlcov public/coverage
+  artifacts:
+    paths:
+      - public/coverage
+
+
+sphinx:
+  stage: test
+  before_script:
+  - pip install -r ci/sphinx_requirements.txt
+  script:
+  - sphinx-build -b html . public
+
+
 pep8:
   stage: style
   before_script:
@@ -39,22 +63,6 @@ pylint:
     paths:
       - public/pylint.svg
       - public/pylint.html
-
-
-test:
-  stage: test
-  before_script:
-  - pip install -r requirements.txt
-  - pip install coverage
-  script:
-  - coverage run manage.py test
-  - coverage report --omit=manage.py
-  - coverage html --omit=manage.py
-  - mkdir public
-  - mv htmlcov public/coverage
-  artifacts:
-    paths:
-      - public/coverage
 
 
 pages:

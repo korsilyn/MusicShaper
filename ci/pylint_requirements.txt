@@ -1,6 +1,7 @@
 Django==3.0
 django-debug-toolbar
-pylint
-pylint-django
+django-jsonfield==1.4.0
+pylint==2.5.0
+pylint-django==2.0.15
 pylint-json2html
 anybadge
