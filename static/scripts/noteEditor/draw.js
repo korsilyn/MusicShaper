@@ -114,51 +114,55 @@ notesPlaceLayer.addChild(noteBlueprint);
 noteBlueprint.opacity = 0;
 noteBlueprint.position.x += cellSize.width;
 
-var resizing = false;
+var placing = false;
+var deleting = false;
 
 /** @param {paper.MouseEvent} mouseEvent */
 function calcMouseCellPoint(mouseEvent) {
     return (mouseEvent.point / cellSizePoint).floor();
 }
 
-function resetBlueprint(updateWidth) {
-    if (updateWidth) {
-        noteBlueprint.bounds.width = cellSize.width;
-    }
+function resetBlueprint() {
+    noteBlueprint.bounds.width = cellSize.width;
     noteBlueprint.position = (mouseCellPoint + 0.5) * cellSizePoint;
 }
 
 notesPlaceLayer.onMouseDown = function (event) {
-    resizing = event.event.button == 0;
-    if (resizing) {
+    placing = event.event.button == 0;
+    deleting = event.event.button == 2;
+    if (placing) {
         noteBlueprint.note = MusicNote.makeNoteFromPath(noteBlueprint, cellSize);
-        document.body.style.cursor = 'e-resize';
     }
 }
 
 /** @param {paper.MouseEvent} event */
-function onMouseMove(event) {
+project.view.onMouseMove = function (event) {
     mouseCellPoint = calcMouseCellPoint(event);
-    if (resizing) {
+    if (placing) {
         var length = mouseCellPoint.x - noteBlueprint.note.time + 1;
         if (length >= 1 && mouseCellPoint.x < gridSize.width) {
             noteBlueprint.note.length = length;
             if (!noteBlueprint.note.checkIntersections()) {
                 noteBlueprint.bounds.width = length * cellSize.width;
+                document.body.style.cursor = 'e-resize';
             }
         }
     }
     else {
+        console.log(deleting);
+        if (deleting) {
+            var hit = notesLayer.hitTest(event.point);
+            if (hit) {
+                hit.item.onClick({ event: { button: 2 } });
+            }
+        }
         resetBlueprint();
     }
 }
 
-notesPlaceLayer.onMouseMove = onMouseMove;
-notesLayer.onMouseMove = onMouseMove;
-
 project.view.onMouseUp = function (event) {
-    if (resizing && event.event.button == 0) {
-        resizing = false;
+    if (placing && event.event.button == 0) {
+        placing = false;
 
         /** @type {paper.Path} */
         var clone = noteBlueprint.clone();
@@ -174,16 +178,17 @@ project.view.onMouseUp = function (event) {
             }
         }
 
-        resetBlueprint(true);
+        resetBlueprint();
     }
+    deleting = false;
 }
 
-project.view.onMouseEnter = function () {
+notesPlaceLayer.onMouseEnter = function () {
     noteBlueprint.opacity = 0.5;
 }
 
-project.view.onMouseLeave = function () {
-    if (!resizing) {
+notesPlaceLayer.onMouseLeave = function () {
+    if (!placing) {
         noteBlueprint.opacity = 0;
     }
 }
