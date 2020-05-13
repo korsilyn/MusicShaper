@@ -1,5 +1,18 @@
 :root {
     --panel-height: 80px;
+    --cell-width: 40px;
+    --cell-height: 25px;
+    --grid-color: rgba(0, 0, 0, 0.3);
+}
+
+canvas#mainCanvas {
+    background-size:
+        var(--cell-width) var(--cell-height),
+        var(--cell-width) calc(var(--cell-height) * 12);
+    background-image:
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, grey 2px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
 }
 
 #settingsPanel {

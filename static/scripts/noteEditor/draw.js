@@ -12,14 +12,13 @@ var gridLayer = project.activeLayer;
 gridLayer.name = 'grid';
 
 var gridSize = new paper.Size(window.patternDuration, window.noteNotations.length);
-var cellSize = new paper.Size(40, 25);
+
+window.cellSize = cellSize;
 
 var cellSizePoint = new paper.Point(cellSize.width, cellSize.height);
 
-var gridRealSize = new paper.Size(
-    gridSize.width * cellSize.width,
-    gridSize.height * cellSize.height
-);
+/** @type {paper.Size} */
+var gridRealSize = gridSize * cellSize;
 
 project.view.viewSize.set({
     width: gridRealSize.width,
@@ -27,49 +26,6 @@ project.view.viewSize.set({
 });
 
 window.onresize();
-
-var gridStyle = {
-    strokeColor: 'black',
-    strokeWidth: 1,
-};
-
-var gridVerticalLine = new paper.Path.Line({
-    style: gridStyle,
-    from: new paper.Point(0, 0),
-    to: new paper.Point(0, gridRealSize.height),
-    locked: true,
-});
-
-var gridHorizontalLine = new paper.Path.Line({
-    style: gridStyle,
-    from: new paper.Point(0, 0),
-    to: new paper.Point(gridRealSize.width, 0),
-    locked: true,
-});
-
-var gridVLineDefinition = new paper.SymbolDefinition(gridVerticalLine);
-var gridHLineDefinition = new paper.SymbolDefinition(gridHorizontalLine);
-
-/** @type {paper.Path} */
-var instance;
-
-for (var x = 1; x <= gridSize.width; x++) {
-    instance = gridVLineDefinition.place();
-    instance.position.x = x * cellSize.width;
-    instance.position.y = gridRealSize.height / 2;
-}
-
-for (var y = 1; y <= gridSize.height; y++) {
-    instance = gridHLineDefinition.place();
-    instance.position.y = y * cellSize.height;
-    instance.position.x = gridRealSize.width / 2;
-}
-
-gridLayer.opacity = 0.5;
-
-var raster = gridLayer.rasterize(64);
-gridLayer.removeChildren();
-gridLayer.addChild(raster);
 
 //#endregion
 
@@ -91,8 +47,7 @@ var notesLayer = new paper.Layer({
 });
 
 function makeNotePath() {
-    var currInstr = window.currentInstrument || {};
-    var fillColor = new paper.Color(currInstr._notesColor || 'red');
+    var fillColor = new paper.Color(currentInstrument._notesColor || 'red');
     var strokeColor = fillColor.clone();
     strokeColor.brightness -= 0.4;
     return new paper.Path.Rectangle({
@@ -111,6 +66,12 @@ var mouseCellPoint;
 var noteBlueprint = makeNotePath();
 notesPlaceLayer.addChild(noteBlueprint);
 noteBlueprint.opacity = 0;
+
+onInstrumentSelected = function () {
+    noteBlueprint.fillColor = currentInstrument._notesColor;
+}
+
+loadFirstInstrument();
 
 var placing = false;
 var deleting = false;
@@ -160,6 +121,7 @@ project.view.onMouseMove = function (event) {
 project.view.onMouseUp = function (event) {
     if (placing && event.event.button == 0) {
         placing = false;
+        document.body.style.cursor = null;
 
         /** @type {paper.Path} */
         var clone = noteBlueprint.clone();
@@ -189,9 +151,5 @@ notesPlaceLayer.onMouseLeave = function () {
         noteBlueprint.opacity = 0;
     }
 }
-
-document.body.addEventListener('mouseup', function () {
-    document.body.style.cursor = '';
-});
 
 //#endregion

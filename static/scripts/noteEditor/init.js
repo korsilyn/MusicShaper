@@ -1,11 +1,21 @@
 const container = document.getElementById('_mainContainer');
 container.classList.remove('container');
 
-window.onresize = function () {
-    const drawScript = document.querySelector('script[type="text/paperscript"]');
-    const canvasId = drawScript.getAttribute('canvas');
+/** @type {HTMLCanvasElement} */
+const canvas = document.querySelector(`canvas#mainCanvas`);
 
-    const canvas = document.querySelector(`canvas#${canvasId}`);
+const docStyle = getComputedStyle(document.body);
+
+function getPxVar(name) {
+    return Number(docStyle.getPropertyValue(name).replace('px', ''));
+}
+
+var cellSize = new paper.Size({
+    width: getPxVar('--cell-width'),
+    height: getPxVar('--cell-height'),
+});
+
+window.onresize = function () {
     canvas.style.display = 'block';
     canvas.focus();
 
@@ -67,10 +77,27 @@ function requestInstrument(instrumentName) {
     });
 }
 
+function delay() {
+    return new Promise(resolve => {
+        setTimeout(resolve, 2000);
+    })
+}
+
+/** @param {string} name */
 async function loadInstrument(name) {
     try {
-        const settings = await requestInstrument(name);
-        instrumentSettings[name] = settings;
+        canvas.style.display = 'none';
+        document.body.style.cursor = 'wait';
+        let settings;
+        if (!instrumentSettings[name]) {
+            settings = await requestInstrument(name);
+            instrumentSettings[name] = settings;
+        }
+        else {
+            settings = instrumentSettings[name];
+        }
+        canvas.style.display = 'block';
+        document.body.style.cursor = null;
         return { name, ...settings };
     }
     catch (err) {
@@ -78,34 +105,28 @@ async function loadInstrument(name) {
     }
 }
 
-var currentInstrument = instrumentSettings[availableInstrumentNames[0]];
+/** @type {{}} */
+var currentInstrument = {};
 
-/** @type {(() => void) | null} */
-var onInstrumentLoaded = null;
+/** @type {() => void} */
+var onInstrumentSelected = () => {};
 
-if (!currentInstrument) {
-    if (availableInstrumentNames.length == 0) {
-        alert('В вашем проекте нет музыкальных иснтрументов');
-    }
-    else {
-        loadInstrument(availableInstrumentNames[0]).then(instr => {
-            currentInstrument = instrumentSettings[instr.name];
-            if (onInstrumentLoaded) {
-                onInstrumentLoaded();
-            }
-        }).catch(() => {
-            alert('Произошла ошибка при загрузке музыкального инструмента');
-            alert('Попробуйте зайти на эту страницу позже');
-        });
-    }
+function loadFirstInstrument() {
+    loadInstrument(availableInstrumentNames[0]).then(instr => {
+        currentInstrument = instr;
+        onInstrumentSelected.call(window);
+    });
 }
 
 document.getElementById('instrumentSelect').onchange = function () {
-    currentInstrument = instrumentSettings[this.value];
+    loadInstrument(this.value).then(instr => {
+        currentInstrument = instr;
+        onInstrumentSelected.call(window);
+    });
 };
 
-/** @type {Map<string, MusicNote[]>} */
-var musicNotes = new Map();
+/** @type {MusicNote[]} */
+var musicNotes = [];
 
 class MusicNote {
     /**
@@ -124,20 +145,17 @@ class MusicNote {
     }
 
     remove() {
-        if (!musicNotes.has(this.instrument)) {
-            return;
-        }
-        const arr = musicNotes.get(this.instrument);
-        const index = arr.findIndex(n => n == this);
-        arr.splice(index);
+        const index = musicNotes.findIndex(n => n == this);
+        musicNotes.splice(index);
     }
 
     /**
      * @returns {boolean}
      */
     checkIntersections() {
-        const related_notes = (musicNotes.get(this.instrument) || [])
-            .filter(n => this.octave == n.octave && this.note == n.note && this.time < n.time);
+        const related_notes = musicNotes.filter(
+            n => this.octave == n.octave && this.note == n.note && this.time < n.time
+        );
         return related_notes.some(n => this.time + this.length > n.time);
     }
 
@@ -145,10 +163,7 @@ class MusicNote {
      * @param {MusicNote} note
      */
     static register(note) {
-        if (!musicNotes.has(note.instrument)) {
-            musicNotes.set(note.instrument, []);
-        }
-        musicNotes.get(note.instrument).push(note);
+        musicNotes.push(note);
         return note;
     }
 
