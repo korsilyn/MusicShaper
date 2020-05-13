@@ -78,7 +78,10 @@ async function loadInstrument(name) {
     }
 }
 
-var currentInstrument = Object.keys(instrumentSettings)[0];
+var currentInstrument = instrumentSettings[availableInstrumentNames[0]];
+
+/** @type {(() => void) | null} */
+var onInstrumentLoaded = null;
 
 if (!currentInstrument) {
     if (availableInstrumentNames.length == 0) {
@@ -86,7 +89,10 @@ if (!currentInstrument) {
     }
     else {
         loadInstrument(availableInstrumentNames[0]).then(instr => {
-            currentInstrument = instr.name;
+            currentInstrument = instrumentSettings[instr.name];
+            if (onInstrumentLoaded) {
+                onInstrumentLoaded();
+            }
         }).catch(() => {
             alert('Произошла ошибка при загрузке музыкального инструмента');
             alert('Попробуйте зайти на эту страницу позже');
@@ -95,7 +101,7 @@ if (!currentInstrument) {
 }
 
 document.getElementById('instrumentSelect').onchange = function () {
-    currentInstrument = this.value;
+    currentInstrument = instrumentSettings[this.value];
 };
 
 /** @type {Map<string, MusicNote[]>} */
@@ -149,12 +155,11 @@ class MusicNote {
     /**
      * @param {paper.Path.Rectangle} path
      * @param {paper.Size} cellSize
-     * @param {string} instrument
      */
-    static makeNoteFromPath(path, cellSize, instrument = undefined) {
+    static makeNoteFromPath(path, cellSize) {
         const coordY = Math.floor(path.bounds.top / cellSize.height);
         return new MusicNote(
-            instrument || currentInstrument,
+            currentInstrument,
             Math.floor(path.bounds.left / cellSize.width),
             Math.floor(path.bounds.width / cellSize.width),
             baseNoteNotations.length - coordY % baseNoteNotations.length,

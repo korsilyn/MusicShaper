@@ -72,6 +72,11 @@ def pattern_editor(request, proj_id: int, pat_id: int):
     project = get_project_or_404(request, proj_id)
     pattern = get_object_or_404(MusicTrackPattern, pk=pat_id, project=project)
 
+    def update_dict_instrument(_dict, instr):
+        _dict[instr.name] = instr.get_settings()
+        _dict[instr.name]['_notesColor'] = instr.notesColor
+        return _dict
+
     if request.method == 'GET' and request.is_ajax():
         operation = request.GET.get('operation', None)
         response = {'success': False}
@@ -80,9 +85,8 @@ def pattern_editor(request, proj_id: int, pat_id: int):
             name = request.GET.get('instrumentName', '')
             instr = project.instruments.filter(name=name).first()
             if instr is not None:
-                response.update({
-                    'success': True,
-                    name: instr.get_settings()
+                update_dict_instrument(response, instr).update({
+                    'success': True
                 })
 
         return JsonResponse(response)
@@ -96,6 +100,6 @@ def pattern_editor(request, proj_id: int, pat_id: int):
     })
 
     for instrument in pattern.get_instruments():
-        context['usedInstruments'][instrument.name] = instrument.get_settings()
+        update_dict_instrument(context['usedInstruments'], instrument)
 
     return render(request, 'pattern/editor.html', context)

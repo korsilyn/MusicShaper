@@ -67,7 +67,7 @@ for (var y = 1; y <= gridSize.height; y++) {
 
 gridLayer.opacity = 0.5;
 
-var raster = gridLayer.rasterize(undefined);
+var raster = gridLayer.rasterize(64);
 gridLayer.removeChildren();
 gridLayer.addChild(raster);
 
@@ -91,9 +91,8 @@ var notesLayer = new paper.Layer({
 });
 
 function makeNotePath() {
-    while (!fillColor || fillColor.brightness < 0.5) {
-        var fillColor = paper.Color.random();
-    }
+    var currInstr = window.currentInstrument || {};
+    var fillColor = new paper.Color(currInstr._notesColor || 'red');
     var strokeColor = fillColor.clone();
     strokeColor.brightness -= 0.4;
     return new paper.Path.Rectangle({
@@ -112,7 +111,6 @@ var mouseCellPoint;
 var noteBlueprint = makeNotePath();
 notesPlaceLayer.addChild(noteBlueprint);
 noteBlueprint.opacity = 0;
-noteBlueprint.position.x += cellSize.width;
 
 var placing = false;
 var deleting = false;
@@ -149,7 +147,6 @@ project.view.onMouseMove = function (event) {
         }
     }
     else {
-        console.log(deleting);
         if (deleting) {
             var hit = notesLayer.hitTest(event.point);
             if (hit) {

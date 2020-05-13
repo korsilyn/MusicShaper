@@ -47,7 +47,22 @@ class MusicInstrument(ModelWithSettings):
     :param project: проект
     '''
 
+    COLOR_CHOICES = [
+        ('#ff0000', 'red'),
+        ('#00ff00', 'green'),
+        ('#0000ff', 'blue'),
+        ('#00ffff', 'aqua'),
+        ('#ff69b4', 'pink'),
+        ('#cc33ff', 'purple'),
+        ('#ff6600', 'orange'),
+    ]
+
     name = models.CharField(max_length=25)
+    notesColor = models.CharField(
+        max_length=10,
+        choices=COLOR_CHOICES,
+        default='#ff0000',
+    )
     project = models.ForeignKey(
         MusicTrackProject, models.CASCADE, 'instruments'
     )
@@ -64,7 +79,7 @@ class MusicInstrument(ModelWithSettings):
 
         if 'volume' not in default_settings:
             default_settings = {
-                'volume': FloatSettingValue(initial=-10.0, min_v=-20, max_v=20, step=0.5),
+                'volume': FloatSettingValue(initial=-5.0, min_v=-50, max_v=50, step=0.5),
                 **default_settings
             }
         return super().define(definition_name, default_settings)
@@ -92,7 +107,6 @@ class MusicTrackPattern(models.Model):
 
     project = models.ForeignKey(MusicTrackProject, models.CASCADE, 'patterns')
     name = models.CharField(max_length=25)
-    color = models.CharField(max_length=25)
     duration = models.PositiveIntegerField()
 
     def get_instruments(self):
