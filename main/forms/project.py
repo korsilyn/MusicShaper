@@ -44,7 +44,6 @@ class ProjectForm(ModelForm):
         if not hasattr(instance, 'settings'):
             TrackProjectSettings.objects.create(
                 project=instance,
-                bpm=120,
-                tpl=4,
+                bpm=120
             )
         return instance
