@@ -35,7 +35,7 @@ class TrackProjectSettings(models.Model):
     project = models.OneToOneField(MusicTrackProject, models.CASCADE, related_name='settings')
     bpm = models.PositiveIntegerField(validators=[
         MinValueValidator(20),
-        MaxValueValidator(999)
+        MaxValueValidator(999),
     ])
 
 

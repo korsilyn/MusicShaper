@@ -27,9 +27,18 @@ canvas#mainCanvas {
 }
 
 select, input, button {
-    border-radius: 5px;
-    margin-left: 5px;
+    border-radius: 3px;
     height: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+button:focus:hover {
+    outline: 0;
+    filter: brightness(90%);
+}
+
+#settings > :not(:first-child) {
+    margin-left: 5px;
 }
 
 #settingsPanel label {
@@ -44,19 +53,20 @@ select, input, button {
 #settingsPanel .seperator {
     background-color: var(--text);
     border: 2px solid var(--text);
-    opacity: 0.5;
-    border-radius: 3px;
-    height: 20px;
-    width: 3px;
+    opacity: 0.2;
+    border-radius: 2px;
+    height: 25px;
+    width: 1px;
     --margin: 10px;
     margin-left: var(--margin);
     margin-right: var(--margin);
 }
 
 #playBtn {
-    background-color: greenyellow;
+    background-color: rgb(54, 255, 47);
 }
 
-#topBtn {
-    background-color: gray;
+#stopBtn {
+    background-color: rgb(255, 13, 59);
+    color: white;
 }

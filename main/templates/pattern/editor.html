@@ -21,8 +21,8 @@
             </a>
         </h4>
         <div id="settings" class="inputs">
-            <button id="playBtn">Играть</button>
-            <button id="stopBtn">Стоп</button>
+            <button id="playBtn" onclick="play()">Играть</button>
+            <button id="stopBtn" onclick="stop()">Стоп</button>
 
             <div class="seperator"></div>
 
@@ -36,7 +36,7 @@
             <div class="seperator"></div>
 
             <label>Темп:</label>
-            <input type="number" min="20" max="999"
+            <input id="projBpm" type="number" min="20" max="999"
             value="{{ project.settings.bpm }}">
         </div>
     </div>
@@ -59,6 +59,10 @@
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
+    <script src="{% static 'scripts/noteEditor/resize.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/loadInstrument.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/draw.js' %}"
     async type="text/paperscript" canvas="mainCanvas"></script>

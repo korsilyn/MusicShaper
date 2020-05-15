@@ -11,7 +11,7 @@ var onePoint = new paper.Point(1, 1);
 var gridLayer = project.activeLayer;
 gridLayer.name = 'grid';
 
-var gridSize = new paper.Size(window.patternDuration, window.noteNotations.length);
+var gridSize = new paper.Size(window.patternDuration, noteNotationsTotalLenght);
 
 window.cellSize = cellSize;
 
@@ -47,7 +47,7 @@ var notesLayer = new paper.Layer({
 });
 
 function makeNotePath() {
-    var fillColor = new paper.Color(currentInstrument._notesColor || 'red');
+    var fillColor = new paper.Color(currentInstrument.notesColor || 'red');
     var strokeColor = fillColor.clone();
     strokeColor.brightness -= 0.4;
     return new paper.Path.Rectangle({
@@ -68,7 +68,9 @@ notesPlaceLayer.addChild(noteBlueprint);
 noteBlueprint.opacity = 0;
 
 onInstrumentSelected = function () {
-    noteBlueprint.fillColor = currentInstrument._notesColor;
+    noteBlueprint.fillColor = currentInstrument.notesColor;
+    noteBlueprint.strokeColor = noteBlueprint.fillColor.clone();
+    noteBlueprint.strokeColor.brightness -= 0.4;
 }
 
 loadFirstInstrument();

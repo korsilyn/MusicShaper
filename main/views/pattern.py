@@ -74,7 +74,10 @@ def pattern_editor(request, proj_id: int, pat_id: int):
 
     def update_dict_instrument(_dict, instr):
         _dict[instr.name] = instr.get_settings()
-        _dict[instr.name]['_notesColor'] = instr.notesColor
+        _dict[instr.name].update({
+            '_type': instr.type,
+            '_notesColor': instr.notesColor
+        })
         return _dict
 
     if request.method == 'GET' and request.is_ajax():
