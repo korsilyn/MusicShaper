@@ -13,13 +13,9 @@ gridLayer.name = 'grid';
 
 var gridSize = new paper.Size(window.patternDuration, noteNotationsTotalLenght);
 
-window.cellSize = cellSize;
-
 var cellSizePoint = new paper.Point(cellSize.width, cellSize.height);
 
-/** @type {paper.Size} */
 var gridRealSize = gridSize * cellSize;
-
 project.view.viewSize.set({
     width: gridRealSize.width,
     height: gridRealSize.height,
@@ -152,6 +148,33 @@ notesPlaceLayer.onMouseLeave = function () {
     if (!placing) {
         noteBlueprint.opacity = 0;
     }
+}
+
+//#endregion
+
+//#region playhead
+
+var playhead = new paper.Path.Rectangle({
+    fillColor: 'rgba(54, 255, 47, 0.4)',
+    width: cellSize.width,
+    height: gridRealSize.height,
+    visible: false,
+});
+
+playhead.pivot = playhead.bounds.topLeft;
+
+notesPlaceLayer.addChild(playhead);
+
+window.showPlayhead = function () {
+    playhead.visible = true;
+}
+
+window.hidePlayhead = function () {
+    playhead.visible = false;
+}
+
+window.movePlayheadTo = function (xCell) {
+    playhead.position.x = xCell * cellSize.width;
 }
 
 //#endregion

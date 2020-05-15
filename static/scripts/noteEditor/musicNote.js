@@ -50,7 +50,7 @@ class MusicNote {
             args = [[this.noteNotation], this.duration, time];
         }
         if (this.instrument instanceof Tone.NoiseSynth) {
-            args = [this.duration, undefined, time];
+            args = [this.duration, time];
         }
         else {
             args = [this.noteNotation, this.duration, time];

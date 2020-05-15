@@ -6,6 +6,7 @@ function groupBy(xs, key) {
 };
 
 function stop() {
+    hidePlayhead();
     Tone.Transport.stop();
     Tone.Transport.clear(0);
     Object.values(instruments).forEach(i => {
@@ -21,15 +22,33 @@ function stop() {
 function play(from = 0) {
     stop();
 
+    if (musicNotes.length == 0) {
+        return;
+    }
+
+    function scheduleDraw(timeX, sTime) {
+        Tone.Draw.schedule(() => {
+            movePlayheadTo(timeX);
+        }, sTime);
+    }
+
+    const sixteenthSec = new Tone.Time('16n').toSeconds();
+
     const timedNotes = groupBy(musicNotes, 'time');
-    for (const time in timedNotes) {
+    let lastTime = Math.max(...Object.keys(timedNotes).map(Number));
+    for (let time = 0; time <= lastTime; time++) {
         if (time < from) continue;
 
+        const toneTime = sixteenthSec * time;
         const notes = timedNotes[time];
+        if (!notes) {
+            Tone.Transport.scheduleOnce(sTime => {
+                scheduleDraw(time, sTime);
+            }, toneTime);
+            continue;
+        }
+
         const groupedByInstr = groupBy(notes, 'instrumentName');
-
-        const toneTime = new Tone.Time('16n').toSeconds() * time;
-
         const processed = [];
 
         for (const instrName in groupedByInstr) {
@@ -44,15 +63,33 @@ function play(from = 0) {
                         relatedNotes.map(n => n.duration),
                         sTime
                     );
+                    scheduleDraw(time, sTime);
                 }, toneTime);
             }
             else {
                 Tone.Transport.scheduleOnce(sTime => {
                     relatedNotes.forEach(n => n.playPreview(sTime));
+                    scheduleDraw(sTime);
                 }, toneTime);
             }
         }
     }
 
-    Tone.Transport.start('+4i');
+    const lastNoteLength = Math.max(...timedNotes[lastTime].map(n => n.length));
+    for (let timeX = 0; timeX < lastNoteLength; timeX++) {
+        Tone.Transport.scheduleOnce(sTime => {
+            scheduleDraw(lastTime + timeX, sTime);
+        }, sixteenthSec * (lastTime + timeX));
+    }
+
+    Tone.Transport.scheduleOnce(() => {
+        hidePlayhead();
+    }, sixteenthSec * (lastTime + lastNoteLength + 1));
+
+    Tone.Transport.scheduleOnce(() => {
+        movePlayheadTo(0);
+        showPlayhead();
+    }, '1i');
+
+    Tone.Transport.start('+1i');
 }
