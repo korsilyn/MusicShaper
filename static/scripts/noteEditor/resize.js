@@ -18,7 +18,7 @@ var cellSize = new paper.Size({
 });
 
 window.onresize = function () {
-    canvas.style.display = 'block';
+    canvas.style.visibility = 'visible';
     canvas.focus();
 
     const sidebar = document.querySelector('side-bar');

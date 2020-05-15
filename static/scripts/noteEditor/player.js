@@ -5,10 +5,13 @@ function groupBy(xs, key) {
     }, {});
 };
 
+var isPlaying = false;
+
 function stop() {
+    isPlaying = false;
     hidePlayhead();
     Tone.Transport.stop();
-    Tone.Transport.clear(0);
+    Tone.Transport.cancel(0);
     Object.values(instruments).forEach(i => {
         if (i instanceof Tone.PolySynth) {
             i.releaseAll(0);
@@ -39,7 +42,7 @@ function play(from = 0) {
     for (let time = 0; time <= lastTime; time++) {
         if (time < from) continue;
 
-        const toneTime = sixteenthSec * time;
+        const toneTime = sixteenthSec * (time - from);
         const notes = timedNotes[time];
         if (!notes) {
             Tone.Transport.scheduleOnce(sTime => {
@@ -79,17 +82,31 @@ function play(from = 0) {
     for (let timeX = 0; timeX < lastNoteLength; timeX++) {
         Tone.Transport.scheduleOnce(sTime => {
             scheduleDraw(lastTime + timeX, sTime);
-        }, sixteenthSec * (lastTime + timeX));
+        }, sixteenthSec * (lastTime + timeX - from));
     }
 
     Tone.Transport.scheduleOnce(() => {
         hidePlayhead();
-    }, sixteenthSec * (lastTime + lastNoteLength + 1));
+        isPlaying = false;
+    }, sixteenthSec * (lastTime + lastNoteLength + 1 - from));
 
     Tone.Transport.scheduleOnce(() => {
-        movePlayheadTo(0);
+        movePlayheadTo(from);
         showPlayhead();
-    }, '1i');
+        isPlaying = true;
+    }, 0);
 
-    Tone.Transport.start('+1i');
+    Tone.Transport.start('+0.1');
+}
+
+document.onkeydown = function ({ keyCode, repeat }) {
+    if (!repeat && keyCode == 32) {
+        if (isPlaying) {
+            stop();
+        }
+        else {
+            play(0);
+        }
+        return false;
+    }
 }

@@ -117,7 +117,7 @@ class SettingsModelForm(ModelForm):
 
                 field = make_f(sname, vdef)
                 field.required = False
-                group = path.split('.')[-2] or '.'
+                group = '.'.join(path.split('.')[0:-1])[1:] or '.'
                 field.group = group
                 self.fields[path] = field
                 self.initial[path] = val

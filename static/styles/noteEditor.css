@@ -30,6 +30,12 @@ select, input, button {
     border-radius: 3px;
     height: 30px;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    width: 120px;
+}
+
+button {
+    width: 80px;
+    text-align: center;
 }
 
 button:focus {
@@ -37,7 +43,7 @@ button:focus {
     filter: brightness(90%);
 }
 
-#settings > :not(:first-child) {
+#settings > :not(.seperator) + :not(:first-child):not(.seperator) {
     margin-left: 5px;
 }
 

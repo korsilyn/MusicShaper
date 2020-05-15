@@ -11,7 +11,7 @@
 
 {% block 'body' %}
     <div id="settingsPanel" class="theme-transition">
-        <h4 class="inputs">
+        <h5 class="inputs">
             Редактор паттерна
             <span style="margin-left: 5px;"
             class="quotes">{{ pattern.name }}</span>
@@ -19,7 +19,7 @@
             <a href="{% url 'patterns' proj_id=project.id %}">
                 Назад к списку паттернов
             </a>
-        </h4>
+        </h5>
         <div id="settings" class="inputs">
             <button id="playBtn" onclick="play()">Играть</button>
             <button id="stopBtn" onclick="stop()">Стоп</button>
@@ -41,8 +41,7 @@
         </div>
     </div>
     <div style="width: inherit; height: calc(100vh - var(--panel-height)); overflow: scroll;">
-        <canvas id="mainCanvas" oncontextmenu="return false"
-        style="display: none;">
+        <canvas id="mainCanvas" oncontextmenu="return false">
             Ваш браузер не поддерживает canvas :/
         </canvas>
     </div>

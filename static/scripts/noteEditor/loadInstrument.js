@@ -54,13 +54,13 @@ function makeSynth(settings) {
 /** @param {string} name */
 async function loadInstrument(name) {
     try {
-        canvas.style.display = 'none';
+        canvas.style.visibility = 'hidden';
         document.body.style.cursor = 'wait';
         if (!instruments[name]) {
             instruments[name] = makeSynth(await requestInstrument(name));
             instruments[name].name = name;
         }
-        canvas.style.display = 'block';
+        canvas.style.visibility = 'visible';
         document.body.style.cursor = null;
         return instruments[name];
     }

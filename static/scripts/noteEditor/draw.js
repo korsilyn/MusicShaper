@@ -137,6 +137,9 @@ project.view.onMouseUp = function (event) {
 
         resetBlueprint();
     }
+    else if (event.event.button == 1) {
+        play(calcMouseCellPoint(event).x);
+    }
     deleting = false;
 }
 
