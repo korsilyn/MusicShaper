@@ -110,6 +110,16 @@ class ModelWithSettings(models.Model):
         super().__init_subclass__()
         setattr(cls, 'DEFINITIONS', dict())
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            self.assert_type(TypeError)
+        except TypeError:
+            self.reset()
+            self.type = next(iter(self.DEFINITIONS.keys()))
+            if hasattr(self, 'project'):
+                self.save()
+
     @classmethod
     def define(cls, definition_name: str, default_settings: dict):
         '''

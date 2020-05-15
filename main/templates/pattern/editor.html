@@ -2,81 +2,67 @@
 {% load static %}
 
 {% block 'title' %}
-    Создание трека
+    Паттерн {{ pattern.name }}
 {% endblock %}
 
 {% block 'head' %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/editor.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/noteEditor.css' %}">
 {% endblock %}
 
-{% block 'body_attrs' %}{% endblock %}
-
 {% block 'body' %}
-    <div style="display: grid; height: 100vh; grid-template-rows: auto auto;">
-        {% include './settings.html' %}
-        {% include './notesEditor.html' %}
+    <div id="settingsPanel" class="theme-transition">
+        <h5 class="inputs">
+            Редактор паттерна
+            <span style="margin-left: 5px;"
+            class="quotes">{{ pattern.name }}</span>
+            <div class="seperator"></div>
+            <a href="{% url 'patterns' proj_id=project.id %}">
+                Назад к списку паттернов
+            </a>
+        </h5>
+        <div id="settings" class="inputs">
+            <button id="playBtn" onclick="play()">Играть</button>
+            <button id="stopBtn" onclick="stop()">Стоп</button>
+
+            <div class="seperator"></div>
+
+            <label>Текущий инструмент:</label>
+            <select id="instrumentSelect">
+                {% for name in allInstruments %}
+                    <option value="{{ name }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="seperator"></div>
+
+            <label>Темп:</label>
+            <input id="projBpm" type="number" min="20" max="999"
+            value="{{ project.settings.bpm }}">
+        </div>
+    </div>
+    <div style="width: inherit; height: calc(100vh - var(--panel-height)); overflow: scroll;">
+        <canvas id="mainCanvas" oncontextmenu="return false">
+            Ваш браузер не поддерживает canvas :/
+        </canvas>
     </div>
 {% endblock %}
 
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
-    <script src="{% static 'scripts/layeredCanvas.js' %}"></script>
-    <script src="{% static 'scripts/grid.js' %}"></script>
-    <script src="{% static 'scripts/patternMousePainter.js' %}"></script>
-    <script src="{% static 'scripts/patternGrid.js' %}"></script>
-    <script src="{% static 'scripts/scrollbarThumb.js' %}"></script>
-    <script src="{% static 'scripts/musicNotes.js' %}"></script>
-    <script src="{% static 'scripts/patternPlayer.js' %}"></script>
+    <script src="{% static 'libs/paper.js' %}"></script>
+
     <script>
-        const notes = getNotes(7, 2);
-        const noteSize = [50, 25];
-
-        const cheatsheetGrid = new PatternGrid('cheatsheet', [1, notes.length], noteSize, {
-            grid: "black"
-        }, true);
-
-        const trackGrid = new PatternGrid('track', [100, notes.length], noteSize, {
-            note: "#fc4141"
-        }, false, 1);
-
-        function renderCheatsheet() {
-            cheatsheetGrid.bgContext.font = '25px Consolas';
-            for (let i = 0; i < notes.length; i++) {
-                cheatsheetGrid.bgContext.fillText(notes[i], 4, i * noteSize[1] + 21);
-            }
-        }
-
-        const thumbs = document.getElementsByClassName("scrollbar-thumb");
-        new ScrollbarThumb(thumbs[0], document.getElementById("horizontal_scroll"));
-        new ScrollbarThumb(thumbs[1], document.getElementById("vertical_scroll"));
-        
-        cheatsheetGrid.renderBackground();
-        trackGrid.renderBackground(getNoteNames().length);
-        renderCheatsheet();
-
-        const synth = new Tone.PolySynth(notes.length);
-        const gain = new Tone.Gain(0.5);
-        
-        synth.connect(gain);
-        gain.toMaster();
-
-        const noteDuration = '8n';
-        
-        const oldOnCellUpdate = trackGrid.oncellupdate;
-        trackGrid.oncellupdate = (x, y, value) => {
-            oldOnCellUpdate(x, y, value);
-            if (!value) return;
-
-            synth.triggerAttackRelease(notes[y], noteDuration);
-        }
-
-        const player = new PatternPlayer(trackGrid, synth, {
-            noteDuration
-        });
-
-        trackGrid.mousePainter.onenddraw = () => {
-            player.stop();
-        }
-
+        var patternDuration = Number('{{ pattern.duration }}');
     </script>
+
+    {{ allInstruments|json_script:"allInstrumentNames" }}
+    {{ usedInstruments|json_script:"usedInstruments" }}
+
+    <script src="{% static 'scripts/noteEditor/resize.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/loadInstrument.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/draw.js' %}"
+    async type="text/paperscript" canvas="mainCanvas"></script>
 {% endblock %}

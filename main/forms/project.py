@@ -14,7 +14,7 @@ class ProjectForm(ModelForm):
 
     class Meta:
         model = MusicTrackProject
-        fields = ['name', 'desc']
+        fields = ('name', 'desc')
         labels = {
             'name': 'Имя',
             'desc': 'Описание'
@@ -45,5 +45,6 @@ class ProjectForm(ModelForm):
             TrackProjectSettings.objects.create(
                 project=instance,
                 bpm=120,
+                tpl=4,
             )
         return instance

@@ -13,7 +13,7 @@
 <body class="light">
     <div style="display: flex; align-items: flex-start;">
         <side-bar></side-bar>
-        <div {% block 'body_attrs' %}class="container"{% endblock %}>
+        <div id="_mainContainer" class="container">
             {% include 'messages.html' %}
             {% block 'body' %}
                 Здесь должен размещаться контент страницы

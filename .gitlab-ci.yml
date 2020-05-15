@@ -1,20 +1,89 @@
 image: python:latest
 
+
 cache:
-    paths:
-        - ~/.cache/pip/
+  paths:
+  - ~/.cache/pip/
+
 
 before_script:
-    - python -V
-    - apt-get update
-    - apt-get install ssh-client
+  - python -V
+
 
 stages:
-    - deploy
+  - test
+  - style
+  - deploy
+
+
+coverage:
+  stage: test
+  before_script:
+  - pip install -r requirements.txt
+  - pip install coverage
+  script:
+  - coverage run manage.py test
+  - coverage report --omit=manage.py
+  - coverage html --omit=manage.py
+  - mkdir public
+  - mv htmlcov public/coverage
+  artifacts:
+    paths:
+      - public/coverage
+
+
+sphinx:
+  stage: test
+  before_script:
+  - pip install -r ci/sphinx_requirements.txt
+  script:
+  - sphinx-build -b html . public
+  artifacts:
+    paths:
+      - public/
+
+
+pep8:
+  stage: style
+  before_script:
+  - pip install -r ci/pycodestyle_requirements.txt
+  script:
+  - chmod +x ./ci/pycodestyle_runner.sh
+  - ./ci/pycodestyle_runner.sh
+  artifacts:
+    paths:
+      - public/pycodestyle.txt
+
+
+pylint:
+  stage: style
+  before_script:
+  - pip install -r ci/pylint_requirements.txt
+  script:
+  - chmod +x ./ci/pylint_runner.sh
+  - ./ci/pylint_runner.sh
+  artifacts:
+    paths:
+      - public/pylint.svg
+      - public/pylint.html
+
+
+pages:
+  stage: deploy
+  script:
+  - echo 'Publish pages data'
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+
 
 upload_to_server:
     stage: deploy
     before_script:
+        - apt-get update
+        - apt-get install ssh-client
         - apt-get install -qq git
         - 'which ssh-agent || ( apt-get install -qq openssh-client )'
         - eval $(ssh-agent -s)
