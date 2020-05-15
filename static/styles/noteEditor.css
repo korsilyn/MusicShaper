@@ -1,0 +1,78 @@
+:root {
+    --panel-height: 80px;
+    --cell-width: 40px;
+    --cell-height: 25px;
+    --grid-color: rgba(0, 0, 0, 0.3);
+}
+
+canvas#mainCanvas {
+    background-size:
+        var(--cell-width) var(--cell-height),
+        var(--cell-width) calc(var(--cell-height) * 12);
+    background-image:
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, grey 2px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+}
+
+#settingsPanel {
+    height: var(--panel-height);
+    background-color: var(--bg-secondary);
+    padding: 8px;
+    box-shadow: 0 1px 14px 4px rgba(0, 0, 0, 0.3);
+}
+
+#settingsPanel > h4:first-child {
+    margin-bottom: 4px;
+}
+
+select, input, button {
+    border-radius: 3px;
+    height: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    width: 120px;
+}
+
+button {
+    width: 80px;
+    text-align: center;
+}
+
+button:focus {
+    outline: 0;
+    filter: brightness(90%);
+}
+
+#settings > :not(.seperator) + :not(:first-child):not(.seperator) {
+    margin-left: 5px;
+}
+
+#settingsPanel label {
+    margin-bottom: 4px;
+}
+
+#settingsPanel .inputs {
+    display: flex;
+    align-items: center;
+}
+
+#settingsPanel .seperator {
+    background-color: var(--text);
+    border: 2px solid var(--text);
+    opacity: 0.2;
+    border-radius: 2px;
+    height: 25px;
+    width: 1px;
+    --margin: 10px;
+    margin-left: var(--margin);
+    margin-right: var(--margin);
+}
+
+#playBtn {
+    background-color: rgb(54, 255, 47);
+}
+
+#stopBtn {
+    background-color: rgb(255, 13, 59);
+    color: white;
+}

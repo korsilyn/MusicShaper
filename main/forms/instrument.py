@@ -13,11 +13,12 @@ class MusicInstrumentForm(ModelForm):
 
     class Meta:
         model = MusicInstrument
-        fields = ('name', 'type')
+        fields = ('name', 'type', 'notesColor')
 
         labels = {
             'name': 'Имя',
-            'type': 'Тип'
+            'type': 'Тип',
+            'notesColor': 'Цвет в редакторе',
         }
 
         widgets = {
@@ -27,7 +28,11 @@ class MusicInstrumentForm(ModelForm):
             }),
             'type': Select(attrs={
                 'class': 'form-control'
-            })
+            }),
+            'notesColor': Select(attrs={
+                'class': 'form-control',
+                'onchange': 'this.style.borderColor = this.value',
+            }),
         }
 
     def __init__(self, project, *args, **kwargs):
