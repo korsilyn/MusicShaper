@@ -25,13 +25,15 @@ class MusicPatternForm(ModelForm):
             }),
             'duration': NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Продолжительность паттерна'
+                'placeholder': 'Продолжительность паттерна',
+                'max': 256
             })
         }
 
     def __init__(self, project, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.project = project
+        self.fields['duration'].widget.attrs['min'] = 10
 
     def save(self, commit=True):
         instance = super().save(commit=False)
