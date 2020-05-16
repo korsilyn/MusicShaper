@@ -1,1 +1,6 @@
+'''
+Главный модуль папки tests
+'''
+
 from .test_load import LoginTestCase
+from .test_auth import AuthTestCase
