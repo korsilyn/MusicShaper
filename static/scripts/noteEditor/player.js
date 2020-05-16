@@ -72,7 +72,7 @@ function play(from = 0) {
             else {
                 Tone.Transport.scheduleOnce(sTime => {
                     relatedNotes.forEach(n => n.playPreview(sTime));
-                    scheduleDraw(sTime);
+                    scheduleDraw(time, sTime);
                 }, toneTime);
             }
         }

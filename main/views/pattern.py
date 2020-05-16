@@ -72,6 +72,12 @@ def pattern_editor(request, proj_id: int, pat_id: int):
     project = get_project_or_404(request, proj_id)
     pattern = get_object_or_404(MusicTrackPattern, pk=pat_id, project=project)
 
+    if project.instruments.count() == 0:
+        add_message(request, ERROR, 'В вашем проекте ещё нет музыкальных инструментов!')
+        return redirect('instruments', proj_id=proj_id)
+
+    instruments = pattern.get_instruments()
+
     def update_dict_instrument(_dict, instr):
         _dict[instr.name] = instr.get_settings()
         _dict[instr.name].update({
@@ -102,7 +108,7 @@ def pattern_editor(request, proj_id: int, pat_id: int):
             .values_list('name', flat=True))
     })
 
-    for instrument in pattern.get_instruments():
+    for instrument in instruments:
         update_dict_instrument(context['usedInstruments'], instrument)
 
     return render(request, 'pattern/editor.html', context)

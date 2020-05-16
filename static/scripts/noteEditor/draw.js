@@ -177,6 +177,7 @@ window.hidePlayhead = function () {
 }
 
 window.movePlayheadTo = function (xCell) {
+    console.log(xCell);
     playhead.position.x = xCell * cellSize.width;
 }
 
