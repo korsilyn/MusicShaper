@@ -34,7 +34,7 @@ class TrackProjectSettings(models.Model):
 
     project = models.OneToOneField(MusicTrackProject, models.CASCADE, related_name='settings')
     bpm = models.PositiveIntegerField(validators=[
-        MinValueValidator(20),
+        MinValueValidator(32),
         MaxValueValidator(999),
     ])
 
@@ -107,7 +107,10 @@ class MusicTrackPattern(models.Model):
 
     project = models.ForeignKey(MusicTrackProject, models.CASCADE, 'patterns')
     name = models.CharField(max_length=25)
-    duration = models.PositiveIntegerField()
+    duration = models.PositiveIntegerField(validators=[
+        MinValueValidator(10),
+        MaxValueValidator(256)
+    ])
 
     def get_instruments(self):
         '''

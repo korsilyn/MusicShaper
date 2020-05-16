@@ -1,6 +1,8 @@
 /// <reference path="../../libs/@types/Tone.d.ts" />
 
 document.querySelector('#projBpm').onchange = function () {
+    if (this.value < 32) this.value = 32;
+    if (this.value > 999) this.value = 999;
     Tone.Transport.bpm.value = Number(this.value);
 };
 
