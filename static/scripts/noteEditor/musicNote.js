@@ -1,6 +1,3 @@
-/** @type {MusicNote[]} */
-var musicNotes = [];
-
 class MusicNote {
     /**
      * @param {Tone.Monophonic & { notesColor: string; name: string; }} instrument
@@ -13,7 +10,7 @@ class MusicNote {
         this.instrument = instrument;
         this.time = pos;
         this.length = duration;
-        this.note = noteId;
+        this.notation = noteId;
         this.octave = octave;
     }
 
@@ -28,7 +25,7 @@ class MusicNote {
      */
     checkIntersections() {
         const related_notes = musicNotes.filter(
-            n => this.octave == n.octave && this.note == n.note && this.time < n.time
+            n => this.octave == n.octave && this.notation == n.notation && this.time < n.time
         );
         return related_notes.some(n => this.time + this.length > n.time);
     }
@@ -42,10 +39,11 @@ class MusicNote {
     }
 
     get noteNotation() {
-        return noteNotations[this.note - 1] + this.octave;
+        return noteNotations[this.notation - 1] + this.octave;
     }
 
     playPreview(time = undefined) {
+        console.log(this.notation);
         let args;
         if (this.instrument instanceof Tone.PolySynth) {
             args = [[this.noteNotation], this.duration, time];
@@ -64,8 +62,6 @@ class MusicNote {
      */
     static place(note) {
         musicNotes.push(note);
-        stop();
-        note.playPreview();
         return note;
     }
 
@@ -84,3 +80,15 @@ class MusicNote {
         );
     }
 }
+
+
+
+/** @type {MusicNote[]} */
+var musicNotes = JSON.parse(document.getElementById('musicNotes').innerText)
+    .map(n => new MusicNote(
+        Object.values(instruments).find(i => i.id == n.instrument),
+        n.time,
+        n.length,
+        n.notation,
+        n.octave,
+    ));

@@ -6,28 +6,6 @@ document.querySelector('#projBpm').onchange = function () {
     Tone.Transport.bpm.value = Number(this.value);
 };
 
-var octaves = 6;
-var octavesFrom = 2;
-
-var noteNotations = [
-    'C', 'C#',
-    'D', 'D#',
-    'E',
-    'F', 'F#',
-    'G', 'G#',
-    'A', 'A#',
-    'B',
-];
-
-var noteNotationsTotalLenght = noteNotations.length * octaves;
-
-var allInstrumentNames = JSON.parse(document.getElementById('allInstrumentNames').innerText);
-
-var instruments = JSON.parse(document.getElementById('usedInstruments').innerText);
-for (const name in instruments) {
-    instruments[name] = makeSynth(instruments[name]);
-}
-
 var currentInstrument = {};
 
 var onInstrumentSelected = () => {};
