@@ -38,9 +38,12 @@ button {
     text-align: center;
 }
 
+button:active:hover {
+    filter: brightness(90%);
+}
+
 button:focus {
     outline: 0;
-    filter: brightness(90%);
 }
 
 #settings > :not(.seperator) + :not(:first-child):not(.seperator) {

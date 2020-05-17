@@ -16,9 +16,7 @@
             <span style="margin-left: 5px;"
             class="quotes">{{ pattern.name }}</span>
             <div class="seperator"></div>
-            <a href="{% url 'patterns' proj_id=project.id %}">
-                Назад к списку паттернов
-            </a>
+            <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
         </h5>
         <div id="settings" class="inputs">
             <button id="playBtn" onclick="play()">Играть</button>
