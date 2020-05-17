@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.http import JsonResponse
-from ..models import MusicTrackPattern
+from django.forms.models import model_to_dict
+from ..models import MusicTrackPattern, MusicNote
 from ..forms import MusicPatternForm
 from .project import get_project_or_404
 from .util import get_base_context
@@ -81,8 +82,9 @@ def pattern_editor(request, proj_id: int, pat_id: int):
     def update_dict_instrument(_dict, instr):
         _dict[instr.name] = instr.get_settings()
         _dict[instr.name].update({
+            '_id': instr.pk,
             '_type': instr.type,
-            '_notesColor': instr.notesColor
+            '_notesColor': instr.notesColor,
         })
         return _dict
 
@@ -104,8 +106,8 @@ def pattern_editor(request, proj_id: int, pat_id: int):
         'project': project,
         'pattern': pattern,
         'usedInstruments': {},
-        'allInstruments': list(project.instruments\
-            .values_list('name', flat=True))
+        'allInstruments': list(project.instruments.values_list('name', flat=True)),
+        'musicNotes': list(map(model_to_dict, MusicNote.objects.filter(pattern=pattern))),
     })
 
     for instrument in instruments:
