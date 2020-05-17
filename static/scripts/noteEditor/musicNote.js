@@ -20,6 +20,7 @@ class MusicNote {
     remove() {
         const index = musicNotes.findIndex(n => n == this);
         musicNotes.splice(index, 1);
+        stop();
     }
 
     /**
@@ -61,8 +62,9 @@ class MusicNote {
     /**
      * @param {MusicNote} note
      */
-    static register(note) {
+    static place(note) {
         musicNotes.push(note);
+        stop();
         note.playPreview();
         return note;
     }

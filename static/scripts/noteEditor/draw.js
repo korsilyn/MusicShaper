@@ -126,7 +126,7 @@ project.view.onMouseUp = function (event) {
         notesLayer.addChild(clone);
         clone.opacity = 1;
 
-        var note = MusicNote.register(noteBlueprint.note);
+        var note = MusicNote.place(noteBlueprint.note);
 
         clone.onClick = function (event) {
             if (event.event.button == 2) {
@@ -177,7 +177,6 @@ window.hidePlayhead = function () {
 }
 
 window.movePlayheadTo = function (xCell) {
-    console.log(xCell);
     playhead.position.x = xCell * cellSize.width;
 }
 
