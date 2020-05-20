@@ -38,6 +38,14 @@ button {
     text-align: center;
 }
 
+.btn {
+    padding: 0;
+}
+
+button#saveBtn {
+    width: 100px;
+}
+
 button:active:hover {
     filter: brightness(90%);
 }
@@ -57,6 +65,7 @@ button:focus {
 #settingsPanel .inputs {
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 #settingsPanel .seperator {

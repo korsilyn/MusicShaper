@@ -7,7 +7,7 @@ function requestInstrument(instrumentName) {
             dataType: 'json',
             url: window.location.href,
             data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
+                csrfmiddlewaretoken: csrf_token,
                 operation: 'loadInstrument',
                 instrumentName,
             },

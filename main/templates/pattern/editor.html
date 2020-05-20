@@ -16,6 +16,8 @@
             <span style="margin-left: 5px;"
             class="quotes">{{ pattern.name }}</span>
             <div class="seperator"></div>
+            <button id="saveBtn" class="btn btn-outline-success">Сохранить</button>
+            <div class="seperator"></div>
             <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
         </h5>
         <div id="settings" class="inputs">
@@ -50,6 +52,7 @@
     <script src="{% static 'libs/paper.js' %}"></script>
 
     <script>
+        var csrf_token = '{{ csrf_token }}';
         var patternDuration = Number('{{ pattern.duration }}');
 
         var octaves = 6;
@@ -76,6 +79,7 @@
     <script src="{% static 'scripts/noteEditor/loadInstrument.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/draw.js' %}"
     async type="text/paperscript" canvas="mainCanvas"></script>

@@ -43,7 +43,6 @@ class MusicNote {
     }
 
     playPreview(time = undefined) {
-        console.log(this.notation);
         let args;
         if (this.instrument instanceof Tone.PolySynth) {
             args = [[this.noteNotation], this.duration, time];
@@ -55,6 +54,16 @@ class MusicNote {
             args = [this.noteNotation, this.duration, time];
         }
         this.instrument.triggerAttackRelease.apply(this.instrument, args);
+    }
+
+    get json() {
+        return JSON.stringify({
+            time: this.time,
+            length: this.length,
+            octave: this.octave,
+            notation: this.notation,
+            instrument: this.instrument.id,
+        });
     }
 
     /**

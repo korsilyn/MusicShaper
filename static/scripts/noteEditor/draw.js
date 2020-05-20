@@ -52,6 +52,8 @@ var noteBlueprint = new paper.Path.Rectangle({
     opacity: 0,
 });
 
+noteBlueprint.pivot = noteBlueprint.bounds.topLeft;
+
 notesPlaceLayer.addChild(noteBlueprint);
 
 onInstrumentSelected = function () {
@@ -70,7 +72,7 @@ function calcMouseCellPoint(mouseEvent) {
 
 function resetBlueprint() {
     noteBlueprint.bounds.width = cellSize.width;
-    noteBlueprint.position = (mouseCellPoint + 0.5) * cellSizePoint;
+    noteBlueprint.position = mouseCellPoint * cellSizePoint;
 }
 
 notesPlaceLayer.onMouseDown = function (event) {
@@ -157,11 +159,12 @@ Object.keys(instruments).forEach(function (instrName) {
     currentInstrument = instruments[instrName];
     onInstrumentSelected();
     initialNotesGrouped[instrName].forEach(function (note) {
-        noteBlueprint.position = (new paper.Point(
-            note.time, (octaves + octavesFrom - note.octave - 1) * noteNotations.length + noteNotations.length - note.notation
-        ) + onePoint / 2) * cellSizePoint;
         noteBlueprint.bounds.width = note.length * cellSize.width;
-        noteBlueprint.note = MusicNote.makeNoteFromPath(noteBlueprint, cellSize);
+        noteBlueprint.position = new paper.Point(
+            note.time,
+            (octaves + octavesFrom - note.octave - 1) * noteNotations.length + noteNotations.length - note.notation
+        ) * cellSizePoint;
+        noteBlueprint.note = note;
         placeNote(noteBlueprint.note);
     });
 });

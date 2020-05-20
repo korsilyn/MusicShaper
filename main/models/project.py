@@ -84,6 +84,19 @@ class MusicInstrument(ModelWithSettings):
             }
         return super().define(definition_name, default_settings)
 
+    def to_dict(self):
+        '''
+        Возвращает словарь с данными и настройками
+        музыкального инструмента
+        '''
+
+        return {
+            **self.get_settings(),
+            '_id': self.pk,
+            '_type': self.type,
+            '_notesColor': self.notesColor,
+        }
+
 
 class MusicInstrumentEffect(ModelWithSettings):
     '''
