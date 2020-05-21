@@ -7,7 +7,7 @@ function requestInstrument(instrumentName) {
             dataType: 'json',
             url: window.location.href,
             data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
+                csrfmiddlewaretoken: csrf_token,
                 operation: 'loadInstrument',
                 instrumentName,
             },
@@ -30,7 +30,7 @@ function requestInstrument(instrumentName) {
  * @param {{}} settings 
  * @returns {Tone.Instrument & { notesColor: string }}
  */
-function makeSynth(settings) {
+function makeSynth(settings, name = undefined) {
     const constr = Tone[settings._type || ""];
     if (typeof constr != 'function') {
         throw new Error('invalid instrument');
@@ -47,6 +47,8 @@ function makeSynth(settings) {
     synth.toMaster();
 
     synth.notesColor = settings._notesColor;
+    synth.id = settings._id;
+    synth.name = name;
 
     return synth;
 }
@@ -67,4 +69,11 @@ async function loadInstrument(name) {
     catch (err) {
         console.error(`failed to request instrument: ${err}`);
     }
+}
+
+var allInstrumentNames = JSON.parse(document.getElementById('allInstrumentNames').innerText);
+
+var instruments = JSON.parse(document.getElementById('usedInstruments').innerText);
+for (const name in instruments) {
+    instruments[name] = makeSynth(instruments[name], name);
 }

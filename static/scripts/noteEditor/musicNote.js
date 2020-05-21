@@ -1,6 +1,3 @@
-/** @type {MusicNote[]} */
-var musicNotes = [];
-
 class MusicNote {
     /**
      * @param {Tone.Monophonic & { notesColor: string; name: string; }} instrument
@@ -13,13 +10,14 @@ class MusicNote {
         this.instrument = instrument;
         this.time = pos;
         this.length = duration;
-        this.note = noteId;
+        this.notation = noteId;
         this.octave = octave;
     }
 
     remove() {
         const index = musicNotes.findIndex(n => n == this);
         musicNotes.splice(index, 1);
+        stop();
     }
 
     /**
@@ -27,7 +25,7 @@ class MusicNote {
      */
     checkIntersections() {
         const related_notes = musicNotes.filter(
-            n => this.octave == n.octave && this.note == n.note && this.time < n.time
+            n => this.octave == n.octave && this.notation == n.notation && this.time < n.time
         );
         return related_notes.some(n => this.time + this.length > n.time);
     }
@@ -41,7 +39,7 @@ class MusicNote {
     }
 
     get noteNotation() {
-        return noteNotations[this.note - 1] + this.octave;
+        return noteNotations[this.notation - 1] + this.octave;
     }
 
     playPreview(time = undefined) {
@@ -58,12 +56,21 @@ class MusicNote {
         this.instrument.triggerAttackRelease.apply(this.instrument, args);
     }
 
+    get json() {
+        return JSON.stringify({
+            time: this.time,
+            length: this.length,
+            octave: this.octave,
+            notation: this.notation,
+            instrument: this.instrument.id,
+        });
+    }
+
     /**
      * @param {MusicNote} note
      */
-    static register(note) {
+    static place(note) {
         musicNotes.push(note);
-        note.playPreview();
         return note;
     }
 
@@ -82,3 +89,15 @@ class MusicNote {
         );
     }
 }
+
+
+
+/** @type {MusicNote[]} */
+var musicNotes = JSON.parse(document.getElementById('musicNotes').innerText)
+    .map(n => new MusicNote(
+        Object.values(instruments).find(i => i.id == n.instrument),
+        n.time,
+        n.length,
+        n.notation,
+        n.octave,
+    ));

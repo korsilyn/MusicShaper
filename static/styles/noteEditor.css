@@ -5,6 +5,10 @@
     --grid-color: rgba(0, 0, 0, 0.3);
 }
 
+body {
+    overflow: hidden;
+}
+
 canvas#mainCanvas {
     background-size:
         var(--cell-width) var(--cell-height),
@@ -38,9 +42,20 @@ button {
     text-align: center;
 }
 
+.btn {
+    padding: 0;
+}
+
+button#saveBtn {
+    width: 100px;
+}
+
+button:active:hover {
+    filter: brightness(90%);
+}
+
 button:focus {
     outline: 0;
-    filter: brightness(90%);
 }
 
 #settings > :not(.seperator) + :not(:first-child):not(.seperator) {
@@ -54,6 +69,7 @@ button:focus {
 #settingsPanel .inputs {
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 #settingsPanel .seperator {

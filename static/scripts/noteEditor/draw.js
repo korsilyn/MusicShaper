@@ -42,34 +42,25 @@ var notesLayer = new paper.Layer({
     name: 'notes'
 });
 
-function makeNotePath() {
-    var fillColor = new paper.Color(currentInstrument.notesColor || 'red');
-    var strokeColor = fillColor.clone();
-    strokeColor.brightness -= 0.4;
-    return new paper.Path.Rectangle({
-        size: cellSize,
-        fillColor: fillColor,
-        strokeColor: strokeColor,
-        strokeWidth: 2,
-        strokeScaling: false
-    });
-}
-
 /** @type {paper.Point} */
 var mouseCellPoint;
 
-/** @type {paper.Path.Rectangle} */
-var noteBlueprint = makeNotePath();
+var noteBlueprint = new paper.Path.Rectangle({
+    size: cellSize,
+    strokeWidth: 2,
+    strokeScaling: false,
+    opacity: 0,
+});
+
+noteBlueprint.pivot = noteBlueprint.bounds.topLeft;
+
 notesPlaceLayer.addChild(noteBlueprint);
-noteBlueprint.opacity = 0;
 
 onInstrumentSelected = function () {
-    noteBlueprint.fillColor = currentInstrument.notesColor;
+    noteBlueprint.fillColor = new paper.Color(currentInstrument.notesColor);
     noteBlueprint.strokeColor = noteBlueprint.fillColor.clone();
     noteBlueprint.strokeColor.brightness -= 0.4;
 }
-
-loadFirstInstrument();
 
 var placing = false;
 var deleting = false;
@@ -81,7 +72,7 @@ function calcMouseCellPoint(mouseEvent) {
 
 function resetBlueprint() {
     noteBlueprint.bounds.width = cellSize.width;
-    noteBlueprint.position = (mouseCellPoint + 0.5) * cellSizePoint;
+    noteBlueprint.position = mouseCellPoint * cellSizePoint;
 }
 
 notesPlaceLayer.onMouseDown = function (event) {
@@ -89,6 +80,23 @@ notesPlaceLayer.onMouseDown = function (event) {
     deleting = event.event.button == 2;
     if (placing) {
         noteBlueprint.note = MusicNote.makeNoteFromPath(noteBlueprint, cellSize);
+    }
+}
+
+function placeNote(note) {
+    var clone = noteBlueprint.clone();
+    clone.opacity = 1;
+    notesLayer.addChild(clone);
+
+    if (!note) {
+        note = MusicNote.place(noteBlueprint.note);
+    }
+
+    clone.onClick = function (event) {
+        if (event.event.button == 2) {
+            note.remove();
+            clone.remove();
+        }
     }
 }
 
@@ -120,21 +128,9 @@ project.view.onMouseUp = function (event) {
     if (placing && event.event.button == 0) {
         placing = false;
         document.body.style.cursor = null;
-
-        /** @type {paper.Path} */
-        var clone = noteBlueprint.clone();
-        notesLayer.addChild(clone);
-        clone.opacity = 1;
-
-        var note = MusicNote.register(noteBlueprint.note);
-
-        clone.onClick = function (event) {
-            if (event.event.button == 2) {
-                note.remove();
-                clone.remove();
-            }
-        }
-
+        placeNote();
+        stop();
+        noteBlueprint.note.playPreview();
         resetBlueprint();
     }
     else if (event.event.button == 1) {
@@ -152,6 +148,28 @@ notesPlaceLayer.onMouseLeave = function () {
         noteBlueprint.opacity = 0;
     }
 }
+
+//#endregion
+
+//#region load notes
+
+var initialNotesGrouped = groupBy(musicNotes, 'instrumentName');
+Object.keys(instruments).forEach(function (instrName) {
+    if (!initialNotesGrouped[instrName]) return;
+    currentInstrument = instruments[instrName];
+    onInstrumentSelected();
+    initialNotesGrouped[instrName].forEach(function (note) {
+        noteBlueprint.bounds.width = note.length * cellSize.width;
+        noteBlueprint.position = new paper.Point(
+            note.time,
+            (octaves + octavesFrom - note.octave - 1) * noteNotations.length + noteNotations.length - note.notation
+        ) * cellSizePoint;
+        noteBlueprint.note = note;
+        placeNote(noteBlueprint.note);
+    });
+});
+
+loadFirstInstrument();
 
 //#endregion
 
@@ -177,7 +195,6 @@ window.hidePlayhead = function () {
 }
 
 window.movePlayheadTo = function (xCell) {
-    console.log(xCell);
     playhead.position.x = xCell * cellSize.width;
 }
 

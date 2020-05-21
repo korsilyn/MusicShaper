@@ -16,9 +16,9 @@
             <span style="margin-left: 5px;"
             class="quotes">{{ pattern.name }}</span>
             <div class="seperator"></div>
-            <a href="{% url 'patterns' proj_id=project.id %}">
-                Назад к списку паттернов
-            </a>
+            <button id="saveBtn" class="btn btn-outline-success">Сохранить</button>
+            <div class="seperator"></div>
+            <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
         </h5>
         <div id="settings" class="inputs">
             <button id="playBtn" onclick="play()">Играть</button>
@@ -52,9 +52,26 @@
     <script src="{% static 'libs/paper.js' %}"></script>
 
     <script>
+        var csrf_token = '{{ csrf_token }}';
         var patternDuration = Number('{{ pattern.duration }}');
+
+        var octaves = 6;
+        var octavesFrom = 2;
+
+        var noteNotations = [
+            'C', 'C#',
+            'D', 'D#',
+            'E',
+            'F', 'F#',
+            'G', 'G#',
+            'A', 'A#',
+            'B',
+        ];
+
+        var noteNotationsTotalLenght = noteNotations.length * octaves;
     </script>
 
+    {{ musicNotes|json_script:"musicNotes" }}
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
@@ -62,6 +79,7 @@
     <script src="{% static 'scripts/noteEditor/loadInstrument.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/draw.js' %}"
     async type="text/paperscript" canvas="mainCanvas"></script>

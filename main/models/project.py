@@ -84,6 +84,19 @@ class MusicInstrument(ModelWithSettings):
             }
         return super().define(definition_name, default_settings)
 
+    def to_dict(self):
+        '''
+        Возвращает словарь с данными и настройками
+        музыкального инструмента
+        '''
+
+        return {
+            **self.get_settings(),
+            '_id': self.pk,
+            '_type': self.type,
+            '_notesColor': self.notesColor,
+        }
+
 
 class MusicInstrumentEffect(ModelWithSettings):
     '''
@@ -128,11 +141,11 @@ class TrackPatternInstance(models.Model):
     Модель образца паттерна, который находиться на звуковой дорожке
 
     :param pattern: паттерн
-    :param position: момент времени, в который должен начать играть паттерн
+    :param time: момент времени, в который должен начать играть паттерн
     '''
 
     pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'instances')
-    position = models.PositiveIntegerField()
+    time = models.PositiveIntegerField()
 
 
 class MusicNote(models.Model):
@@ -140,8 +153,8 @@ class MusicNote(models.Model):
     Модель музыкальной ноты в паттерне
 
     :param pattern: паттерн
-    :param position: момент времени, в который должна начать играть нота
-    :param duration: длительность ноты
+    :param time: момент времени, в который должна начать играть нота
+    :param length: длительность ноты
     :param notation: буквенная нотация ноты
     :param octave: октава
     '''
@@ -158,8 +171,8 @@ class MusicNote(models.Model):
 
     pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'notes')
     instrument = models.ForeignKey(MusicInstrument, models.CASCADE, 'notes')
-    position = models.PositiveIntegerField()
-    duration = models.PositiveIntegerField()
+    time = models.PositiveIntegerField()
+    length = models.PositiveIntegerField()
     notation = models.PositiveIntegerField(choices=NOTATION_CHOICES)
     octave = models.PositiveIntegerField(
         validators=[MinValueValidator(2), MaxValueValidator(7)]
