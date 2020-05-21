@@ -11,10 +11,12 @@ var currentInstrument = {};
 var onInstrumentSelected = () => {};
 
 function loadFirstInstrument() {
-    loadInstrument(allInstrumentNames[0]).then(instr => {
-        currentInstrument = instr;
-        onInstrumentSelected.call(window);
-    });
+    let firstInstr = instruments[Object.keys(instruments)[0]];
+    if (!firstInstr) {
+        firstInstr = { name: allInstrumentNames[0] };
+    }
+    instrSelect.value = firstInstr.name;
+    instrSelect.onchange();
 }
 
 const instrSelect = document.querySelector('#instrumentSelect');
@@ -24,4 +26,3 @@ instrSelect.onchange = function () {
         onInstrumentSelected.call(window);
     });
 };
-instrSelect.onchange();

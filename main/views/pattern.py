@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
+from django.db import transaction
 from ..models import MusicTrackPattern, MusicNote, MusicInstrument
 from ..forms import MusicPatternForm
 from .project import get_project_or_404
@@ -126,6 +127,7 @@ def pattern_editor(request, proj_id: int, pat_id: int):
         return redirect('instruments', proj_id=proj_id)
 
     instruments = list(pattern.get_instruments())
+    music_notes = MusicNote.objects.filter(pattern=pattern)
 
     if request.is_ajax():
         response = {'success': False}
@@ -148,9 +150,9 @@ def pattern_editor(request, proj_id: int, pat_id: int):
             if operation == 'save':
                 notes = request.POST.getlist('notes[]', [])
                 response['success'] = True
-                model_notes = MusicNote.objects.filter(pattern=pattern)
-                for json_note, model_note in zip_longest(notes, model_notes):
-                    handle_json_note(json_note, model_note, pattern, instruments)
+                with transaction.atomic():
+                    for json_note, model_note in zip_longest(notes, music_notes):
+                        handle_json_note(json_note, model_note, pattern, instruments)
 
         return JsonResponse(response)
 
@@ -159,5 +161,5 @@ def pattern_editor(request, proj_id: int, pat_id: int):
         'pattern': pattern,
         'usedInstruments': dict(make_instrument_dict(instruments)),
         'allInstruments': list(project.instruments.values_list('name', flat=True)),
-        'musicNotes': list(map(model_to_dict, MusicNote.objects.filter(pattern=pattern))),
+        'musicNotes': list(map(model_to_dict, music_notes)),
     })
