@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Ваши подписки
+{% endblock %}
+
+{% block 'body' %}
+    <div class="margin-top-10"></div>
+    <h2 align="center">Ваши подписки: {{profile.subscriptions.count}}</h2> <br>
+    <table class="table table-striped table-hover theme-transition">
+        <thead align="center">
+            <tr>
+                <th>Имя</th>
+            </tr>
+        </thead>
+        <tbody align="center">
+            {% for sub in profile.subscriptions.all %}
+                <tr>
+                    <td><a href="{% url 'profile' username=sub.user.username %}">{{ sub.user.username }}</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td> - </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

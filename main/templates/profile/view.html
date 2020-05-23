@@ -5,7 +5,7 @@
     {% if user == profile.user %}
         Ваш профиль
     {% else %}
-        Профиль {{ user.username }}
+        Профиль {{ profile.user.username }}
     {% endif %}
 {% endblock %}
 
@@ -55,20 +55,18 @@
 
     {% if request.user == profile.user %}
         <div class="text-center margin-top-2">
-            {% with sub_count=profile.subscriptions.count max_count=5 %}
-                <b>Ваши подписки ({{ sub_count }})</b> <br>
-                {% for sub in profile.subscriptions.all|slice:":max_count" %}
-                    <a href="{% url 'profile' username=sub.user.username %}">
-                        {{ sub.user.username }}
-                    </a>
-                    <br>
-                    {% if forloop.last and forloop.counter == max_count %}
-                        <i>...</i>
-                    {% endif %}
-                {% empty %}
-                    <i>Вы ни на кого не подписаны :/</i>
-                {% endfor %}
-            {% endwith %}
+            <b>Ваши подписки ({{ profile.subscriptions.count }})</b> <br>
+            {% for sub in profile.subscriptions.all|slice:":5" %}
+                <a href="{% url 'profile' username=sub.user.username %}">
+                    {{ sub.user.username }}
+                </a>
+                <br>
+                {% if forloop.last %}
+                    <b><a href="{% url 'subscriptions'  %}">посмотреть полный список </a> </b>
+                {%endif%}
+            {% empty %}
+                <i>Вы ни на кого не подписаны :/</i>
+            {% endfor %}
         </div>
     {% endif %}
 

@@ -37,6 +37,7 @@ urlpatterns = [
         path('edit/', views.profile_edit_page, name='profile_edit'),
         path('delete_avatar/', views.delete_avatar, name='delete_avatar'),
         path('change_password/', views.change_password, name='change_password'),
+        path('subscriptions/', views.subscriptions_page, name='subscriptions'),
         path('<str:username>/', include([
             path('', views.profile_page, name='profile'),
             path('sub', views.subscribe, name='subscribe'),
