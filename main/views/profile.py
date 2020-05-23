@@ -174,3 +174,19 @@ def unsubscribe(request, username):
 
     add_message(request, SUCCESS, f'{username} был удалён из ваших подписок')
     return redirect('profile', username=username)
+
+
+@login_required
+def subscriptions_page(request):
+    '''
+    Функция для отображения полного списка подписок
+
+    :param request: запрос клиента
+    :rtype: HttpResponse
+    '''
+
+    user = request.user
+    context = get_base_context(request, {'profile': user.profile})
+    is_sub = user.profile.subscribers.filter(pk=request.user.profile.pk).exists()
+    context['is_sub'] = is_sub
+    return render(request, 'profile/subscriptions.html', context)
