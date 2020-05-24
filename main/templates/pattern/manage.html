@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Управление паттерном {{ pattern.name }}
+{% endblock %}
+
+{% block 'body' %}
+    <div class="text-center margin-top-20">
+        <h2>Управление паттерном</h2>
+        <a href="{% url 'pattern_editor' proj_id=project.id pat_id=pattern.id %}">
+            Назад к паттерну
+        </a>
+    </div>
+    <form method="POST" style="max-width: 45%;" class="mx-auto margin-top-2">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div class="text-center">
+            <smal class="text-secondary">
+                Уменьшение длительности паттерна приведёт к удалению "не влезающих" нот
+            </small>
+            <br>
+            <input type="submit" value="Сохранить изменения" class="btn btn-outline-success margin-top-10">
+            <div class="margin-top-10"></div>
+            <a href="{% url 'delete_pattern' proj_id=project.id pat_id=pattern.id %}"
+                class="btn btn-outline-danger">
+                Удалить паттерн
+            </a>
+        </div>
+    </form>
+{% endblock %}

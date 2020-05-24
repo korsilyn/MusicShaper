@@ -37,6 +37,7 @@ urlpatterns = [
         path('edit/', views.profile_edit_page, name='profile_edit'),
         path('delete_avatar/', views.delete_avatar, name='delete_avatar'),
         path('change_password/', views.change_password, name='change_password'),
+        path('subscriptions/', views.subscriptions_page, name='subscriptions'),
         path('<str:username>/', include([
             path('', views.profile_page, name='profile'),
             path('sub', views.subscribe, name='subscribe'),
@@ -67,6 +68,8 @@ urlpatterns = [
                 path('new/', views.new_pattern, name='new_pattern'),
                 path('<int:pat_id>/', include([
                     path('', views.pattern_editor, name='pattern_editor'),
+                    path('manage/', views.manage_pattern, name='manage_pattern'),
+                    path('delete/', views.delete_pattern, name='delete_pattern')
                 ])),
             ])),
         ])),

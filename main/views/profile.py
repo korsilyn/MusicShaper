@@ -9,9 +9,9 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from django.http import Http404
+from PIL import Image
 from .util import get_base_context
 from ..models import Profile, MusicTrack
-
 
 def profile_page(request, username):
     '''
@@ -56,15 +56,25 @@ def profile_edit_page(request):
     if request.method == 'POST':
         status = request.POST.get('status', '')
         image = request.FILES.get('image', None)
-
         if len(status) <= 100:
             profile.status = status
+            add_message(request, SUCCESS, 'Статус успешно обновлён')
+        else:
+            add_message(request, ERROR, 'Максимальная длина статуса: 100 символов')
         if image:
-            profile.image.delete(save=True)
-            profile.image = image
-
+            pil_image = Image.open(image)
+            if pil_image.height <= 200 or pil_image.width <= 200:
+                add_message(request, ERROR, 'Минимальное разрешение аватара: 200x200px')
+            elif pil_image.height >= 800 or pil_image.width >= 800:
+                add_message(request, ERROR, 'Максимальное разрешение аватара: 800x800px')
+            elif image.size >= 4194304:
+                add_message(request, ERROR, 'Максимальный размер аватарки: 4МБайта')
+            else:
+                profile.image.delete(save=True)
+                profile.image = image
+                add_message(request, SUCCESS, 'Аватар успешно обновлён')
+            pil_image.close()
         profile.save()
-        add_message(request, SUCCESS, 'Профиль успешно обновлён')
         return redirect('profile')
 
     context = get_base_context(request, {
@@ -174,3 +184,19 @@ def unsubscribe(request, username):
 
     add_message(request, SUCCESS, f'{username} был удалён из ваших подписок')
     return redirect('profile', username=username)
+
+
+@login_required
+def subscriptions_page(request):
+    '''
+    Функция для отображения полного списка подписок
+
+    :param request: запрос клиента
+    :rtype: HttpResponse
+    '''
+
+    user = request.user
+    context = get_base_context(request, {'profile': user.profile})
+    is_sub = user.profile.subscribers.filter(pk=request.user.profile.pk).exists()
+    context['is_sub'] = is_sub
+    return render(request, 'profile/subscriptions.html', context)

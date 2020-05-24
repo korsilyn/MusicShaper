@@ -3,10 +3,11 @@
 '''
 
 from django.forms import ModelForm, TextInput, NumberInput
-from ..models import MusicTrackPattern
+from django.db.models import F
+from ..models import MusicTrackPattern, MusicNote
 
 
-class MusicPatternForm(ModelForm):
+class TrackPatternForm(ModelForm):
     '''
     Форма создания / редактирования паттерна
     '''
@@ -25,17 +26,22 @@ class MusicPatternForm(ModelForm):
             }),
             'duration': NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Продолжительность паттерна'
+                'placeholder': 'Продолжительность паттерна',
+                'max': 256
             })
         }
 
     def __init__(self, project, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.project = project
+        self.fields['duration'].widget.attrs['min'] = 10
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.project = self.project
-        if commit:
-            instance.save()
+        instance.save()
+        MusicNote.objects\
+            .annotate(end_time=F('time') + F('length'))\
+            .filter(end_time__gt=instance.duration)\
+            .delete()
         return instance

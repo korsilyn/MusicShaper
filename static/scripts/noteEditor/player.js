@@ -38,8 +38,9 @@ function play(from = 0) {
     const sixteenthSec = new Tone.Time('16n').toSeconds();
 
     const timedNotes = groupBy(musicNotes, 'time');
-    let lastTime = Math.max(...Object.keys(timedNotes).map(Number));
-    for (let time = 0; time <= lastTime; time++) {
+    const lastTime = Math.max(...musicNotes.map(n => n.time + n.length));
+
+    for (let time = 0; time < lastTime; time++) {
         if (time < from) continue;
 
         const toneTime = sixteenthSec * (time - from);
@@ -72,23 +73,16 @@ function play(from = 0) {
             else {
                 Tone.Transport.scheduleOnce(sTime => {
                     relatedNotes.forEach(n => n.playPreview(sTime));
-                    scheduleDraw(sTime);
+                    scheduleDraw(time, sTime);
                 }, toneTime);
             }
         }
     }
 
-    const lastNoteLength = Math.max(...timedNotes[lastTime].map(n => n.length));
-    for (let timeX = 0; timeX < lastNoteLength; timeX++) {
-        Tone.Transport.scheduleOnce(sTime => {
-            scheduleDraw(lastTime + timeX, sTime);
-        }, sixteenthSec * (lastTime + timeX - from));
-    }
-
     Tone.Transport.scheduleOnce(() => {
         hidePlayhead();
         isPlaying = false;
-    }, sixteenthSec * (lastTime + lastNoteLength + 1 - from));
+    }, sixteenthSec * (lastTime + 1 - from));
 
     Tone.Transport.scheduleOnce(() => {
         movePlayheadTo(from);
