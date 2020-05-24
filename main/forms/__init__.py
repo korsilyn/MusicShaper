@@ -5,6 +5,6 @@
 from .login import LoginForm
 from .project import ProjectForm
 from .instrument import MusicInstrumentForm
-from .pattern import MusicPatternForm
+from .pattern import TrackPatternForm
 from .settings import SettingsModelForm
 from .create_test_track import CreateTestTrack

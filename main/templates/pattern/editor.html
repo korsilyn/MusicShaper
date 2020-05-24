@@ -18,6 +18,10 @@
             <div class="seperator"></div>
             <button id="saveBtn" class="btn btn-outline-success">Сохранить</button>
             <div class="seperator"></div>
+            <a href="{% url 'manage_pattern' proj_id=project.id pat_id=pattern.id %}">
+                Управление паттерном
+            </a>
+            <div class="seperator"></div>
             <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
         </h5>
         <div id="settings" class="inputs">

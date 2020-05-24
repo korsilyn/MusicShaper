@@ -12,7 +12,7 @@ from .track import track_view, popular_tracks
 from .project import new_project, project_home, manage_project, delete_project, projects_list
 from .instrument import instruments, new_instrument, edit_instrument,\
     manage_instrument, delete_instrument
-from .pattern import patterns_list, new_pattern, pattern_editor
+from .pattern import patterns_list, new_pattern, pattern_editor, manage_pattern, delete_pattern
 from .admin import admin_home, create_test_track
 
 from .util import get_base_context
