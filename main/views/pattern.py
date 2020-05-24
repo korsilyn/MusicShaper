@@ -9,9 +9,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
+from django.urls import reverse
 from django.db import transaction
 from ..models import MusicTrackPattern, MusicNote, MusicInstrument
-from ..forms import MusicPatternForm
+from ..forms import TrackPatternForm
 from .project import get_project_or_404
 from .util import get_base_context
 
@@ -46,14 +47,14 @@ def new_pattern(request, proj_id: int):
     project = get_project_or_404(request, proj_id)
 
     if request.method == 'POST':
-        form = MusicPatternForm(project, data=request.POST)
+        form = TrackPatternForm(project, data=request.POST)
         if form.is_valid():
             p_id = form.save().pk
             add_message(request, SUCCESS, 'Паттерн успешно создан')
             return redirect('pattern_editor', proj_id=proj_id, pat_id=p_id)
         add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = MusicPatternForm(project)
+        form = TrackPatternForm(project)
 
     context = get_base_context(request, {
         'project': project,
@@ -163,3 +164,68 @@ def pattern_editor(request, proj_id: int, pat_id: int):
         'allInstruments': list(project.instruments.values_list('name', flat=True)),
         'musicNotes': list(map(model_to_dict, music_notes)),
     })
+
+
+@login_required
+def manage_pattern(request, proj_id: int, pat_id: int):
+    '''
+    Страница управления паттерном
+
+    :param request: запрос пользователя
+    :param proj_id: id проекта в БД
+    :param pat_id: id паттерна в БД
+    '''
+
+    project = get_project_or_404(request, proj_id)
+    pattern = get_object_or_404(MusicTrackPattern, pk=pat_id)
+
+    if request.method == 'POST':
+        form = TrackPatternForm(project, instance=pattern, data=request.POST)
+        if form.is_valid():
+            form.save()
+            add_message(request, SUCCESS, 'Изменения успешно сохранены')
+            return redirect('manage_pattern', proj_id=proj_id, pat_id=pat_id)
+        add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = TrackPatternForm(project, instance=pattern)
+
+    context = get_base_context(request, {
+        'project': project,
+        'pattern': pattern,
+        'form': form,
+    })
+
+    return render(request, 'pattern/manage.html', context)
+
+
+@login_required
+def delete_pattern(request, proj_id: int, pat_id: int):
+    '''
+    Страница удаления паттенра
+
+    :param request: запрос пользователя
+    :param proj_id: id проекта в БД
+    :param pat_id: id паттерна в БД
+    '''
+
+    project = get_project_or_404(request, proj_id)
+    pattern = get_object_or_404(MusicTrackPattern, pk=pat_id)
+
+    if request.method == 'POST':
+        pattern.delete()
+        add_message(request, SUCCESS, 'Паттерн успешно удалён')
+        return redirect('patterns', proj_id=proj_id)
+
+    context = get_base_context(request, {
+        'project': project,
+        'title': 'Удаление паттерна',
+        'item_name': pattern.name,
+        'confirm_title': 'Удалить паттерн',
+        'cancel_title': 'Назад к паттерну',
+        'cancel_url': reverse('manage_pattern', kwargs={
+            'proj_id': project.pk,
+            'pat_id': pattern.pk
+        })
+    })
+
+    return render(request, 'delete.html', context)

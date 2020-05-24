@@ -68,6 +68,8 @@ urlpatterns = [
                 path('new/', views.new_pattern, name='new_pattern'),
                 path('<int:pat_id>/', include([
                     path('', views.pattern_editor, name='pattern_editor'),
+                    path('manage/', views.manage_pattern, name='manage_pattern'),
+                    path('delete/', views.delete_pattern, name='delete_pattern')
                 ])),
             ])),
         ])),

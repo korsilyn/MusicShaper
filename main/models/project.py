@@ -172,7 +172,9 @@ class MusicNote(models.Model):
     pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'notes')
     instrument = models.ForeignKey(MusicInstrument, models.CASCADE, 'notes')
     time = models.PositiveIntegerField()
-    length = models.PositiveIntegerField()
+    length = models.PositiveIntegerField(
+        validators=[MinValueValidator(1)]
+    )
     notation = models.PositiveIntegerField(choices=NOTATION_CHOICES)
     octave = models.PositiveIntegerField(
         validators=[MinValueValidator(2), MaxValueValidator(7)]
