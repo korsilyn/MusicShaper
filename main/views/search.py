@@ -20,7 +20,7 @@ def similar(first, second):
     :return: число от 0 до 1
     '''
 
-    return SequenceMatcher(None, first, second).ratio()
+    return SequenceMatcher(None, first.lower(), second.lower()).ratio()
 
 
 def filter_similar(items, comp_value, threshold, key=None):
