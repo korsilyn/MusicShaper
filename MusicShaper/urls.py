@@ -72,6 +72,8 @@ urlpatterns = [
                     path('delete/', views.delete_pattern, name='delete_pattern')
                 ])),
             ])),
+
+            path('timeline/', views.project_timeline, name='timeline'),
         ])),
     ])),
 

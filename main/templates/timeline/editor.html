@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Таймлиния проекта {{ project.name }}
+{% endblock %}
+
+{% block 'body' %}
+    <div id="menu">
+        <div>
+            
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script>
+        (function(){
+            document.getElementById('_mainContainer').classList.remove('container');
+
+            const menu = document.getElementById('menu');
+
+            window.onresize = function () {
+                const sidebar = document.querySelector('side-bar');
+                menu.clientWidth = document.body.clientWidth - sidebar.clientWidth;
+            };
+        })()
+    </script>
+{% endblock %}

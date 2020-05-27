@@ -7,7 +7,7 @@ from json import loads
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.db import transaction
@@ -27,6 +27,10 @@ def patterns_list(request, proj_id: int):
     '''
 
     project = get_project_or_404(request, proj_id)
+
+    if not project.instruments.exists():
+        raise Http404
+
     context = get_base_context(request, {
         'project': project,
         'patterns': MusicTrackPattern.objects.filter(project=project).all()
@@ -45,6 +49,9 @@ def new_pattern(request, proj_id: int):
     '''
 
     project = get_project_or_404(request, proj_id)
+
+    if not project.instruments.exists():
+        raise Http404
 
     if request.method == 'POST':
         form = TrackPatternForm(project, data=request.POST)

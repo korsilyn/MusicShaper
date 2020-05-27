@@ -1,49 +1,30 @@
 {% extends 'base.html' %}
 
 {% block 'title' %}
-    Создание Паттерна
+    Создание паттерна
 {% endblock %}
 
 {% block 'body' %}
-    {% if project.instruments.count > 0 %}
-        <div class="margin-top-20 text-center">
-            <h2>Создание музыкального инструмента</h2>
-            <a href="{% url 'patterns' proj_id=project.id %}">
-                Назад к списку паттернов
-            </a>
+    <div class="margin-top-20 text-center">
+        <h2>Создание паттерна</h2>
+        <a href="{% url 'patterns' proj_id=project.id %}">
+            Назад к списку паттернов
+        </a>
+    </div>
+    <form method="POST" class="mx-auto margin-top-2" style="max-width: 40%">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+        <div class="form-group">
+            <label>{{ field.label }}</label>: {{ field }}
         </div>
-        <form method="POST" class="mx-auto margin-top-2" style="max-width: 40%">
-            {% csrf_token %}
-            {% for field in form.visible_fields %}
-            <div class="form-group">
-                <label>{{ field.label }}</label>: {{ field }}
-            </div>
-            {% endfor %}
-            <div class="text-center">
-                <small>
-                    Реальная длительность паттерна зависит от темпа проекта <br>
-                    Эти параметры можно будет изменить позже <br>
-                </small> <br>
-                <input type="submit" value="Создать"
-                class="btn btn-outline-primary margin-top-5">
-            </div>
-        </form>
-    {% else %}
-        <div class="margin-top-20 text-center">
-            <h2>Постойте!</h2>
-            <p>
-                В вашем проекте ещё нет ни одного музыкального инструмента. <br>
-                А играть музыку без инструментов... странно короче.
-            </p>
-            <a href="{% url 'new_instrument' proj_id=project.id %}"
-            class="btn btn-primary">
-                Создать новый инструмент
-            </a>
-            <br>
-            <div class="margin-top-5"></div>
-            <a href="{% url 'patterns' proj_id=project.id %}">
-                Назад к списку паттернов
-            </a>
+        {% endfor %}
+        <div class="text-center">
+            <small>
+                Реальная длительность паттерна зависит от темпа проекта <br>
+                Эти параметры можно будет изменить позже <br>
+            </small> <br>
+            <input type="submit" value="Создать"
+            class="btn btn-outline-primary margin-top-5">
         </div>
-    {% endif %}
+    </form>
 {% endblock %}
