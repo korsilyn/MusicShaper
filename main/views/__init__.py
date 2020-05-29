@@ -13,7 +13,8 @@ from .project import new_project, project_home, manage_project, delete_project, 
 from .instrument import instruments, new_instrument, edit_instrument,\
     manage_instrument, delete_instrument
 from .pattern import patterns_list, new_pattern, pattern_editor
-from .admin import admin_home, create_test_track
+from .admin import admin_home, create_test_track, claimed_track
+from .claim_track import claim_track
 
 from .util import get_base_context
 

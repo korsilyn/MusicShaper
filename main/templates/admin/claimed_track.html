@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+Книга жалоб
+{% endblock %}
+
+{% block 'body' %}
+<div class="text-center">
+    <h2>Книга жалоб</h2>
+</div>
+<br>
+<table class="table table-striped table-hover table-bordered text-center">
+    <thead>
+        <tr>
+            <th>Название трека</th>
+            <th>Кол-во жалоб</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in tracks %}
+        <tr>
+            <td><a href="{% url 'track' track_id=item.id %}">{{ item.name }}</a></td>
+            <td>{{ item.count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td> Ничего не найдено </td>
+            <td> :/ </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

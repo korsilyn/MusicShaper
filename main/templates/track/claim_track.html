@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+    Создание жалобы
+{% endblock %}
+
+{% block 'body' %}
+    <h2 class="text-center">{% if old_claim %}Редактирование{% else %}Создание{% endif %} жалобы</h2>
+    <br>
+    <form method="POST">
+        {% csrf_token %}
+        {{ claimform }}
+        <br>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Отправить жалобу</button>
+        </div>
+    </form>
+{% endblock %}

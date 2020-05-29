@@ -53,6 +53,32 @@
             : <b id="dislikes_counter">{{ track.dislikes.count }}</b>
         </h1>
     {% endif %}
+
+    <br>
+    <div class=" text-center">
+        <a class="btn btn-danger" href="{% url 'claim_track' track_id=track.id %}">
+            Пожаловаться
+        </a>
+    </div>
+
+    {% if track.claims.exists %}
+        {% if user.is_superuser or track.author == user %}
+            <br>
+            <h3 class="text-center">Жалобы:</h3>
+            <div class="list-group">
+                {% for t in track.claims.all %}
+                    <div class="list-group-item">
+                        <h5>Автор: {{ t.author }}</h5>
+                        <b1 class="list-group-item-danger">{{ t.topic }}</b1> <br>
+                        <i class="list-group-item-info">{{ t.content }}</i> <br>
+                        <small>Дата создания / последнего изменения: {{ t.creation_date|date:"d.m.Y G:i" }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+            <br>
+        {% endif %}
+    {% endif %}
+
     {% if track.settings.allow_comments %}
         <h3 class="margin-top-10" id="comment_counter">
             Комментарии ({{ track.comments.count }})
