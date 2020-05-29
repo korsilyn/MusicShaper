@@ -18,9 +18,6 @@ var cellSize = new paper.Size({
 });
 
 window.onresize = function () {
-    canvas.style.visibility = 'visible';
-    canvas.focus();
-
     const sidebar = document.querySelector('side-bar');
 
     container.style = `
@@ -28,3 +25,13 @@ window.onresize = function () {
         height: inherit;
     `;
 }
+
+window.addEventListener('beforeInstrumentLoad', function () {
+    canvas.style.visibility = 'hidden';
+    document.body.style.cursor = 'wait';
+});
+
+window.addEventListener('instrumentLoad', function () {
+    canvas.style.visibility = 'visible';
+    document.body.style.cursor = null;
+});

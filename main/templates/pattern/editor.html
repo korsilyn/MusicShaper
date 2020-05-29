@@ -51,10 +51,17 @@
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
+    <script src="{% static 'scripts/urls.js' %}"></script>
+    <script src="{% static 'scripts/instruments.js' %}"></script>
 
     <script>
         var csrf_token = '{{ csrf_token }}';
         var patternDuration = Number('{{ pattern.duration }}');
+
+        Urls.registerUrls({
+            get_instrument: "{% url 'get_instrument' proj_id=project.id %}",
+            save_pattern: "{% url 'save_pattern' proj_id=project.id pat_id=pattern.id %}",
+        });
 
         var octaves = 6;
         var octavesFrom = 2;
@@ -76,12 +83,11 @@
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
+    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/resize.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/loadInstrument.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/draw.js' %}"
     async type="text/paperscript" canvas="mainCanvas"></script>
 {% endblock %}

@@ -12,14 +12,14 @@ function stop() {
     hidePlayhead();
     Tone.Transport.stop();
     Tone.Transport.cancel(0);
-    Object.values(instruments).forEach(i => {
+    for (const i of instruments.instruments.values()) {
         if (i instanceof Tone.PolySynth) {
             i.releaseAll(0);
         }
         else if (i instanceof Tone.Monophonic) {
             i.triggerRelease(0);
         }
-    });
+    }
 }
 
 function play(from = 0) {
@@ -58,7 +58,7 @@ function play(from = 0) {
         for (const instrName in groupedByInstr) {
             if (processed.includes(instrName)) continue;
             processed.push(instrName);
-            const instr = instruments[instrName];
+            const instr = instruments.getByName(instrName);
             const relatedNotes = notes.filter(n => n.instrumentName == instrName);
             if (instr instanceof Tone.PolySynth) {
                 Tone.Transport.scheduleOnce(sTime => {

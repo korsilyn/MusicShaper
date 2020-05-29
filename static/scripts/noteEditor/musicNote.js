@@ -91,11 +91,10 @@ class MusicNote {
 }
 
 
-
 /** @type {MusicNote[]} */
 var musicNotes = JSON.parse(document.getElementById('musicNotes').innerText)
     .map(n => new MusicNote(
-        Object.values(instruments).find(i => i.id == n.instrument),
+        instruments.getById(n.instrument),
         n.time,
         n.length,
         n.notation,

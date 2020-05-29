@@ -2,10 +2,9 @@ function save() {
     return new Promise((resolve, reject) => $.ajax({
         method: 'POST',
         dataType: 'json',
-        url: window.location.href,
+        url: Urls.reverseUrl('save_pattern'),
         data: {
             csrfmiddlewaretoken: csrf_token,
-            operation: 'save',
             'notes[]': musicNotes.map(note => note.json),
         },
 
