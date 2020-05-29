@@ -13,6 +13,7 @@ before_script:
 stages:
   - test
   - style
+  - docs
   - deploy
 
 
@@ -33,7 +34,7 @@ coverage:
 
 
 sphinx:
-  stage: test
+  stage: docs
   before_script:
   - pip install -r ci/sphinx_requirements.txt
   script:
