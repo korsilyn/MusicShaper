@@ -23,6 +23,14 @@ class MusicTrackProject(models.Model):
     author = models.ForeignKey(User, models.CASCADE, 'projects')
     creation_date = models.DateTimeField()
 
+    def get_used_instruments(self):
+        '''
+        Возвращает список инструментов, использующихся
+        в паттернах проекта
+        '''
+
+        return MusicInstrument.objects.filter(project=self, notes__isnull=False)
+
 
 class TrackProjectSettings(models.Model):
     '''

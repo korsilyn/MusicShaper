@@ -20,3 +20,11 @@ def index_filter(arr, index):
         return arr[index]
     except IndexError:
         return None
+
+@register.filter(name='range')
+def range_filter(num):
+    '''
+    Аналог range(`num`)
+    '''
+
+    return range(num)

@@ -1,0 +1,43 @@
+#_mainContainer {
+    width: -webkit-fill-available;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#menu {
+    display: flex;
+    width: inherit;
+    height: inherit;
+    flex-direction: column;
+}
+
+#menu > .section {
+    background-color: var(--bg);
+    width: 100%;
+}
+
+#patterns {
+    background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.2), transparent 20px);
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    overflow-x: auto;
+    width: 100%;
+    --hor-margin: 20px;
+}
+
+#patterns-list > :first-child {
+    margin-left: var(--hor-margin);
+}
+
+#patterns-list > :last-child {
+    margin-right: var(--hor-margin);
+}
+
+#patterns-list {
+    flex-flow: nowrap;
+}
+
+.card-link-list a {
+    font-size: 1.3em;
+}

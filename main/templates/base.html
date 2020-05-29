@@ -14,7 +14,7 @@
 <body class="light">
     <div style="display: flex; align-items: flex-start;">
         <side-bar></side-bar>
-        <div id="_mainContainer" class="container">
+        <div id="_mainContainer" class="container" style="width: -webkit-fill-available;">
             {% include 'messages.html' %}
             {% block 'body' %}
                 Здесь должен размещаться контент страницы

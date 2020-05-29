@@ -19,14 +19,16 @@ canvas#mainCanvas {
         linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
 }
 
-#settingsPanel {
+.settingsPanel {
     height: var(--panel-height);
     background-color: var(--bg-secondary);
     padding: 8px;
-    box-shadow: 0 1px 14px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    position: relative;
 }
 
-#settingsPanel > h4:first-child {
+.settingsPanel > h4:first-child {
     margin-bottom: 4px;
 }
 
@@ -63,21 +65,21 @@ button:focus {
     outline: 0;
 }
 
-#settings > :not(.seperator) + :not(:first-child):not(.seperator) {
+.settings > :not(.seperator) + :not(:first-child):not(.seperator) {
     margin-left: 5px;
 }
 
-#settingsPanel label {
+.settingsPanel label {
     margin-bottom: 4px;
 }
 
-#settingsPanel .inputs {
+.settingsPanel .inputs {
     display: flex;
     align-items: center;
     margin-bottom: 5px;
 }
 
-#settingsPanel .seperator {
+.settingsPanel .seperator {
     background-color: var(--text);
     border: 2px solid var(--text);
     opacity: 0.2;
@@ -90,7 +92,7 @@ button:focus {
 }
 
 #playBtn {
-    background-color: rgb(54, 255, 47);
+    background-color: rgb(40, 230, 33);
 }
 
 #stopBtn {

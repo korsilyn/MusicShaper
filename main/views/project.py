@@ -166,5 +166,6 @@ def project_timeline(request, proj_id: int):
         raise Http404
 
     return render(request, 'timeline/editor.html', {
-        'project': project
+        'project': project,
+        'instruments': {i.name: i.to_dict() for i in project.get_used_instruments()}
     })

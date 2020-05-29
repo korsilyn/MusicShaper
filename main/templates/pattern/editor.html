@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div id="settingsPanel" class="theme-transition">
+    <div class="settingsPanel theme-transition">
         <h5 class="inputs">
             Редактор паттерна
             <span style="margin-left: 5px;" class="quotes">{{ pattern.name }}</span>
@@ -25,21 +25,17 @@
             <div class="seperator"></div>
             <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
         </h5>
-        <div id="settings" class="inputs">
+        <div class="settings inputs">
             <button id="playBtn" onclick="play()">Играть</button>
             <button id="stopBtn" onclick="stop()">Стоп</button>
-
             <div class="seperator"></div>
-
             <label>Текущий инструмент:</label>
             <select id="instrumentSelect">
                 {% for name in allInstruments %}
                     <option value="{{ name }}">{{ name }}</option>
                 {% endfor %}
             </select>
-
             <div class="seperator"></div>
-
             <label>Темп:</label>
             <input id="projBpm" type="number" min="32" max="999"
             value="{{ project.settings.bpm }}">
