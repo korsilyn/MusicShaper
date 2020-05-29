@@ -73,6 +73,13 @@ def create_test_track(request):
 @login_required
 @user_passes_test(superuser_check)
 def claimed_track(request):
+    '''
+    Страница жалоб
+
+    :param request: запрос клиента
+    :return: страница трека с жалобой
+    :rtype: HttpResponse
+    '''
     context = get_base_context(request)
 
     all_tracks = MusicTrack.objects.all()
