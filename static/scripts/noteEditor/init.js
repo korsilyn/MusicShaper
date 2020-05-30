@@ -17,14 +17,21 @@ var currentInstrument = {};
 
 var onInstrumentSelected = () => {};
 
-function loadFirstInstrument() {
+window.addEventListener('tileEditorInit', event => {
     let firstInstr = instruments.firstInstrument;
     if (firstInstr === undefined) {
         firstInstr = { name: allInstrumentNames[0] };
     }
     instrSelect.value = firstInstr.name;
     instrSelect.onchange();
-}
+
+    onInstrumentSelected = () => {
+        const tileHint = event.detail.hint;
+        tileHint.fillColor = new paper.Color(currentInstrument.notesColor);
+        tileHint.strokeColor = tileHint.fillColor.clone();
+        tileHint.strokeColor.brightness -= 0.4;
+    };
+});
 
 const instrSelect = document.querySelector('#instrumentSelect');
 instrSelect.onchange = function () {
@@ -33,3 +40,7 @@ instrSelect.onchange = function () {
         onInstrumentSelected.call(window);
     });
 };
+
+window.addEventListener('tilePlaced', ({ detail: { tile, path, hint } }) => {
+    hint.bounds.width = cellSize.width;
+})

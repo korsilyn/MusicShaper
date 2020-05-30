@@ -1,4 +1,5 @@
 /// <reference path="../../libs/@types/paper.d.ts" />
+/// <reference path="tile.js" />
 
 /** @type {paper.Project} */
 var project;
@@ -21,9 +22,13 @@ var cellSizePoint;
 
 var allowResize = false;
 
-window.addEventListener('tileEditorInit', function (event) {
-    gridSize = new paper.Size(event.detail.grid.width, event.detail.grid.height);
-    cellSize = new paper.Size(event.detail.cell.width, event.detail.cell.height);
+function initTileEditor(options) {
+    var grid = options.grid;
+    var cell = options.cell;
+    var _resize = options.allowResize;
+
+    gridSize = new paper.Size(grid.width, grid.height);
+    cellSize = new paper.Size(cell.width, cell.height);
 
     cellSizePoint = new paper.Point(cellSize.width, cellSize.height);
 
@@ -50,11 +55,17 @@ window.addEventListener('tileEditorInit', function (event) {
         opacity: 0,
     });
 
+    tileHint.style.fillColor = 'red';
+
     tileHint.pivot = tileHint.bounds.topLeft;
     tilePlaceLayer.addChild(tileHint);
 
-    allowResize = event.detail.allowResize;
-});
+    allowResize = _resize;
+
+    window.dispatchEvent(new CustomEvent('tileEditorInit', {
+        detail: { hint: tileHint }
+    }));
+}
 
 //#endregion
 
@@ -73,8 +84,7 @@ var tilePlaceLayer = new paper.Layer({
 
 /** @param {paper.Eve} */
 project.view.onResize = function (event) {
-    var curtain = tilePlaceLayer.children[0];
-    curtain.size = project.view.size;
+    tilePlaceLayer.children[0].size = project.view.size;
 }
 
 var tilesLayer = new paper.Layer({
@@ -84,7 +94,11 @@ var tilesLayer = new paper.Layer({
 /** @type {paper.Point} */
 var mouseCellPoint;
 
-/** @type {paper.Path.Rectangle} */
+/**
+ * @typedef {paper.Path.Rectangle & { tile: Tile }} TilePath
+ */
+
+/** @type {TilePath} */
 var tileHint;
 
 var placing = false;
@@ -99,30 +113,48 @@ function resetHint() {
     tileHint.position = mouseCellPoint * cellSizePoint;
 }
 
+paper.Item.prototype.makeTile = function () {
+    if (!this.tile || this.id == tileHint.id) {
+        this.tile = Tile.fromPath(this, cellSize);
+    }
+    return this.tile;
+}
+
+/** @param {string} type */
+paper.Item.prototype.makeEvent = function (type) {
+    var tile = this.makeTile();
+    return new CustomEvent(type, {
+        detail: { tile: tile, path: this, hint: tileHint }
+    });
+}
+
+/** @param {string} type */
+paper.Item.prototype.dispatchWindowTileEvent = function (type) {
+    return window.dispatchEvent(this.makeEvent(type));
+}
+
 tilePlaceLayer.onMouseDown = function (event) {
     placing = event.event.button == 0;
     deleting = event.event.button == 2;
     if (placing) {
-        window.dispatchEvent(new CustomEvent('tileBeginPlacing', {
-            detail: { tileHint }
-        }));
+        tileHint.dispatchWindowTileEvent('tileBeginPlacing');
     }
 }
 
 function placeTile() {
+    /** @type {TilePath} */
     var clone = tileHint.clone();
     clone.opacity = 1;
     tilesLayer.addChild(clone);
 
-    window.dispatchEvent(new CustomEvent('tilePlaced', {
-        detail: { tilePath: clone }
-    }));
+    clone.makeTile();
+    clone.tile.place();
+    clone.dispatchWindowTileEvent('tilePlaced');
 
     clone.onClick = function (event) {
         if (event.event.button == 2) {
-            window.dispatchEvent(new CustomEvent('tileRemoved', {
-                detail: { tilePath: clone }
-            }));
+            clone.dispatchWindowTileEvent('tileRemoved');
+            clone.tile.remove();
             clone.remove();
         }
     }
@@ -132,10 +164,10 @@ function placeTile() {
 project.view.onMouseMove = function (event) {
     mouseCellPoint = calcMouseCellPoint(event);
     if (placing && allowResize) {
-        var length = mouseCellPoint.x - tileHint.note.time + 1;
+        var length = mouseCellPoint.x - tileHint.tile.x + 1;
         if (length >= 1 && mouseCellPoint.x < gridSize.width) {
-            tileHint.note.length = length;
-            if (!tileHint.note.checkIntersections()) {
+            tileHint.tile.length = length;
+            if (!tileHint.tile.checkCollision()) {
                 tileHint.bounds.width = length * cellSize.width;
                 document.body.style.cursor = 'e-resize';
             }
@@ -157,9 +189,6 @@ project.view.onMouseUp = function (event) {
         placing = false;
         placeTile();
         resetHint();
-    }
-    else if (event.event.button == 1) {
-        play(calcMouseCellPoint(event).x);
     }
     deleting = false;
 }
@@ -194,3 +223,7 @@ window.movePlayheadTo = function (xCell) {
 }
 
 //#endregion
+
+window.dispatchEvent(new CustomEvent('tileEditorReady', {
+    detail: { init: initTileEditor }
+}));
