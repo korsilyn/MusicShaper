@@ -1,5 +1,4 @@
 /// <reference path="../../libs/@types/paper.d.ts" />
-/// <reference path="../../libs/@types/Tone.d.ts" />
 
 /** @type {paper.Project} */
 var project;
@@ -11,24 +10,58 @@ var onePoint = new paper.Point(1, 1);
 var gridLayer = project.activeLayer;
 gridLayer.name = 'grid';
 
-var gridSize = new paper.Size(window.patternDuration, noteNotationsTotalLenght);
+/** @type {paper.Size} */
+var gridSize;
 
-var cellSizePoint = new paper.Point(cellSize.width, cellSize.height);
+/** @type {paper.Size} */
+var cellSize;
 
-var gridRealSize = gridSize * cellSize;
-project.view.viewSize.set({
-    width: gridRealSize.width,
-    height: gridRealSize.height,
+/** @type {paper.Point} */
+var cellSizePoint;
+
+var allowResize = false;
+
+window.addEventListener('tileEditorInit', function (event) {
+    gridSize = new paper.Size(event.detail.grid.width, event.detail.grid.height);
+    cellSize = new paper.Size(event.detail.cell.width, event.detail.cell.height);
+
+    cellSizePoint = new paper.Point(cellSize.width, cellSize.height);
+
+    var gridRealSize = gridSize * cellSize;
+    project.view.viewSize.set({
+        width: gridRealSize.width,
+        height: gridRealSize.height,
+    });
+
+    playhead = new paper.Path.Rectangle({
+        fillColor: 'rgba(54, 255, 47, 0.4)',
+        width: cellSize.width,
+        height: gridRealSize.height,
+        visible: false,
+    });
+
+    playhead.pivot = playhead.bounds.topLeft;
+    tilePlaceLayer.addChild(playhead);
+
+    tileHint = new paper.Path.Rectangle({
+        size: cellSize,
+        strokeWidth: 2,
+        strokeScaling: false,
+        opacity: 0,
+    });
+
+    tileHint.pivot = tileHint.bounds.topLeft;
+    tilePlaceLayer.addChild(tileHint);
+
+    allowResize = event.detail.allowResize;
 });
-
-window.onresize();
 
 //#endregion
 
 //#region notes
 
 var tilePlaceLayer = new paper.Layer({
-    name: 'notesPlace',
+    name: 'tilePlace',
     children: [
         new paper.Path.Rectangle({
             size: project.view.size,
@@ -38,29 +71,21 @@ var tilePlaceLayer = new paper.Layer({
     ]
 });
 
+/** @param {paper.Eve} */
+project.view.onResize = function (event) {
+    var curtain = tilePlaceLayer.children[0];
+    curtain.size = project.view.size;
+}
+
 var tilesLayer = new paper.Layer({
-    name: 'notes'
+    name: 'tiles'
 });
 
 /** @type {paper.Point} */
 var mouseCellPoint;
 
-var tileHint = new paper.Path.Rectangle({
-    size: cellSize,
-    strokeWidth: 2,
-    strokeScaling: false,
-    opacity: 0,
-});
-
-tileHint.pivot = tileHint.bounds.topLeft;
-
-tilePlaceLayer.addChild(tileHint);
-
-onInstrumentSelected = function () {
-    tileHint.fillColor = new paper.Color(currentInstrument.notesColor);
-    tileHint.strokeColor = tileHint.fillColor.clone();
-    tileHint.strokeColor.brightness -= 0.4;
-}
+/** @type {paper.Path.Rectangle} */
+var tileHint;
 
 var placing = false;
 var deleting = false;
@@ -71,7 +96,6 @@ function calcMouseCellPoint(mouseEvent) {
 }
 
 function resetHint() {
-    tileHint.bounds.width = cellSize.width;
     tileHint.position = mouseCellPoint * cellSizePoint;
 }
 
@@ -79,22 +103,26 @@ tilePlaceLayer.onMouseDown = function (event) {
     placing = event.event.button == 0;
     deleting = event.event.button == 2;
     if (placing) {
-        tileHint.note = MusicNote.makeNoteFromPath(tileHint, cellSize);
+        window.dispatchEvent(new CustomEvent('tileBeginPlacing', {
+            detail: { tileHint }
+        }));
     }
 }
 
-function placeTile(note) {
+function placeTile() {
     var clone = tileHint.clone();
     clone.opacity = 1;
     tilesLayer.addChild(clone);
 
-    if (!note) {
-        note = MusicNote.place(tileHint.note);
-    }
+    window.dispatchEvent(new CustomEvent('tilePlaced', {
+        detail: { tilePath: clone }
+    }));
 
     clone.onClick = function (event) {
         if (event.event.button == 2) {
-            note.remove();
+            window.dispatchEvent(new CustomEvent('tileRemoved', {
+                detail: { tilePath: clone }
+            }));
             clone.remove();
         }
     }
@@ -175,16 +203,8 @@ loadFirstInstrument();
 
 //#region playhead
 
-var playhead = new paper.Path.Rectangle({
-    fillColor: 'rgba(54, 255, 47, 0.4)',
-    width: cellSize.width,
-    height: gridRealSize.height,
-    visible: false,
-});
-
-playhead.pivot = playhead.bounds.topLeft;
-
-tilePlaceLayer.addChild(playhead);
+/** @type {paper.Path.Rectangle} */
+var playhead;
 
 window.showPlayhead = function () {
     playhead.visible = true;

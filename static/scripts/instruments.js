@@ -77,7 +77,7 @@ class InstrumentStorage {
         if (typeof constr != 'function') {
             throw new Error('invalid instrument');
         }
-    
+
         /** @type {Tone.Instrument} */
         let synth;
         if (constr.prototype instanceof Tone.Monophonic) {
@@ -87,9 +87,9 @@ class InstrumentStorage {
         else {
             synth = new constr(settings);
         }
-    
+
         synth.toMaster();
-    
+
         synth.notesColor = settings._notesColor;
         synth.id = settings._id;
         synth.name = name;
