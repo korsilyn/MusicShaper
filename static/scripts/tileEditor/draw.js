@@ -131,7 +131,7 @@ function placeTile() {
 /** @param {paper.MouseEvent} event */
 project.view.onMouseMove = function (event) {
     mouseCellPoint = calcMouseCellPoint(event);
-    if (placing) {
+    if (placing && allowResize) {
         var length = mouseCellPoint.x - tileHint.note.time + 1;
         if (length >= 1 && mouseCellPoint.x < gridSize.width) {
             tileHint.note.length = length;
@@ -155,10 +155,7 @@ project.view.onMouseMove = function (event) {
 project.view.onMouseUp = function (event) {
     if (placing && event.event.button == 0) {
         placing = false;
-        document.body.style.cursor = null;
         placeTile();
-        stop();
-        tileHint.note.playPreview();
         resetHint();
     }
     else if (event.event.button == 1) {
@@ -176,28 +173,6 @@ tilePlaceLayer.onMouseLeave = function () {
         tileHint.opacity = 0;
     }
 }
-
-//#endregion
-
-//#region load notes
-
-var initialNotesGrouped = groupBy(Tile.tiles, 'instrumentName');
-instruments.instrumentNames.forEach(function (instrName) {
-    if (!initialNotesGrouped[instrName]) return;
-    currentInstrument = instruments.getByName(instrName);
-    onInstrumentSelected();
-    initialNotesGrouped[instrName].forEach(function (note) {
-        tileHint.bounds.width = note.length * cellSize.width;
-        tileHint.position = new paper.Point(
-            note.time,
-            (octaves + octavesFrom - note.octave - 1) * noteNotations.length + noteNotations.length - note.notation
-        ) * cellSizePoint;
-        tileHint.note = note;
-        placeTile(tileHint.note);
-    });
-});
-
-loadFirstInstrument();
 
 //#endregion
 
