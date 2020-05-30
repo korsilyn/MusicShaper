@@ -69,6 +69,7 @@
         .link-text {
             margin-left: 1rem;
             opacity: 0;
+            word-wrap: none;
             transition: opacity var(--transition-speed) ease;
         }
 
@@ -254,6 +255,10 @@
         _init() {
             this.nav = this.shadowRoot.querySelector('nav');
 
+            if (localStorage.getItem('sideBarOpened')) {
+                this.nav.classList.add('opened');
+            }
+
             window.addEventListener('scroll', ev => {
                 this.nav.style.transform = `translateY(${pageYOffset}px)`;
             });
@@ -292,10 +297,12 @@
 
         open() {
             this.nav.classList.add('opened');
+            localStorage.setItem('sideBarOpened', true);
         }
 
         close() {
             this.nav.classList.remove('opened');
+            localStorage.removeItem('sideBarOpened');
         }
 
         toggle() {
