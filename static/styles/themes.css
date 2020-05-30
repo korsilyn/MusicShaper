@@ -48,3 +48,17 @@ table, .card, .list-group-item {
 .card {
     border-width: 0;
 }
+
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+    background: var(--bg-secondary);
+}
+
+.light ::-webkit-scrollbar-thumb {
+    background:gray;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background-color: #2a2a3b;
+}

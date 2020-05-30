@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load list_tags %}
+
+{% block 'title' %}
+    Таймлайн проекта {{ project.name }}
+{% endblock %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/noteEditor.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/timeline.css' %}">
+{% endblock %}
+
+{% block 'body' %}
+    <div class="settingsPanel theme-transition">
+        <h5 class="inputs">
+            Таймлайн проекта
+            <span style="margin-left: 5px;" class="quotes">{{ project.name }}</span>
+            <div class="seperator"></div>
+            <a href="{% url 'manage_project' proj_id=project.id %}">Управление проектом</a>
+            <div class="seperator"></div>
+            <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
+            <div class="seperator"></div>
+            <a href="{% url 'new_pattern' proj_id=project.id %}">Новый паттерн</a>
+        </h5>
+        <div class="settings inputs">
+            <button id="playBtn" onclick="play()">Играть</button>
+            <button id="stopBtn" onclick="stop()">Стоп</button>
+        </div>
+    </div>
+    <div id="menu">
+        <div class="section theme-transition" style="height: 200px;" id="patterns">
+            <div id="patterns-list" class="card-link-list">
+                {% for p in project.patterns.all %}
+                    <a>
+                        <div class="card-title">{{ p.name }}</div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="section theme-transition" style="flex: 1;">
+            <canvas id="timeline">
+                Ваш браузер не поддерживает canvas :/
+            </canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'scripts' %}
+    <script src="{% static 'libs/Tone.js' %}"></script>
+    <script src="{% static 'libs/paper.js' %}"></script>
+
+    {{ instruments|json_script:"instruments" }}
+
+    <script>
+        document.getElementById('_mainContainer').classList.remove('container');
+
+        let currentPattern = null;
+
+        document.querySelectorAll('#patterns a').forEach(a => {
+            a.onclick = function () {
+                if (currentPattern) {
+                    currentPattern.style.fontStyle = '';
+                }
+                this.style.fontStyle = 'italic';
+                currentPattern = this;
+            }
+        });
+    </script>
+{% endblock %}

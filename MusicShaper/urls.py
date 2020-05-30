@@ -56,6 +56,7 @@ urlpatterns = [
             path('instruments/', include([
                 path('', views.instruments, name='instruments'),
                 path('new/', views.new_instrument, name='new_instrument'),
+                path('get/', views.get_instrument_ajax, name='get_instrument'),
                 path('<int:instr_id>/', include([
                     path('', views.edit_instrument, name='edit_instrument'),
                     path('manage/', views.manage_instrument, name='manage_instrument'),
@@ -69,9 +70,12 @@ urlpatterns = [
                 path('<int:pat_id>/', include([
                     path('', views.pattern_editor, name='pattern_editor'),
                     path('manage/', views.manage_pattern, name='manage_pattern'),
-                    path('delete/', views.delete_pattern, name='delete_pattern')
+                    path('delete/', views.delete_pattern, name='delete_pattern'),
+                    path('save/', views.save_pattern, name='save_pattern'),
                 ])),
             ])),
+
+            path('timeline/', views.project_timeline, name='timeline'),
         ])),
     ])),
 

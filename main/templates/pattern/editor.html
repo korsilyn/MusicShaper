@@ -10,11 +10,10 @@
 {% endblock %}
 
 {% block 'body' %}
-    <div id="settingsPanel" class="theme-transition">
+    <div class="settingsPanel theme-transition">
         <h5 class="inputs">
             Редактор паттерна
-            <span style="margin-left: 5px;"
-            class="quotes">{{ pattern.name }}</span>
+            <span style="margin-left: 5px;" class="quotes">{{ pattern.name }}</span>
             <div class="seperator"></div>
             <button id="saveBtn" class="btn btn-outline-success">Сохранить</button>
             <div class="seperator"></div>
@@ -23,22 +22,20 @@
             </a>
             <div class="seperator"></div>
             <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
+            <div class="seperator"></div>
+            <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
         </h5>
-        <div id="settings" class="inputs">
+        <div class="settings inputs">
             <button id="playBtn" onclick="play()">Играть</button>
             <button id="stopBtn" onclick="stop()">Стоп</button>
-
             <div class="seperator"></div>
-
             <label>Текущий инструмент:</label>
             <select id="instrumentSelect">
                 {% for name in allInstruments %}
                     <option value="{{ name }}">{{ name }}</option>
                 {% endfor %}
             </select>
-
             <div class="seperator"></div>
-
             <label>Темп:</label>
             <input id="projBpm" type="number" min="32" max="999"
             value="{{ project.settings.bpm }}">
@@ -54,10 +51,17 @@
 {% block 'scripts' %}
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
+    <script src="{% static 'scripts/urls.js' %}"></script>
+    <script src="{% static 'scripts/instruments.js' %}"></script>
 
     <script>
         var csrf_token = '{{ csrf_token }}';
         var patternDuration = Number('{{ pattern.duration }}');
+
+        Urls.registerUrls({
+            get_instrument: "{% url 'get_instrument' proj_id=project.id %}",
+            save_pattern: "{% url 'save_pattern' proj_id=project.id pat_id=pattern.id %}",
+        });
 
         var octaves = 6;
         var octavesFrom = 2;
@@ -79,12 +83,11 @@
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
+    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/resize.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/loadInstrument.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/draw.js' %}"
     async type="text/paperscript" canvas="mainCanvas"></script>
 {% endblock %}

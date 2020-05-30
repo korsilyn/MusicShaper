@@ -23,7 +23,7 @@
     color: black;
     text-decoration: none;
     background-color: var(--bg-secondary);
-    box-shadow: 0 0 8px rgba(10, 10, 10, 0.2);
+    box-shadow: 0 0 8px rgba(10, 10, 10, 0.35);
     transition-property: background-color, border-radius;
     transition-duration: 0.2s, 0.1s;
     transition-timing-function: ease-out, ease-in;
@@ -35,7 +35,7 @@
 }
 
 .card-link-list a:hover {
-    background-color: hsl(var(--bg-secondary));
+    background-color: var(--bg);
     border-radius: 20px;
 }
 

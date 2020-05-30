@@ -7,7 +7,7 @@ from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from .util import get_base_context
-from ..models import MusicTrackProject
+from ..models import MusicTrackProject, TrackPatternInstance
 from ..forms import ProjectForm
 
 
@@ -84,11 +84,10 @@ def project_home(request, proj_id: int):
 
     project = get_project_or_404(request, proj_id)
 
-    context = get_base_context(request, {
-        'project': project
-    })
-
-    return render(request, 'project/home.html', context)
+    return render(request, 'project/home.html', get_base_context(request, {
+        'project': project,
+        'timeline_edited': TrackPatternInstance.objects.filter(pattern__project=project).exists()
+    }))
 
 
 @login_required
@@ -149,3 +148,24 @@ def delete_project(request, proj_id: int):
     })
 
     return render(request, 'delete.html', context)
+
+
+@login_required
+def project_timeline(request, proj_id: int):
+    '''
+    Страница таймлинии проекта
+
+    :param request: запрос клиента
+    :param proj_id: id проекта в БД
+    :rtype: HttpResponse
+    '''
+
+    project = get_project_or_404(request, proj_id)
+
+    if not project.patterns.exists():
+        raise Http404
+
+    return render(request, 'timeline/editor.html', {
+        'project': project,
+        'instruments': {i.name: i.to_dict() for i in project.get_used_instruments()}
+    })

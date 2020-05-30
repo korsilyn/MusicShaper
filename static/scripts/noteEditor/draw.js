@@ -154,9 +154,9 @@ notesPlaceLayer.onMouseLeave = function () {
 //#region load notes
 
 var initialNotesGrouped = groupBy(musicNotes, 'instrumentName');
-Object.keys(instruments).forEach(function (instrName) {
+instruments.instrumentNames.forEach(function (instrName) {
     if (!initialNotesGrouped[instrName]) return;
-    currentInstrument = instruments[instrName];
+    currentInstrument = instruments.getByName(instrName);
     onInstrumentSelected();
     initialNotesGrouped[instrName].forEach(function (note) {
         noteBlueprint.bounds.width = note.length * cellSize.width;
