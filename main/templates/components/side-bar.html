@@ -158,7 +158,7 @@
         }
     </style>
 
-    <nav tabindex="-1">
+    <nav tabindex="-1" class="opened">
         <ul class="side-bar-nav">
             <li class="logo">
                 <a class="nav-link">
@@ -255,8 +255,12 @@
         _init() {
             this.nav = this.shadowRoot.querySelector('nav');
 
-            if (localStorage.getItem('sideBarOpened')) {
-                this.nav.classList.add('opened');
+            if (this.opened && localStorage.getItem('sideBarOpened') === undefined) {
+                localStorage.setItem('sideBarOpened', true);
+            }
+
+            if (localStorage.getItem('sideBarOpened') == "false") {
+                this.nav.classList.remove('opened');
             }
 
             window.addEventListener('scroll', ev => {
@@ -302,7 +306,7 @@
 
         close() {
             this.nav.classList.remove('opened');
-            localStorage.removeItem('sideBarOpened');
+            localStorage.setItem('sideBarOpened', false);
         }
 
         toggle() {
