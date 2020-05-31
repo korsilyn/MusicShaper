@@ -60,10 +60,12 @@ function initTileEditor(options) {
     tileHint.pivot = tileHint.bounds.topLeft;
     tilePlaceLayer.addChild(tileHint);
 
+    tileHint.placeTile = placeTile;
+
     allowResize = _resize;
 
     window.dispatchEvent(new CustomEvent('tileEditorInit', {
-        detail: { hint: tileHint }
+        detail: { hint: tileHint }, project: project
     }));
 }
 
@@ -101,6 +103,10 @@ var mouseCellPoint;
 /** @type {TilePath} */
 var tileHint;
 
+window.getTileHint = function () {
+    return tileHint;
+}
+
 var placing = false;
 var deleting = false;
 
@@ -124,7 +130,7 @@ paper.Item.prototype.makeTile = function () {
 paper.Item.prototype.makeEvent = function (type) {
     var tile = this.makeTile();
     return new CustomEvent(type, {
-        detail: { tile: tile, path: this, hint: tileHint }
+        detail: { tile: tile, path: this, hint: tileHint, project: project }
     });
 }
 
@@ -149,6 +155,11 @@ function placeTile() {
 
     clone.makeTile();
     clone.tile.place();
+
+    if (allowResize) {
+        tileHint.bounds.width = cellSize.width;
+    }
+
     clone.dispatchWindowTileEvent('tilePlaced');
 
     clone.onClick = function (event) {
@@ -169,7 +180,7 @@ project.view.onMouseMove = function (event) {
             tileHint.tile.length = length;
             if (!tileHint.tile.checkCollision()) {
                 tileHint.bounds.width = length * cellSize.width;
-                document.body.style.cursor = 'e-resize';
+                tileHint.dispatchWindowTileEvent('tileHintResize');
             }
         }
     }
@@ -191,6 +202,14 @@ project.view.onMouseUp = function (event) {
         resetHint();
     }
     deleting = false;
+    window.dispatchEvent(new CustomEvent('tileEditorMouseUp', {
+        detail: {
+            button: event.event.button,
+            cellPoint: mouseCellPoint,
+            point: event.point,
+            event: event.event,
+        }
+    }));
 }
 
 tilePlaceLayer.onMouseEnter = function () {

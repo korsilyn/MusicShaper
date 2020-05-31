@@ -1,27 +1,19 @@
 /// <reference path="../tileEditor/tile.js" />
 /// <reference path="../instruments.js" />
 
-class MusicNote extends Tile {
+class MusicNote {
     /**
      * @param {Instrument} instrument
-     * @param {number} x
+     * @param {number} time
      * @param {number} y
      * @param {number} length
      */
-    constructor(instrument, x, y, length) {
-        super(x, y, length);
+    constructor(instrument, time, y, length) {
+        this.time = time;
+        this.length = length;
         this.instrument = instrument;
-        this.notationId = noteNotations.length - y % noteNotations.length;
-        this.octave = octavesFrom + octaves - Math.floor(coordY / noteNotations.length) - 1;
-    }
-
-    get time() {
-        return this.x;
-    }
-
-    remove() {
-        super.remove();
-        stop();
+        this.notation = noteNotations.length - y % noteNotations.length;
+        this.octave = octavesFrom + octaves - Math.floor(y / noteNotations.length) - 1;
     }
 
     get instrumentName() {
@@ -33,7 +25,7 @@ class MusicNote extends Tile {
     }
 
     get letterNotation() {
-        return noteNotations[this.notationId - 1] + this.octave;
+        return noteNotations[this.notation - 1] + this.octave;
     }
 
     playPreview(time = undefined) {
@@ -55,19 +47,17 @@ class MusicNote extends Tile {
             time: this.time,
             length: this.length,
             octave: this.octave,
-            notation: this.notationId,
+            notation: this.notation,
             instrument: this.instrument.id,
         });
     }
+
+    /**
+     * @param {Tile} tile
+     * @param {Instrument} instrument
+     * @returns {MusicNote}
+     */
+    static fromTile(tile, instrument) {
+        return new MusicNote(instrument, tile.x, tile.y, tile.length);
+    }
 }
-
-
-/** @type {MusicNote[]} */
-var musicNotes = JSON.parse(document.getElementById('musicNotes').innerText)
-    .map(n => new MusicNote(
-        instruments.getById(n.instrument),
-        n.time,
-        n.length,
-        n.notation,
-        n.octave,
-    ));

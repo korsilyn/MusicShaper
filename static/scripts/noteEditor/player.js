@@ -25,6 +25,9 @@ function stop() {
 function play(from = 0) {
     stop();
 
+    /** @type {MusicNote[]} */
+    const musicNotes = Tile.tiles.map(tile => tile.note);
+
     if (musicNotes.length == 0) {
         return;
     }
@@ -39,6 +42,10 @@ function play(from = 0) {
 
     const timedNotes = groupBy(musicNotes, 'time');
     const lastTime = Math.max(...musicNotes.map(n => n.time + n.length));
+
+    if (from >= lastTime) {
+        return;
+    }
 
     for (let time = 0; time < lastTime; time++) {
         if (time < from) continue;
@@ -59,12 +66,11 @@ function play(from = 0) {
             if (processed.includes(instrName)) continue;
             processed.push(instrName);
             const instr = instruments.getByName(instrName);
-            const relatedNotes = notes.filter(n => n.instrumentName == instrName);
             if (instr instanceof Tone.PolySynth) {
                 Tone.Transport.scheduleOnce(sTime => {
                     instr.triggerAttackRelease(
-                        relatedNotes.map(n => n.noteNotation),
-                        relatedNotes.map(n => n.duration),
+                        groupedByInstr[instrName].map(n => n.letterNotation),
+                        groupedByInstr[instrName].map(n => n.duration),
                         sTime
                     );
                     scheduleDraw(time, sTime);
@@ -72,7 +78,7 @@ function play(from = 0) {
             }
             else {
                 Tone.Transport.scheduleOnce(sTime => {
-                    relatedNotes.forEach(n => n.playPreview(sTime));
+                    groupedByInstr[instrName].forEach(n => n.playPreview(sTime));
                     scheduleDraw(time, sTime);
                 }, toneTime);
             }

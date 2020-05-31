@@ -85,24 +85,10 @@
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
-    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/resize.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
-
-    <script>
-        window.addEventListener('tileEditorReady', event => {
-            event.detail.init({
-                grid: {
-                    width: patternDuration,
-                    height: noteNotationsTotalLenght,
-                },
-                cell: window.cellSize,
-                allowResize: true,
-            });
-        });
-    </script>
 
     <script src="{% static 'scripts/tileEditor/paper.js' %}"
         async type="text/paperscript" canvas="mainCanvas"></script>
