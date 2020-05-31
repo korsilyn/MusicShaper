@@ -263,18 +263,12 @@
                 this.nav.classList.remove('opened');
             }
 
-            window.addEventListener('scroll', ev => {
-                this.nav.style.transform = `translateY(${pageYOffset}px)`;
+            window.addEventListener('scroll', () => {
+                this.nav.style.transform = `translateY(${window.pageYOffset}px)`;
             });
 
             this.shadowRoot.querySelector('.logo').addEventListener('click', () => {
                 this.toggle();
-            });
-
-            this.nav.addEventListener('blur', ({ relatedTarget }) => {
-                if (this.opened && !this.nav.contains(relatedTarget)) {
-                    this.close();
-                }
             });
 
             let theme = localStorage.getItem('theme');
