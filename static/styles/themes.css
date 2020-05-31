@@ -45,6 +45,10 @@ table, .card, .list-group-item {
     background-color: var(--bg-secondary);
 }
 
+.dark a:not(.btn) {
+    color: lightskyblue;
+}
+
 .card {
     border-width: 0;
 }

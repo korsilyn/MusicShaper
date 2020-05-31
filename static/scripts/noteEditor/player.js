@@ -6,19 +6,19 @@ function groupBy(xs, key) {
 };
 
 var isPlaying = false;
+var isLoop = false;
+
+/** @type {HTMLInputElement} */
+const loopToggleBtn = document.querySelector('#loopBtn');
+
+loopToggleBtn.onclick = function () {
+    isLoop = !isLoop;
+    this.style.setProperty('--margin', (isLoop ? 5 : 3) + 'px');
+}
 
 function stop() {
-    isPlaying = false;
-    hidePlayhead();
-    Tone.Transport.stop();
-    Tone.Transport.cancel(0);
-    for (const i of instruments.instruments.values()) {
-        if (i instanceof Tone.PolySynth) {
-            i.releaseAll(0);
-        }
-        else if (i instanceof Tone.Monophonic) {
-            i.triggerRelease(0);
-        }
+    if (isPlaying) {
+        window.dispatchEvent(new Event('stop'));
     }
 }
 
@@ -53,7 +53,7 @@ function play(from = 0) {
         const toneTime = sixteenthSec * (time - from);
         const notes = timedNotes[time];
         if (!notes) {
-            Tone.Transport.scheduleOnce(sTime => {
+            Tone.Transport.schedule(sTime => {
                 scheduleDraw(time, sTime);
             }, toneTime);
             continue;
@@ -67,7 +67,7 @@ function play(from = 0) {
             processed.push(instrName);
             const instr = instruments.getByName(instrName);
             if (instr instanceof Tone.PolySynth) {
-                Tone.Transport.scheduleOnce(sTime => {
+                Tone.Transport.schedule(sTime => {
                     instr.triggerAttackRelease(
                         groupedByInstr[instrName].map(n => n.letterNotation),
                         groupedByInstr[instrName].map(n => n.duration),
@@ -77,7 +77,7 @@ function play(from = 0) {
                 }, toneTime);
             }
             else {
-                Tone.Transport.scheduleOnce(sTime => {
+                Tone.Transport.schedule(sTime => {
                     groupedByInstr[instrName].forEach(n => n.playPreview(sTime));
                     scheduleDraw(time, sTime);
                 }, toneTime);
@@ -85,18 +85,26 @@ function play(from = 0) {
         }
     }
 
-    Tone.Transport.scheduleOnce(() => {
-        hidePlayhead();
-        isPlaying = false;
+    Tone.Transport.schedule(() => {
+        if (!Tone.Transport.loop) {
+            stop();
+        }
     }, sixteenthSec * (lastTime + 1 - from));
 
-    Tone.Transport.scheduleOnce(() => {
+    Tone.Transport.schedule(() => {
         movePlayheadTo(from);
         showPlayhead();
         isPlaying = true;
     }, 0);
 
     Tone.Transport.start('+0.1');
+
+    Tone.Transport.loop = isLoop;
+    if (Tone.Transport.loop) {
+        Tone.Transport.loopEnd = sixteenthSec * (lastTime + 1 - from);
+    }
+
+    loopToggleBtn.disabled = true;
 }
 
 document.onkeydown = function ({ keyCode, repeat }) {
@@ -110,3 +118,19 @@ document.onkeydown = function ({ keyCode, repeat }) {
         return false;
     }
 }
+
+window.addEventListener('stop', () => {
+    hidePlayhead();
+    isPlaying = false;
+    loopToggleBtn.disabled = false;
+    Tone.Transport.stop();
+    Tone.Transport.cancel(0);
+    for (const i of instruments.instruments.values()) {
+        if (i instanceof Tone.PolySynth) {
+            i.releaseAll(0);
+        }
+        else if (i instanceof Tone.Monophonic) {
+            i.triggerRelease(0);
+        }
+    }
+});
