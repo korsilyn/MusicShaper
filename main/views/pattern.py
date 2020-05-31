@@ -147,13 +147,17 @@ def pattern_editor(request, proj_id: int, pat_id: int):
 
 
 @login_required
-@ajax_view(required_args=('notes[]',))
+@ajax_view(required_args=('notes[]', 'bpm'))
 def save_pattern(request, proj_id: int, pat_id: int):
     '''
     Сохраняет паттерн по ajax POST запросу
     '''
 
     project = get_project_or_404(request, proj_id)
+
+    project.settings.bpm = request.POST['bpm']
+    project.settings.save()
+
     pattern = get_object_or_404(MusicTrackPattern, pk=pat_id, project=project)
 
     instruments = list(pattern.get_instruments())

@@ -7,14 +7,19 @@ class InstrumentStorage {
 
     /**
      * @param {Record<string, {}>} instrumentSettings
+     * @param {string[]} allInstrumentNames
      */
-    constructor(instrumentSettings) {
+    constructor(instrumentSettings, allInstrumentNames) {
         /** @type {Map<string, Instrument>} */
         this.instruments = new Map();
 
         for (const name in instrumentSettings) {
             this.instruments.set(name, InstrumentStorage.makeSynth(instrumentSettings[name], name));
         }
+
+        /** @type {Instrument} */
+        this.current;
+        this.loadCurrentInstrument(this.firstInstrument ? this.firstInstrument.name : allInstrumentNames[0]);
     }
 
     get instrumentNames() {
@@ -37,6 +42,9 @@ class InstrumentStorage {
         }
     }
 
+    /**
+     * @returns {Instrument}
+     */
     get firstInstrument() {
         return this.instruments.values().next().value;
     }
@@ -77,7 +85,7 @@ class InstrumentStorage {
         if (typeof constr != 'function') {
             throw new Error('invalid instrument');
         }
-    
+
         /** @type {Tone.Instrument} */
         let synth;
         if (constr.prototype instanceof Tone.Monophonic) {
@@ -87,9 +95,9 @@ class InstrumentStorage {
         else {
             synth = new constr(settings);
         }
-    
+
         synth.toMaster();
-    
+
         synth.notesColor = settings._notesColor;
         synth.id = settings._id;
         synth.name = name;
@@ -99,7 +107,7 @@ class InstrumentStorage {
 
     /**
      * @param {string} name
-     * @returns {Instrument}
+     * @returns {Promise<Instrument>}
      */
     async loadInstrument(name) {
         try {
@@ -119,5 +127,16 @@ class InstrumentStorage {
             console.error(`failed to request instrument: ${err}`);
         }
         return null;
+    }
+
+    /**
+     * @param {string} name
+     */
+    async loadCurrentInstrument(name) {
+        const instr = await this.loadInstrument(name);
+        if (instr) {
+            this.current = instr;
+            window.dispatchEvent(new Event('instrumentSelected'));
+        }
     }
 }

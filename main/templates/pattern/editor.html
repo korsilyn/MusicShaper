@@ -26,10 +26,17 @@
             <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
         </h5>
         <div class="settings inputs">
-            <button id="playBtn" onclick="play()">Играть</button>
-            <button id="stopBtn" onclick="stop()">Стоп</button>
+            <button class="img" id="playBtn" onclick="play()">
+                <img src="{% static 'svg/play.svg' %}">
+            </button>
+            <button class="img" id="stopBtn" onclick="stop()">
+                <img src="{% static 'svg/stop.svg' %}">
+            </button>
+            <button class="img" id="loopBtn">
+                <img src="{% static 'svg/loop.svg' %}">
+            </button>
             <div class="seperator"></div>
-            <label>Текущий инструмент:</label>
+            <label>Инструмент:</label>
             <select id="instrumentSelect">
                 {% for name in allInstruments %}
                     <option value="{{ name }}">{{ name }}</option>
@@ -53,6 +60,7 @@
     <script src="{% static 'libs/paper.js' %}"></script>
     <script src="{% static 'scripts/urls.js' %}"></script>
     <script src="{% static 'scripts/instruments.js' %}"></script>
+    <script src="{% static 'scripts/tileEditor/tile.js' %}"></script>
 
     <script>
         var csrf_token = '{{ csrf_token }}';
@@ -83,11 +91,11 @@
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
-    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/resize.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/draw.js' %}"
-    async type="text/paperscript" canvas="mainCanvas"></script>
+
+    <script src="{% static 'scripts/tileEditor/paper.js' %}"
+        async type="text/paperscript" canvas="mainCanvas"></script>
 {% endblock %}

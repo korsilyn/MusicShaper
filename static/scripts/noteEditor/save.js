@@ -5,7 +5,8 @@ function save() {
         url: Urls.reverseUrl('save_pattern'),
         data: {
             csrfmiddlewaretoken: csrf_token,
-            'notes[]': musicNotes.map(note => note.json),
+            'notes[]': Tile.tiles.map(tile => tile.note.json),
+            'bpm': bpmInput.safeValue,
         },
 
         success: data => {

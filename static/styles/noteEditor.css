@@ -35,8 +35,8 @@ canvas#mainCanvas {
 select, input, button {
     border-radius: 3px;
     height: 30px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    width: 120px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    width: 100px;
 }
 
 button {
@@ -44,7 +44,22 @@ button {
     text-align: center;
 }
 
-.btn {
+button.img {
+    width: 30px;
+    height: 30px;
+    --margin: 5px;
+}
+
+button.img img {
+    margin: var(--margin);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    filter: saturate(0.5);
+}
+
+.btn, button.img {
     padding: 0;
 }
 
@@ -57,7 +72,7 @@ button#saveBtn {
     width: 100px;
 }
 
-button:active:hover {
+button:active:hover:not(:disabled) {
     filter: brightness(90%);
 }
 
@@ -98,4 +113,9 @@ button:focus {
 #stopBtn {
     background-color: rgb(255, 13, 59);
     color: white;
+}
+
+#loopBtn {
+    background-color: rgb(71, 113, 230);
+    --margin: 3px;
 }
