@@ -12,10 +12,10 @@
 {% block 'body' %}
     <div class="settingsPanel theme-transition">
         <h5 class="inputs">
-            Редактор паттерна
-            <span style="margin-left: 5px;" class="quotes">{{ pattern.name }}</span>
-            <div class="seperator"></div>
-            <button id="saveBtn" class="btn btn-outline-success">Сохранить</button>
+            <span style="margin-bottom: 0.15em;">
+                Редактор паттерна
+                <span class="quotes">{{ pattern.name }}</span>
+            </span>
             <div class="seperator"></div>
             <a href="{% url 'manage_pattern' proj_id=project.id pat_id=pattern.id %}">
                 Управление паттерном
@@ -26,14 +26,18 @@
             <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
         </h5>
         <div class="settings inputs">
-            <button class="img" id="playBtn" onclick="play()">
+            <button class="img playBtn">
                 <img src="{% static 'svg/play.svg' %}">
             </button>
-            <button class="img" id="stopBtn" onclick="stop()">
+            <button class="img stopBtn">
                 <img src="{% static 'svg/stop.svg' %}">
             </button>
-            <button class="img" id="loopBtn">
+            <button class="img loopBtn">
                 <img src="{% static 'svg/loop.svg' %}">
+            </button>
+            <div class="seperator"></div>
+            <button class="img saveBtn">
+                <img src="{% static 'svg/save.svg' %}">
             </button>
             <div class="seperator"></div>
             <label>Инструмент:</label>

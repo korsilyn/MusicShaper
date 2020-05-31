@@ -5,15 +5,20 @@ function groupBy(xs, key) {
     }, {});
 };
 
+/** @type {HTMLButtonElement} */
+const playBtn = document.querySelector('button.playBtn');
+/** @type {HTMLButtonElement} */
+const stopBtn = document.querySelector('button.stopBtn');
+
+/** @type {HTMLInputElement} */
+const loopToggleBtn = document.querySelector('button.loopBtn');
+
 var isPlaying = false;
 var isLoop = false;
 
-/** @type {HTMLInputElement} */
-const loopToggleBtn = document.querySelector('#loopBtn');
-
 loopToggleBtn.onclick = function () {
     isLoop = !isLoop;
-    this.style.setProperty('--margin', (isLoop ? 5 : 3) + 'px');
+    this.style.setProperty('--img-margin', (isLoop ? 5 : 3) + 'px');
 }
 
 function stop() {
@@ -105,7 +110,25 @@ function play(from = 0) {
     }
 
     loopToggleBtn.disabled = true;
+    playBtn.disabled = true;
 }
+
+window.addEventListener('stop', () => {
+    hidePlayhead();
+    isPlaying = false;
+    loopToggleBtn.disabled = false;
+    playBtn.disabled = false;
+    Tone.Transport.stop();
+    Tone.Transport.cancel(0);
+    for (const i of instruments.instruments.values()) {
+        if (i instanceof Tone.PolySynth) {
+            i.releaseAll(0);
+        }
+        else if (i instanceof Tone.Monophonic) {
+            i.triggerRelease(0);
+        }
+    }
+});
 
 document.onkeydown = function ({ keyCode, repeat }) {
     if (!repeat && keyCode == 32) {
@@ -119,18 +142,10 @@ document.onkeydown = function ({ keyCode, repeat }) {
     }
 }
 
-window.addEventListener('stop', () => {
-    hidePlayhead();
-    isPlaying = false;
-    loopToggleBtn.disabled = false;
-    Tone.Transport.stop();
-    Tone.Transport.cancel(0);
-    for (const i of instruments.instruments.values()) {
-        if (i instanceof Tone.PolySynth) {
-            i.releaseAll(0);
-        }
-        else if (i instanceof Tone.Monophonic) {
-            i.triggerRelease(0);
-        }
-    }
-});
+playBtn.onclick = function () {
+    play(0);
+}
+
+stopBtn.onclick = function () {
+    stop();
+}

@@ -24,7 +24,7 @@ function save() {
     }))
 }
 
-document.getElementById('saveBtn').onclick = function () {
+document.querySelector('button.saveBtn').onclick = function () {
     this.classList.add('btn-outline-dark');
     this.disabled = true;
     save()

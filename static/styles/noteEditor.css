@@ -22,7 +22,8 @@ canvas#mainCanvas {
 .settingsPanel {
     height: var(--panel-height);
     background-color: var(--bg-secondary);
-    padding: 8px;
+    padding-top: 6px;
+    padding-left: 8px;
     box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.3);
     z-index: 10;
     position: relative;
@@ -47,11 +48,12 @@ button {
 button.img {
     width: 30px;
     height: 30px;
-    --margin: 5px;
+    --img-margin: 5px;
 }
 
 button.img img {
-    margin: var(--margin);
+    margin: var(--img-margin);
+    pointer-events: none;
 }
 
 button:disabled {
@@ -66,10 +68,6 @@ button:disabled {
 a {
     font-size: 0.7em;
     margin-bottom: 0.3em;
-}
-
-button#saveBtn {
-    width: 100px;
 }
 
 button:active:hover:not(:disabled) {
@@ -91,7 +89,7 @@ button:focus {
 .settingsPanel .inputs {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .settingsPanel .seperator {
@@ -100,22 +98,37 @@ button:focus {
     opacity: 0.2;
     border-radius: 2px;
     height: 25px;
-    width: 1px;
+    width: 0.5px;
     --margin: 10px;
     margin-left: var(--margin);
     margin-right: var(--margin);
 }
 
-#playBtn {
+.playBtn {
     background-color: rgb(40, 230, 33);
 }
 
-#stopBtn {
+.stopBtn {
     background-color: rgb(255, 13, 59);
-    color: white;
 }
 
-#loopBtn {
+.loopBtn {
     background-color: rgb(71, 113, 230);
-    --margin: 3px;
+}
+
+button.img.loopBtn {
+    --img-margin: 3px;
+}
+
+.saveBtn {
+    background-color: rgb(167, 38, 226);
+    transition: background-color 0.1s ease-in;
+}
+
+button.img.saveBtn {
+    --img-margin: 2px;
+}
+
+.saveBtn:disabled {
+    cursor: progress;
 }
