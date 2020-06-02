@@ -2,11 +2,14 @@
 Модуль view-функций для проектов
 '''
 
+from itertools import zip_longest
+from json import loads
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from .util import get_base_context
+from django.db import transaction
+from .util import get_base_context, ajax_view
 from ..models import MusicTrackProject, TrackPatternInstance
 from ..forms import ProjectForm
 
@@ -153,7 +156,7 @@ def delete_project(request, proj_id: int):
 @login_required
 def project_timeline(request, proj_id: int):
     '''
-    Страница таймлинии проекта
+    Страница таймайна проекта
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -170,3 +173,59 @@ def project_timeline(request, proj_id: int):
         'instruments': {i.name: i.to_dict() for i in project.get_used_instruments()},
         'patterns': {p.name: p.to_dict() for p in project.patterns.all()}
     })
+
+
+def parse_json_pattern_instance(json):
+    '''
+    Вспомогательная функция. Возвращает словарь образца паттерна
+    '''
+
+    try:
+        instance = loads(json)
+    except (ValueError, TypeError):
+        return None
+    return {key: int(value) for key, value in instance.items()}
+
+
+def handle_json_pattern_instance(json_instance, model_instance, proj_id):
+    '''
+    Вспомогательная функция. Обрабатывает модель образца
+    паттерна по json данным из заспроса клиента
+    '''
+
+    instance = parse_json_pattern_instance(json_instance)
+    if instance is None:
+        if model_instance is not None and model_instance.pattern.project_id == proj_id:
+            model_instance.delete()
+    elif model_instance is None:
+        model_instance = TrackPatternInstance(**instance)
+        if model_instance.pattern.project_id == proj_id:
+            model_instance.save()
+    else:
+        TrackPatternInstance.objects.filter(\
+            id=model_instance.id, pattern__project__id=proj_id).update(**instance)
+
+
+@login_required
+@ajax_view(required_args=('bpm', 'instances[]'))
+def save_timeline(request, proj_id: int):
+    '''
+    Ajax-функция для сохранения таймайна проекта
+    '''
+
+    project = get_project_or_404(request, proj_id)
+
+    project.settings.bpm = request.POST['bpm']
+    project.settings.save()
+
+    instances_data = request.POST.getlist('instances[]', [])
+    instances_models = TrackPatternInstance.objects.filter(pattern__project=project)
+
+    if len(instances_data) == 1 and instances_data[0] == '':
+        TrackPatternInstance.objects.filter(pattern__project=project).delete()
+    else:
+        with transaction.atomic():
+            for json_i, model_i in zip_longest(instances_data, instances_models):
+                handle_json_pattern_instance(json_i, model_i, proj_id)
+
+    return {'success': True}

@@ -16,7 +16,8 @@ body {
     width: inherit;
     height: inherit;
     flex-direction: column;
-    background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.15), transparent 20px);
+    background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.08), transparent 20px);
+    height: calc(100% - var(--panel-height));
 }
 
 #menu > .section {
@@ -27,13 +28,13 @@ body {
     flex: 1;
 }
 
-#patterns {
+#patterns-list {
     display: flex;
     align-items: flex-start;
     justify-content: start;
     overflow-x: auto;
     width: 100%;
-    --hor-margin: 20px;
+    --hor-margin: 15px;
 }
 
 #patterns-list > :first-child {
@@ -84,4 +85,26 @@ body {
 
 #mainCanvas {
     background-color: var(--bg);
+}
+
+#bottomMenu {
+    display: flex;
+    width: 100%;
+}
+
+#bottomMenu > .section {
+    flex: 1;
+    padding: 10px;
+}
+
+#bottomMenu > .seperator {
+    width: 3px;
+    height: 95%;
+    background-color: var(--bg-secondary);
+    border-radius: 10px;
+    --hor-margin: 30px;
+    margin-left: var(--hor-margin);
+    margin-right: var(--hor-margin);
+    margin-top: auto;
+    margin-bottom: auto;
 }

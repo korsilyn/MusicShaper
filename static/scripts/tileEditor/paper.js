@@ -187,8 +187,8 @@ function placeTile() {
 
     clone.onClick = function (event) {
         if (event.event.button == 2) {
-            clone.dispatchWindowTileEvent('tileRemoved');
             clone.tile.remove();
+            clone.dispatchWindowTileEvent('tileRemoved');
             clone.remove();
         }
     }

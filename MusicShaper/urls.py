@@ -75,7 +75,10 @@ urlpatterns = [
                 ])),
             ])),
 
-            path('timeline/', views.project_timeline, name='timeline'),
+            path('timeline/', include([
+                path('', views.project_timeline, name='timeline'),
+                path('save/', views.save_timeline, name='save_timeline'),
+            ])),
         ])),
     ])),
 

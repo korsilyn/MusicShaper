@@ -2,14 +2,39 @@
 
 document.getElementById('_mainContainer').classList.remove('container');
 
+/** @type {HTMLCanvasElement} */
+const canvas = document.querySelector('#mainCanvas');
+
+//#region bpm
+
+/** @type {HTMLInputElement} */
+var bpmInput = document.querySelector('#projBpm');
+
+Object.defineProperty(bpmInput, 'safeValue', {
+    get: function () {
+        if (this.value < 32) this.value = 32;
+        if (this.value > 999) this.value = 999;
+        return Number(this.value);
+    }
+});
+
+bpmInput.onchange = function () {
+    Tone.Transport.bpm.value = this.safeValue;
+};
+
+bpmInput.onchange();
+
+//#endregion
+
+//#region pattern selected
+
 document.querySelectorAll('#patterns a').forEach(a => {
     a.onclick = function () {
         patterns.selectPattern(this.querySelector('.card-title').innerText);
     }
-    
     a.style.borderColor = a.getAttribute('data-pattern-color');
 });
-    
+
 window.addEventListener('patternSelected', ({ detail: { oldPattern: old, current } }) => {
     if (old) {
         document.querySelector(`a[data-pattern-name="${old.name}"]`).classList.remove('selected');
@@ -28,6 +53,10 @@ window.addEventListener('patternSelected', ({ detail: { oldPattern: old, current
     tileHint.makeTile();
 });
 
+//#endregion
+
+//#region tile editor init
+
 window.addEventListener('tileEditorReady', ({ detail: { init } }) => {
     const docStyle = getComputedStyle(document.body);
     const getPxVar = name => Number(docStyle.getPropertyValue(name).replace('px', ''));
@@ -44,7 +73,7 @@ window.addEventListener('tileEditorReady', ({ detail: { init } }) => {
         },
         cell: cellSize,
         realCanvasSize: {
-            width: document.querySelector('#mainCanvas').parentElement.clientWidth
+            width: canvas.parentElement.clientWidth
         },
     });
 });
@@ -55,23 +84,43 @@ window.addEventListener('tileEditorInit', () => {
     tileHint.strokeWidth = 0.8;
 
     patterns.selectPattern(patterns.firstPattern.name);
+
+    canvas.parentElement.style.height = canvas.clientHeight + 'px';
 });
 
+//#endregion
+
+//#region project info
+
+function calculateDuration() {
+    if (Tile.tiles.length == 0) return 0;
+    return Math.max(...Tile.tiles.map(tile => tile.x + tile.length));
+}
+
+const durationTime = document.querySelector('#durationTime');
+const durationNotes = document.querySelector('#durationNotes');
+
 function updateDurationInfo() {
-    const durationNotes = calculateDuration();
-    document.querySelector('#durationNotes').innerText = durationNotes;
-    document.querySelector('#durationSeconds').innerText = ((new Tone.Time('16n').toSeconds()) * durationNotes).toFixed(2);
+    const duration = calculateDuration();
+    durationNotes.innerText = duration;
+    let time = (player.baseTimeSeconds) * duration;
+    durationTime.innerText = String(time).toHHMMSS();
 }
 
 window.addEventListener('tilePlaced', updateDurationInfo);
 window.addEventListener('tileRemoved', updateDurationInfo);
 
-/** @type {HTMLCanvasElement} */
-const canvas = document.querySelector('#mainCanvas');
+//#endregion
+
+//#region resize event
 
 window.addEventListener('resize', () => {
     window.setTileEditorSize(canvas.parentElement.clientWidth);
 });
+
+//#endregion
+
+//#region back to start btn
 
 /** @type {HTMLLinkElement} */
 const backToStartLink = document.querySelector('#backToStartLink');
@@ -82,8 +131,10 @@ backToStartLink.onclick = function () {
 
 /** @param {'hidden' | 'visible'} visibility */
 function setBackToStartLink(visibility) {
-    backToStartLink.style.visibility = visibility;
-    backToStartLink.previousElementSibling.style.visibility = visibility;
+    if (visibility == 'hidden') visibility = 'none';
+    else visibility = 'block';
+    backToStartLink.style.display = visibility;
+    backToStartLink.previousElementSibling.style.display = visibility;
 }
 
 window.addEventListener('timelineScrollStart', () => {
@@ -96,10 +147,22 @@ window.addEventListener('timelineScrollAway', () => {
     setBackToStartLink('visible');
 });
 
-window.calculateDuration = function () {
-    if (Tile.tiles.length == 0) return 0;
-    return Math.max(...Tile.tiles.map(tile => tile.x + tile.length));
-}
+//#endregion
+
+//#region tile placed
+
+window.addEventListener('tilePlaced', ({ detail: { tile } }) => {
+    if (player.isPlaying) player.stop();
+    tile.pattern = patterns.current;
+});
+
+window.addEventListener('tileRemoved', () => {
+    if (player.isPlaying) player.stop();
+});
+
+//#endregion
+
+//#region storages
 
 var instruments = new InstrumentStorage(
     JSON.parse(document.getElementById('instruments').innerText)
@@ -109,3 +172,21 @@ var patterns = new PatternStorage(
     JSON.parse(document.getElementById('patternsData').innerText),
     instruments
 );
+
+//#endregion
+
+//#region player
+
+var player = new TimelinePlayer(patterns, 'button.playBtn', 'button.stopBtn', 'button.loopBtn');
+
+window.addEventListener('stop', ({ detail: { reason } }) => {
+    if (reason == 'user' || reason == 'end') {
+        const time = reason == 'end' ? '+0.3' : undefined;
+        for (const i of instruments.instruments.values()) {
+            if (i instanceof Tone.PolySynth) i.releaseAll(time);
+            else i.triggerRelease(time);
+        }
+    }
+});
+
+//#endregion

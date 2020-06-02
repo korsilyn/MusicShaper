@@ -65,9 +65,11 @@
     <script src="{% static 'scripts/utils.js' %}"></script>
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
-    <script src="{% static 'scripts/urls.js' %}"></script>
     <script src="{% static 'scripts/instruments.js' %}"></script>
     <script src="{% static 'scripts/tileEditor/tile.js' %}"></script>
+    <script src="{% static 'scripts/player.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
 
     <script>
         var csrf_token = '{{ csrf_token }}';
@@ -83,9 +85,7 @@
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
-    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
 
     <script src="{% static 'scripts/tileEditor/paper.js' %}"

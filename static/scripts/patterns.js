@@ -2,28 +2,27 @@
 /// <reference path="noteEditor/musicNote.js" />
 
 /**
- * @typedef {Tone.Part & { name: string; duration: number; color: string; }} Pattern
+ * @typedef {{ name: string; duration: number; color: string; }} Pattern
  */
 
 class PatternStorage {
-
-    static sixteenthSec = new Tone.Time('16n').toSeconds();
-
     /**
      * @param {Record<string, Pattern>} patternsDataMap
      * @param {InstrumentStorage} instruments
      */
     constructor(patternsDataMap, instruments) {
-        /** @type {Map<string, Tone.Part>} */
-        this.parts = new Map();
+        /** @type {Map<string, Pattern & { part: Tone.Part }>} */
+        this.patterns = new Map();
 
         for (const name in patternsDataMap) {
-            this.parts.set(name, PatternStorage.patternToTonePart(
-                patternsDataMap[name], instruments
-            ));
+            const p = patternsDataMap[name];
+            Object.defineProperty(p, 'part', {
+                get: () => PatternStorage.patternToTonePart(p, instruments)
+            });
+            this.patterns.set(name, p);
         }
 
-        this.selectPattern(this.parts.keys().next().value);
+        this.selectPattern(this.patterns.keys().next().value);
     }
 
     /**
@@ -31,9 +30,9 @@ class PatternStorage {
      * @returns {Pattern}
      */
     selectPattern(name) {
-        if (!this.parts.has(name)) return;
+        if (!this.patterns.has(name)) return;
         const oldPattern = this.current;
-        this.current = this.parts.get(name);
+        this.current = this.patterns.get(name);
         window.dispatchEvent(new CustomEvent('patternSelected', {
             detail: { oldPattern, current: this.current }
         }));
@@ -44,26 +43,28 @@ class PatternStorage {
      * @returns {Pattern}
      */
     get firstPattern() {
-        return this.parts.values().next().value;
+        return this.patterns.values().next().value;
     }
 
     /**
      * @param {Pattern} patternData
      * @param {InstrumentStorage} instruments
-     * @returns {Tone.Part}
+     * @returns {Pattern & Tone.Part}
      */
     static patternToTonePart(patternData, instruments) {
         const events = [];
 
         const timedNotes = groupBy(patternData.notes, 'time');
 
-        for (let time = 0; time < patternData.duration; time++) {
+        const sixteenthSec = new Tone.TransportTime('16n').toSeconds();
+
+        for (const time in timedNotes) {
             const notes = timedNotes[time];
-            if (!notes) continue;
             const instrNotesData = groupBy(notes, 'instrument');
 
-            const event = [PatternStorage.sixteenthSec * time];
             for (const instrId in instrNotesData) {
+                const event = {time: sixteenthSec * time};
+
                 const instr = instruments.getById(instrId);
 
                 const instrNotes = instrNotesData[instrId].map(data => new MusicNote(
@@ -71,38 +72,28 @@ class PatternStorage {
                 ));
 
                 if (instr instanceof Tone.PolySynth) {
-                    event.push({
-                        poly: true, instr,
+                    Object.assign(event, {
+                        poly: true,
+                        instr,
                         durations: instrNotes.map(n => n.duration),
                         notations: instrNotes.map(n => n.letterNotation),
                     });
                 }
                 else {
-                    event.push({
-                        poly: false,
-                        instr,
+                    Object.assign(event, {
                         notes: instrNotes
                     });
                 }
-            }
 
-            events.push(event);
+                events.push(event);
+            }
         }
 
         const part = new Tone.Part((sTime, event) => {
-            if (event.poly) {
-                event.instr.triggerAttackRelease(event.notations, event.durations, sTime);
-            }
-            else {
-                event.notes.forEach(n => n.playPreview(sTime));
-            }
+            if (event.poly) event.instr.triggerAttackRelease(event.notations, event.durations, sTime);
+            else event.notes.forEach(n => n.playPreview(sTime));
         }, events);
 
-        delete patternData['notes'];
-
-        return {
-            ...part,
-            ...patternData,
-        }
+        return Object.assign(part, patternData);
     }
 }

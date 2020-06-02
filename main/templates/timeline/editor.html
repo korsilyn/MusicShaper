@@ -33,26 +33,36 @@
             <button class="img stopBtn">
                 <img src="{% static 'svg/stop.svg' %}">
             </button>
+            <button class="img loopBtn">
+                <img src="{% static 'svg/loop.svg' %}">
+            </button>
             <div class="seperator"></div>
             <button class="img saveBtn">
                 <img src="{% static 'svg/save.svg' %}">
             </button>
             <div class="seperator"></div>
             <a id="backToStartLink" href="#">Вернуться к началу</a>
+            <div class="seperator"></div>
+            <label>Темп:</label>
+            <input id="projBpm" type="number" min="32" max="999"
+            value="{{ project.settings.bpm }}">
         </div>
     </div>
     <div id="menu">
         <div class="section theme-transition" style="width: 100%;">
-            <canvas id="mainCanvas" class="grid-background" oncontextmenu="return false;">
+            <canvas id="mainCanvas" class="grid-background theme-transition" oncontextmenu="return false;">
                 Ваш браузер не поддерживает canvas :/
             </canvas>
         </div>
-        <div class="section theme-transition" style="height: 45%;" id="patterns">
+        <div class="section theme-transition" style="height: 55%;" id="patterns">
+            <h5 style="margin-top: 10px; margin-left: 15px; width: 100%;">
+                Паттерны ({{ project.patterns.count }})
+            </h5>
             <div id="patterns-list" class="card-link-list">
                 {% for name, p in patterns.items %}
                     <a class="unselectable"
-                        data-pattern-name="{{ name }}"
-                        data-pattern-color="{{ p.color }}">
+                    data-pattern-name="{{ name }}"
+                    data-pattern-color="{{ p.color }}">
                         <div class="card-title">{{ name }}</div>
                         <div class="card-desc">Продолжительность: {{ p.duration }}</div>
                         <div class="selected-flag">Выбран</div>
@@ -61,16 +71,23 @@
                 <div class="margin-top-10"></div>
             </div>
         </div>
-        <div class="section theme-transition" style="width: 100%; background-color: var(--bg); padding: 10px;">
-            <h5>Данные проекта</h5>
-            <span>Продолжительность трека:</span>
-            <ul>
-                <li>Секунды: <span id="durationSeconds">0</span></li>
-                <li>Продолжительность трека (ноты): <span id="durationNotes">0</span></li>
-            </ul>
-            <br>
-            <h5>Экспорт</h5>
-            <button class="btn btn-outline-danger">Начать запись</button> <br>
+        <div class="section theme-transition" id="bottomMenu"
+        style="width: 100%; background-color: var(--bg); padding: 10px;">
+            <div class="section">
+                <h5>Данные проекта</h5>
+                <span>Продолжительность трека:</span>
+                <ul>
+                    <li>Время: <span id="durationTime">00:00:00</span></li>
+                    <li>Ноты: <span id="durationNotes">0</span></li>
+                </ul>
+            </div>
+            <div class="seperator"></div>
+            <div class="section">
+                <h5>Экспорт</h5>
+                <button class="btn btn-outline-danger" id="recordBtn">
+                    Начать запись
+                </button>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -80,17 +97,25 @@
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
 
+    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/instruments.js' %}"></script>
+    <script src="{% static 'scripts/patterns.js' %}"></script>
+    <script src="{% static 'scripts/player.js' %}"></script>
+    <script src="{% static 'scripts/timeline/player.js' %}"></script>
+
     {{ instruments|json_script:"instruments" }}
     {{ patterns|json_script:"patternsData" }}
 
     <script>
-        Tone.Transport.bpm.value = '{{ project.settings.bpm }}';
+        var csrf_token = '{{ csrf_token }}';
+
+        Urls.registerUrls({
+            save_timeline: "{% url 'save_timeline' proj_id=project.id %}"
+        });
     </script>
 
-    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
-    <script src="{% static 'scripts/instruments.js' %}"></script>
-    <script src="{% static 'scripts/patterns.js' %}"></script>
     <script src="{% static 'scripts/timeline/init.js' %}"></script>
+    <script src="{% static 'scripts/timeline/save.js' %}"></script>
 
     <script src="{% static 'scripts/tileEditor/tile.js' %}"></script>
     <script src="{% static 'scripts/tileEditor/paper.js' %}"

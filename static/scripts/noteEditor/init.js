@@ -102,18 +102,18 @@ window.addEventListener('instrumentSelected', () => {
 window.addEventListener('tilePlaced', ({ detail: { tile } }) => {
     tile.note = MusicNote.fromTile(tile, instruments.current);
     if (!window.loadingNotes) {
-        if (isPlaying) stop();
+        if (player.isPlaying) stop();
         tile.note.playPreview();
     }
 });
 
 window.addEventListener('tileRemoved', () => {
-    if (isPlaying) stop();
+    if (player.isPlaying) stop();
 });
 
 window.addEventListener('tileEditorMouseUp', ({ detail: { cellPoint, button } }) => {
     if (button == 1) {
-        play(cellPoint.x);
+        player.play(cellPoint.x);
     }
 });
 
@@ -133,8 +133,13 @@ instrSelect.onchange = function () {
 
 //#endregion
 
-//#region load notes
+//#region player
 
+var player = new NotePlayer(instruments, 'button.playBtn', 'button.stopBtn', 'button.loopBtn');
+
+//#endregion
+
+//#region load notes
 
 window.addEventListener('tileEditorInit', async () => {
     const initialNotes = JSON.parse(document.getElementById('musicNotes').innerText)

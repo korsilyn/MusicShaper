@@ -153,7 +153,8 @@ class MusicTrackPattern(models.Model):
         '''
 
         return {
-            'project': self.project.id,
+            'id': self.id,
+            'project_id': self.project.id,
             'name': self.name,
             'duration': self.duration,
             'color': self.color,
@@ -169,10 +170,14 @@ class TrackPatternInstance(models.Model):
 
     :param pattern: паттерн
     :param time: момент времени, в который должен начать играть паттерн
+    :param track: индекс звуковой дорожки на таймлайне
     '''
 
     pattern = models.ForeignKey(MusicTrackPattern, models.CASCADE, 'instances')
     time = models.PositiveIntegerField()
+    track = models.PositiveIntegerField(
+        validators=[MaxValueValidator(4)]
+    )
 
 
 class MusicNote(models.Model):
