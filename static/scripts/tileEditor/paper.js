@@ -15,28 +15,37 @@ gridLayer.name = 'grid';
 var gridSize;
 
 /** @type {paper.Size} */
+var gridRealSize;
+
+/** @type {paper.Size} */
 var cellSize;
 
 /** @type {paper.Point} */
 var cellSizePoint;
 
-var allowResize = false;
+/** @type {boolean} */
+var allowResize;
+
+/** @type {boolean} */
+var limitByWidth;
 
 function initTileEditor(options) {
     var grid = options.grid;
     var cell = options.cell;
-    var _resize = options.allowResize;
+    var realSize = options.realCanvasSize || {};
+
+    allowResize = options.allowResize;
+    if (allowResize === undefined) allowResize = false;
+    limitByWidth = options.limitByWidth;
+    if (limitByWidth === undefined) limitByWidth = true;
 
     gridSize = new paper.Size(grid.width, grid.height);
     cellSize = new paper.Size(cell.width, cell.height);
 
     cellSizePoint = new paper.Point(cellSize.width, cellSize.height);
+    gridRealSize = gridSize * cellSize;
 
-    var gridRealSize = gridSize * cellSize;
-    project.view.viewSize.set({
-        width: gridRealSize.width,
-        height: gridRealSize.height,
-    });
+    window.setTileEditorSize(realSize.width, realSize.height);
 
     playhead = new paper.Path.Rectangle({
         fillColor: 'rgba(54, 255, 47, 0.4)',
@@ -62,11 +71,20 @@ function initTileEditor(options) {
 
     tileHint.placeTile = placeTile;
 
-    allowResize = _resize;
-
     window.dispatchEvent(new CustomEvent('tileEditorInit', {
         detail: { hint: tileHint }, project: project
     }));
+}
+
+window.setTileEditorSize = function (width, height) {
+    project.view.viewSize.set({
+        width: width || gridRealSize.width,
+        height: height || gridRealSize.height,
+    });
+    project.view.size.set({
+        width: limitByWidth && gridRealSize.width || Infinity,
+        height: gridRealSize.height
+    });
 }
 
 //#endregion
@@ -140,14 +158,19 @@ paper.Item.prototype.dispatchWindowTileEvent = function (type) {
 }
 
 tilePlaceLayer.onMouseDown = function (event) {
-    placing = event.event.button == 0;
-    deleting = event.event.button == 2;
+    mouseCellPoint = calcMouseCellPoint(event);
+    var allowed = mouseCellPoint.x < gridSize.width || !limitByWidth;
+    placing = allowed && event.event.button == 0;
+    deleting = allowed && event.event.button == 2;
     if (placing) {
         tileHint.dispatchWindowTileEvent('tileBeginPlacing');
     }
 }
 
 function placeTile() {
+    tileHint.makeTile();
+    if (tileHint.tile.checkCollision()) return;
+
     /** @type {TilePath} */
     var clone = tileHint.clone();
     clone.opacity = 1;
@@ -176,7 +199,7 @@ project.view.onMouseMove = function (event) {
     mouseCellPoint = calcMouseCellPoint(event);
     if (placing && allowResize) {
         var length = mouseCellPoint.x - tileHint.tile.x + 1;
-        if (length >= 1 && mouseCellPoint.x < gridSize.width) {
+        if (length >= 1 && (mouseCellPoint.x < gridSize.width || !limitByWidth)) {
             tileHint.tile.length = length;
             if (!tileHint.tile.checkCollision()) {
                 tileHint.bounds.width = length * cellSize.width;
@@ -216,8 +239,8 @@ tilePlaceLayer.onMouseEnter = function () {
     tileHint.opacity = 0.5;
 }
 
-tilePlaceLayer.onMouseLeave = function () {
-    if (!placing) {
+tilePlaceLayer.onMouseLeave = function (event) {
+    if (event.event.srcElement != project.view.element && !placing) {
         tileHint.opacity = 0;
     }
 }

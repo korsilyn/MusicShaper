@@ -55,18 +55,18 @@
     <link rel="stylesheet" href="{% static 'styles/base.css' %}">
 
     <div class="piano" draggable="false">
-        <div note="C"  key="Z" class="not-draggable key white"></div>
-        <div note="C#" key="S" class="not-draggable key black"></div>
-        <div note="D"  key="X" class="not-draggable key white"></div>
-        <div note="D#" key="D" class="not-draggable key black"></div>
-        <div note="E"  key="C" class="not-draggable key white"></div>
-        <div note="F"  key="V" class="not-draggable key white"></div>
-        <div note="F#" key="G" class="not-draggable key black"></div>
-        <div note="G"  key="B" class="not-draggable key white"></div>
-        <div note="G#" key="H" class="not-draggable key black"></div>
-        <div note="A"  key="N" class="not-draggable key white"></div>
-        <div note="A#" key="J" class="not-draggable key black"></div>
-        <div note="B"  key="M" class="not-draggable key white"></div>
+        <div note="C"  key="Z" class="unselectable key white"></div>
+        <div note="C#" key="S" class="unselectable key black"></div>
+        <div note="D"  key="X" class="unselectable key white"></div>
+        <div note="D#" key="D" class="unselectable key black"></div>
+        <div note="E"  key="C" class="unselectable key white"></div>
+        <div note="F"  key="V" class="unselectable key white"></div>
+        <div note="F#" key="G" class="unselectable key black"></div>
+        <div note="G"  key="B" class="unselectable key white"></div>
+        <div note="G#" key="H" class="unselectable key black"></div>
+        <div note="A"  key="N" class="unselectable key white"></div>
+        <div note="A#" key="J" class="unselectable key black"></div>
+        <div note="B"  key="M" class="unselectable key white"></div>
     </div>
 </template>
 
@@ -170,7 +170,7 @@
 
             this.keys = Array.from(this.shadowRoot.querySelectorAll('.key'))
                 .map(element => new PianoKey(this, element));
-            
+
             /** @type {PianoKey} */
             this.lastKey = null;
 

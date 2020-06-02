@@ -1,11 +1,16 @@
 function save() {
+    let notes = Tile.tiles.map(tile => tile.note.json);
+    if (notes.length == 0) {
+        notes = [''];
+    }
+
     return new Promise((resolve, reject) => $.ajax({
         method: 'POST',
         dataType: 'json',
         url: Urls.reverseUrl('save_pattern'),
         data: {
             csrfmiddlewaretoken: csrf_token,
-            'notes[]': Tile.tiles.map(tile => tile.note.json),
+            'notes[]': notes,
             'bpm': bpmInput.safeValue,
         },
 

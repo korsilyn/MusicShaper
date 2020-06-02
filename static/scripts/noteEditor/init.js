@@ -32,9 +32,6 @@ var cellSize;
     );
 })();
 
-const docStyle = getComputedStyle(document.body);
-const getPxVar = name => Number(docStyle.getPropertyValue(name).replace('px', ''));
-
 //#endregion
 
 //#region bpm
@@ -140,8 +137,6 @@ instrSelect.onchange = function () {
 
 
 window.addEventListener('tileEditorInit', async () => {
-    window.loadingNotes = true;
-
     const initialNotes = JSON.parse(document.getElementById('musicNotes').innerText)
         .map(data => new MusicNote(
             instruments.getById(data.instrument),
@@ -149,6 +144,12 @@ window.addEventListener('tileEditorInit', async () => {
             (octaves + octavesFrom - data.octave) * noteNotations.length - data.notation,
             data.length,
         ));
+
+    if (initialNotes.length == 0) {
+        return;
+    }
+
+    window.loadingNotes = true;
 
     const initialNotesGrouped = groupBy(initialNotes, 'instrumentName');
     const tileHint = window.getTileHint();
@@ -166,7 +167,7 @@ window.addEventListener('tileEditorInit', async () => {
         }
     }
 
-    delete window.loadingNotes;
+    window.loadingNotes = false;
     instrSelect.onchange();
 });
 

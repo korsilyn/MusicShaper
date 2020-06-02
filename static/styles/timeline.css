@@ -1,3 +1,10 @@
+body {
+    --cell-width: 10px;
+    --cell-height: 38px;
+    --ruler-cells-count: 0;
+    --grid-ver-color: rgba(0, 0, 0, 0.08);
+}
+
 #_mainContainer {
     width: -webkit-fill-available;
     height: 100vh;
@@ -9,17 +16,20 @@
     width: inherit;
     height: inherit;
     flex-direction: column;
+    background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.15), transparent 20px);
 }
 
 #menu > .section {
-    background-color: var(--bg);
     width: 100%;
 }
 
+#menu > .section:last-child {
+    flex: 1;
+}
+
 #patterns {
-    background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.2), transparent 20px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: start;
     overflow-x: auto;
     width: 100%;
@@ -35,9 +45,43 @@
 }
 
 #patterns-list {
-    flex-flow: nowrap;
+    flex-flow: wrap;
 }
 
 .card-link-list a {
+    transform: scale(0.9);
+    transition: all 0.1s ease;
+    --border-width: 2px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: var(--border-width);
+    border-right-width: var(--border-width);
+    border-style: groove;
+}
+
+.card-link-list a .card-title {
     font-size: 1.3em;
+}
+
+.card-link-list a .card-desc {
+    font-size: 1em;
+}
+
+.card-link-list a.selected {
+    transform: scale(1);
+}
+
+.card-link-list a .selected-flag {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.card-link-list a:not(.selected) .selected-flag {
+    display: none;
+}
+
+#mainCanvas {
+    background-color: var(--bg);
 }

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'styles/noteEditor.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/editor.css' %}">
 {% endblock %}
 
 {% block 'body' %}
@@ -22,6 +22,8 @@
             </a>
             <div class="seperator"></div>
             <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
+            <div class="seperator"></div>
+            <a href="{% url 'timeline' proj_id=project.id %}">Таймлайн</a>
             <div class="seperator"></div>
             <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
         </h5>
@@ -53,13 +55,14 @@
         </div>
     </div>
     <div style="width: inherit; height: calc(100vh - var(--panel-height)); overflow: scroll;">
-        <canvas id="mainCanvas" oncontextmenu="return false">
+        <canvas id="mainCanvas" class="grid-background" oncontextmenu="return false">
             Ваш браузер не поддерживает canvas :/
         </canvas>
     </div>
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'scripts/utils.js' %}"></script>
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
     <script src="{% static 'scripts/urls.js' %}"></script>
@@ -74,21 +77,6 @@
             get_instrument: "{% url 'get_instrument' proj_id=project.id %}",
             save_pattern: "{% url 'save_pattern' proj_id=project.id pat_id=pattern.id %}",
         });
-
-        var octaves = 6;
-        var octavesFrom = 2;
-
-        var noteNotations = [
-            'C', 'C#',
-            'D', 'D#',
-            'E',
-            'F', 'F#',
-            'G', 'G#',
-            'A', 'A#',
-            'B',
-        ];
-
-        var noteNotationsTotalLenght = noteNotations.length * octaves;
     </script>
 
     {{ musicNotes|json_script:"musicNotes" }}

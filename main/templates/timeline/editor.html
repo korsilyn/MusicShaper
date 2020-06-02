@@ -8,15 +8,17 @@
 
 {% block 'head' %}
     <link rel="stylesheet" href="{% static 'styles/cardLinkList.css' %}">
-    <link rel="stylesheet" href="{% static 'styles/noteEditor.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/editor.css' %}">
     <link rel="stylesheet" href="{% static 'styles/timeline.css' %}">
 {% endblock %}
 
 {% block 'body' %}
     <div class="settingsPanel theme-transition">
         <h5 class="inputs">
-            Таймлайн проекта
-            <span style="margin-left: 5px;" class="quotes">{{ project.name }}</span>
+            <span style="margin-bottom: 0.15em;">
+                Таймлайн проекта
+                <span class="quotes">{{ project.name }}</span>
+            </span>
             <div class="seperator"></div>
             <a href="{% url 'manage_project' proj_id=project.id %}">Управление проектом</a>
             <div class="seperator"></div>
@@ -25,47 +27,74 @@
             <a href="{% url 'new_pattern' proj_id=project.id %}">Новый паттерн</a>
         </h5>
         <div class="settings inputs">
-            <button id="playBtn" onclick="play()">Играть</button>
-            <button id="stopBtn" onclick="stop()">Стоп</button>
+            <button class="img playBtn">
+                <img src="{% static 'svg/play.svg' %}">
+            </button>
+            <button class="img stopBtn">
+                <img src="{% static 'svg/stop.svg' %}">
+            </button>
+            <div class="seperator"></div>
+            <button class="img saveBtn">
+                <img src="{% static 'svg/save.svg' %}">
+            </button>
+            <div class="seperator"></div>
+            <a id="backToStartLink" href="#">Вернуться к началу</a>
         </div>
     </div>
     <div id="menu">
-        <div class="section theme-transition" style="height: 200px;" id="patterns">
-            <div id="patterns-list" class="card-link-list">
-                {% for p in project.patterns.all %}
-                    <a>
-                        <div class="card-title">{{ p.name }}</div>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="section theme-transition" style="flex: 1;">
-            <canvas id="timeline">
+        <div class="section theme-transition" style="width: 100%;">
+            <canvas id="mainCanvas" class="grid-background" oncontextmenu="return false;">
                 Ваш браузер не поддерживает canvas :/
             </canvas>
+        </div>
+        <div class="section theme-transition" style="height: 45%;" id="patterns">
+            <div id="patterns-list" class="card-link-list">
+                {% for name, p in patterns.items %}
+                    <a class="unselectable"
+                        data-pattern-name="{{ name }}"
+                        data-pattern-color="{{ p.color }}">
+                        <div class="card-title">{{ name }}</div>
+                        <div class="card-desc">Продолжительность: {{ p.duration }}</div>
+                        <div class="selected-flag">Выбран</div>
+                    </a>
+                {% endfor %}
+                <div class="margin-top-10"></div>
+            </div>
+        </div>
+        <div class="section theme-transition" style="width: 100%; background-color: var(--bg); padding: 10px;">
+            <h5>Данные проекта</h5>
+            <span>Продолжительность трека:</span>
+            <ul>
+                <li>Секунды: <span id="durationSeconds">0</span></li>
+                <li>Продолжительность трека (ноты): <span id="durationNotes">0</span></li>
+            </ul>
+            <br>
+            <h5>Экспорт</h5>
+            <button class="btn btn-outline-danger">Начать запись</button> <br>
         </div>
     </div>
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'scripts/utils.js' %}"></script>
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
 
     {{ instruments|json_script:"instruments" }}
+    {{ patterns|json_script:"patternsData" }}
 
     <script>
-        document.getElementById('_mainContainer').classList.remove('container');
-
-        let currentPattern = null;
-
-        document.querySelectorAll('#patterns a').forEach(a => {
-            a.onclick = function () {
-                if (currentPattern) {
-                    currentPattern.style.fontStyle = '';
-                }
-                this.style.fontStyle = 'italic';
-                currentPattern = this;
-            }
-        });
+        Tone.Transport.bpm.value = '{{ project.settings.bpm }}';
     </script>
+
+    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/instruments.js' %}"></script>
+    <script src="{% static 'scripts/patterns.js' %}"></script>
+    <script src="{% static 'scripts/timeline/init.js' %}"></script>
+
+    <script src="{% static 'scripts/tileEditor/tile.js' %}"></script>
+    <script src="{% static 'scripts/tileEditor/paper.js' %}"
+        async type="text/paperscript" canvas="mainCanvas"></script>
+    <script src="{% static 'scripts/timeline/paper.js' %}"
+        async type="text/paperscript" canvas="mainCanvas"></script>
 {% endblock %}

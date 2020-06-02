@@ -55,7 +55,10 @@
 
     {% if request.user == profile.user %}
         <div class="text-center margin-top-2">
-            <b>Ваши подписки ({{ profile.subscriptions.count }})</b> <br>
+            <b>Количество подписчиков: {{ profile.subscribers.count }}</b> <br> <br>
+            {% if profile.subscriptions.exists %}
+                <b>Ваши подписки ({{ profile.subscriptions.count }})</b> <br>
+            {% endif %}
             {% for sub in profile.subscriptions.all|slice:":5" %}
                 <a href="{% url 'profile' username=sub.user.username %}">
                     {{ sub.user.username }}

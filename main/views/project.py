@@ -167,5 +167,6 @@ def project_timeline(request, proj_id: int):
 
     return render(request, 'timeline/editor.html', {
         'project': project,
-        'instruments': {i.name: i.to_dict() for i in project.get_used_instruments()}
+        'instruments': {i.name: i.to_dict() for i in project.get_used_instruments()},
+        'patterns': {p.name: p.to_dict() for p in project.patterns.all()}
     })

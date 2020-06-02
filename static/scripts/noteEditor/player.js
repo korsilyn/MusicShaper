@@ -1,10 +1,3 @@
-function groupBy(xs, key) {
-    return xs.reduce(function(rv, x) {
-        (rv[x[key]] = rv[x[key]] || []).push(x);
-        return rv;
-    }, {});
-};
-
 /** @type {HTMLButtonElement} */
 const playBtn = document.querySelector('button.playBtn');
 /** @type {HTMLButtonElement} */
@@ -91,7 +84,7 @@ function play(from = 0) {
     }
 
     Tone.Transport.schedule(() => {
-        if (!Tone.Transport.loop) {
+        if (!isLoop) {
             stop();
         }
     }, sixteenthSec * (lastTime + 1 - from));

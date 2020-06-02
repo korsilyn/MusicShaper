@@ -42,6 +42,7 @@ def ajax_view(method='POST', required_args=()):
                 raise Http404
 
             q_dict = request.GET if method == 'GET' else request.POST
+            print(q_dict)
             for r_arg in required_args:
                 if r_arg not in q_dict:
                     raise Http404

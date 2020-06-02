@@ -2,21 +2,23 @@
     --panel-height: 80px;
     --cell-width: 40px;
     --cell-height: 25px;
-    --grid-color: rgba(0, 0, 0, 0.3);
+    --grid-hor-color: rgba(0, 0, 0, 0.3);
+    --grid-ver-color: rgba(0, 0, 0, 0.3);
+    --ruler-cells-count: 12;
 }
 
 body {
     overflow: hidden;
 }
 
-canvas#mainCanvas {
+.grid-background {
     background-size:
         var(--cell-width) var(--cell-height),
-        var(--cell-width) calc(var(--cell-height) * 12);
+        var(--cell-width) calc(var(--cell-height) * var(--ruler-cells-count));
     background-image:
-        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-ver-color) 1px, transparent 1px),
         linear-gradient(to bottom, grey 2px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+        linear-gradient(to bottom, var(--grid-hor-color) 1px, transparent 1px);
 }
 
 .settingsPanel {
@@ -33,25 +35,25 @@ canvas#mainCanvas {
     margin-bottom: 4px;
 }
 
-select, input, button {
+.settingsPanel select, .settingsPanel input, .settingsPanel button {
     border-radius: 3px;
     height: 30px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     width: 100px;
 }
 
-button {
+.settingsPanel button {
     width: 80px;
     text-align: center;
 }
 
-button.img {
+.settingsPanel button.img {
     width: 30px;
     height: 30px;
     --img-margin: 5px;
 }
 
-button.img img {
+.settingsPanel button.img img {
     margin: var(--img-margin);
     pointer-events: none;
 }
@@ -61,20 +63,20 @@ button:disabled {
     filter: saturate(0.5);
 }
 
-.btn, button.img {
+.settingsPanel .btn, .settingsPanel button.img {
     padding: 0;
 }
 
-a {
+.settingsPanel a {
     font-size: 0.7em;
     margin-bottom: 0.3em;
 }
 
-button:active:hover:not(:disabled) {
+.settingsPanel button:active:hover:not(:disabled) {
     filter: brightness(90%);
 }
 
-button:focus {
+.settingsPanel button:focus {
     outline: 0;
 }
 

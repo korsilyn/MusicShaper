@@ -1,19 +1,40 @@
 /// <reference path="../tileEditor/tile.js" />
 /// <reference path="../instruments.js" />
 
+var octaves = 6;
+var octavesFrom = 2;
+
+var noteNotations = [
+    'C', 'C#',
+    'D', 'D#',
+    'E',
+    'F', 'F#',
+    'G', 'G#',
+    'A', 'A#',
+    'B',
+];
+
+var noteNotationsTotalLenght = noteNotations.length * octaves;
+
 class MusicNote {
     /**
      * @param {Instrument} instrument
      * @param {number} time
-     * @param {number} y
+     * @param {number | { notation: number; octave: number; }} y
      * @param {number} length
      */
     constructor(instrument, time, y, length) {
         this.time = time;
         this.length = length;
         this.instrument = instrument;
-        this.notation = noteNotations.length - y % noteNotations.length;
-        this.octave = octavesFrom + octaves - Math.floor(y / noteNotations.length) - 1;
+        if (typeof y == 'number') {
+            this.notation = noteNotations.length - y % noteNotations.length;
+            this.octave = octavesFrom + octaves - Math.floor(y / noteNotations.length) - 1;
+        }
+        else {
+            this.notation = y.notation;
+            this.octave = y.octave;
+        }
     }
 
     get instrumentName() {

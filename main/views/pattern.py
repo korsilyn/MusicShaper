@@ -164,9 +164,12 @@ def save_pattern(request, proj_id: int, pat_id: int):
     music_notes = MusicNote.objects.filter(pattern=pattern)
     notes = request.POST.getlist('notes[]', [])
 
-    with transaction.atomic():
-        for json_note, model_note in zip_longest(notes, music_notes):
-            handle_json_note(json_note, model_note, pattern, instruments)
+    if len(notes) == 1 and notes[0] == '':
+        MusicNote.objects.filter(pattern=pattern).delete()
+    else:
+        with transaction.atomic():
+            for json_note, model_note in zip_longest(notes, music_notes):
+                handle_json_note(json_note, model_note, pattern, instruments)
 
     return {'success': True}
 
