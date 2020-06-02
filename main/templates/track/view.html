@@ -55,11 +55,25 @@
     {% endif %}
 
     <br>
-    <div class=" text-center">
+    <div class="text-center">
         <a class="btn btn-danger" href="{% url 'claim_track' track_id=track.id %}">
             Пожаловаться
         </a>
-    </div>
+
+    {% if user.is_superuser and track.claims.count >= 3 %}
+            <a href="{% url 'delete_track' track_id=track.id %}"
+                class="btn btn-outline-danger">
+                Удалить проект
+            </a>
+    {% endif %}
+
+    {% if track.author == user %}
+            <a href="{% url 'delete_track' track_id=track.id %}"
+                class="btn btn-outline-danger">
+                Удалить проект
+            </a>
+    {% endif %}
+   </div>
 
     {% if track.claims.exists %}
         {% if user.is_superuser or track.author == user %}

@@ -78,6 +78,7 @@ urlpatterns = [
         path('<int:track_id>/', include([
             path('', views.track_view, name='track'),
             path('claim_track/', views.claim_track, name='claim_track'),
+            path('delete_track/', views.delete_track, name='delete_track'),
         ])),
     ])),
 
