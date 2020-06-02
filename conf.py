@@ -27,13 +27,10 @@ author = 'Picalines KrakeN000 marussyyaa unicorn-deadinside Tintie'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-import os
-import django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'main.settings'
-django.setup()
 import sphinx_rtd_theme
 
 extensions = [
+    "sphinx.ext.autodoc",
     "sphinx_rtd_theme",
 ]
 

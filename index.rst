@@ -9,18 +9,10 @@
 ******************
 Используемые формы
 ******************
-.. automodule:: main.models.create_test_track
-.. automodule:: main.models.instrument
-.. automodule:: main.models.login
-.. automodule:: main.models.pattern
-.. automodule:: main.models.project
-.. automodule:: main.models.settings
+.. automodule:: main.forms.create_test_track
+.. automodule:: main.forms.instrument
+.. automodule:: main.forms.login
+.. automodule:: main.forms.pattern
+.. automodule:: main.forms.project
+.. automodule:: main.forms.settings
    :members:
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

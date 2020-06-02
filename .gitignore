@@ -7,6 +7,4 @@ __pycache__/
 venv/
 staticroot/
 .coverage
-_build/
-_static/
-_templates/
+docs/
