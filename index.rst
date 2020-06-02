@@ -3,13 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to MusicShaper's documentation!
+Документация разработчика MusicShaper
 =======================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
+******************
+Используемые формы
+******************
+.. automodule:: main.models.create_test_track
+.. automodule:: main.models.instrument
+.. automodule:: main.models.login
+.. automodule:: main.models.pattern
+.. automodule:: main.models.project
+.. automodule:: main.models.settings
+   :members:
 
 
 Indices and tables
