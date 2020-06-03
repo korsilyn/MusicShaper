@@ -92,6 +92,6 @@ upload_to_server:
         - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     script:
         - ssh $SSH_USER@$SSH_HOST "cd prodserver_conf/s106_ms && git checkout master && git pull origin master && exit"
-        - ssh $SSH_USER@$SSH_HOST "cd prodserver_conf && docker stop s106_ms && docker rm s106_ms && docker-compose build s106_ms && docker-compose up -d s106_ms && exit"
+        - ssh $SSH_USER@$SSH_HOST "cd prodserver_conf && docker-compose build s106_ms && docker-compose up -d s106_ms && exit"
     only:
         - master
