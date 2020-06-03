@@ -22,7 +22,7 @@ def similar(first, second):
     :return: число от 0 до 1
     '''
 
-    return SequenceMatcher(None, first, second).ratio()
+    return SequenceMatcher(None, first.lower(), second.lower()).ratio()
 
 
 def filter_similar(items, comp_value, threshold, key=None):
@@ -78,7 +78,7 @@ def search_page(request):
         sort_by = request.POST.get('sortBy', None)
 
         if not (search_request and results_type and sort_by):
-            raise HttpResponseBadRequest
+            return HttpResponseBadRequest()
 
         threshold = 0.6
         results = []
@@ -104,7 +104,7 @@ def search_page(request):
             elif sort_by in ('new', 'old'):
                 key_lambda = lambda r: r[0].creation_date
             else:
-                raise HttpResponseBadRequest
+                return HttpResponseBadRequest()
 
             results = sorted(results, reverse=sort_by != 'old', key=key_lambda)
             results = list(map(lambda r: r[0].to_dict(), results))

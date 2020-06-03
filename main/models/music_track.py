@@ -39,7 +39,7 @@ class MusicTrack(models.Model):
     :param likes: список юзеров, поставивших лайк
     :param dislikes: список юзеров, поставивших дизлайк
     :param comments: список комментариев
-    :param reports: список жалоб
+    :param claims: список жалоб
     :param settings: настройки
     :param listeners: список юзеров, послушавших трек
     '''
@@ -51,7 +51,7 @@ class MusicTrack(models.Model):
     likes = models.ManyToManyField(User, "likes")
     dislikes = models.ManyToManyField(User, "dislikes")
     comments = models.ManyToManyField(TrackComment, "comments")
-    reports = models.ManyToManyField(TrackComment, "reports")
+    claims = models.ManyToManyField(TrackComment, "claims")
     listeners = models.ManyToManyField(User, "listened_tracks")
 
     def to_dict(self):
@@ -65,6 +65,9 @@ class MusicTrack(models.Model):
         return model_to_dict(self, fields=(
             'id', 'name', 'desc', 'author', 'creation_date', 'settings'
         ))
+
+    def get_claims_count(self):
+        return self.claims.count()
 
 
 class TrackSettings(models.Model):

@@ -11,7 +11,7 @@
         {% for field in form.visible_fields %}
             {% if field.field.widget.input_type != 'checkbox' %}
                 <div class="form-group">
-                    <label>{{ field.label }}</label>
+                    <label>{{ field.label }}: </label>
                     {{ field }}
                 </div>
             {% else %}

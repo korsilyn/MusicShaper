@@ -5,7 +5,9 @@
 '''
 
 from datetime import datetime
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.contrib.messages import add_message, SUCCESS
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .util import get_base_context
 from ..models import MusicTrack, TrackComment
@@ -92,3 +94,33 @@ def track_view(request, track_id: int):
     })
 
     return render(request, 'track/view.html', context)
+
+
+@login_required
+def delete_track(request, track_id: int):
+    '''
+    Страница удаления трека админом
+
+    :param request: запрос клиента
+    :param track_id: id трека в БД
+    :rtype: HttpResponse
+    '''
+
+    track = get_object_or_404(MusicTrack, pk=track_id)
+
+    if request.method == 'POST':
+        track.delete()
+        add_message(request, SUCCESS, 'Трек успешно удалён')
+        return redirect('profile', username=track.author.username)
+
+    context = get_base_context(request, {
+        'title': 'Удаление трека',
+        'item_name': track.name,
+        'confirm_title': 'Удалить трек',
+        'cancel_title': 'Назад к странице трека',
+        'cancel_url': reverse('track', kwargs={
+            'track_id': track.pk
+        })
+    })
+
+    return render(request, 'delete.html', context)

@@ -11,8 +11,8 @@ Music Shaper позволяет вам легко писать собствен�
 Что требуется для работы проекта
 
 ```
-python3 # Tested on 3.8.2
-Django==3.0
+python3 # Tested on 3.8.3rc1
+Django==3.0 # Tested on 3.0.6
 Pillow==7.0.0
 django-jsonfield==1.4.0
 ```
@@ -23,7 +23,8 @@ django-jsonfield==1.4.0
 
 ```
 python3 -m venv venv
-. venv/bin/activate
+. venv/bin/activate # Unix-like
+./venv/Scripts/activate # Windows
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
@@ -35,7 +36,7 @@ python manage.py runserver
 ## Работает при помощи
 
 * [Django](https://docs.djangoproject.com/en/3.0/) - Бэкенд фреймворк
-* [Bootstrap 4](https://getbootstrap.com/docs/4.4/) - Фронтенд фреймворк
+* [Bootstrap 4](https://getbootstrap.com/docs/4.4/) - Дизайн
 * [Pillow](https://pillow.readthedocs.io/en/stable/) - Обработка картинок
 * [Tone.js](https://tonejs.github.io/) - Воспроизведение звука в браузере
 * [Paper.js](http://paperjs.org/) - Отрисовка редактора нот

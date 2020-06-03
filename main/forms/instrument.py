@@ -20,7 +20,7 @@ class MusicInstrumentForm(ModelForm):
         labels = {
             'name': 'Имя',
             'type': 'Тип',
-            'notesColor': 'Цвет в редакторе',
+            'notesColor': 'Цвет музыкальных нот в редакторе',
         }
 
         widgets = {

@@ -58,11 +58,12 @@ def profile_edit_page(request):
     if request.method == 'POST':
         status = request.POST.get('status', '')
         image = request.FILES.get('image', None)
-        if len(status) <= 100:
-            profile.status = status
-            add_message(request, SUCCESS, 'Статус успешно обновлён')
-        else:
-            add_message(request, ERROR, 'Максимальная длина статуса: 100 символов')
+        if profile.status != status:
+            if len(status) <= 100:
+                profile.status = status
+                add_message(request, SUCCESS, 'Статус успешно обновлён')
+            else:
+                add_message(request, ERROR, 'Максимальная длина статуса: 100 символов')
         if image:
             pil_image = Image.open(image)
             if pil_image.height <= 200 or pil_image.width <= 200:
@@ -75,8 +76,9 @@ def profile_edit_page(request):
                 profile.image.delete(save=True)
                 profile.image = image
                 add_message(request, SUCCESS, 'Аватар успешно обновлён')
-            pil_image.close()
         profile.save()
+        if image:
+            pil_image.close()
         return redirect('profile')
 
     context = get_base_context(request, {

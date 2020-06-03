@@ -7,7 +7,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import add_message, SUCCESS, ERROR
-from .util import get_base_context
+from .util import get_base_context, ajax_view
 from ..forms import MusicInstrumentForm, SettingsModelForm
 from .project import get_project_or_404
 from ..models import MusicInstrument
@@ -176,3 +176,18 @@ def delete_instrument(request, proj_id: int, instr_id: int):
     })
 
     return render(request, 'delete.html', context)
+
+
+@login_required
+@ajax_view(method='GET', required_args=('name',))
+def get_instrument_ajax(request, proj_id: int):
+    '''
+    Возвращает клиенту настройки инструмента через ajax
+    '''
+
+    project = get_project_or_404(request, proj_id)
+    i_name = request.GET['name']
+
+    return {
+        i_name: MusicInstrument.objects.get(project=project, name=i_name).to_dict()
+    }
