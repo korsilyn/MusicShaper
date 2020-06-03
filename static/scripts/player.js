@@ -36,7 +36,7 @@ class Player {
             this.stop('user');
         });
 
-        document.addEventListener('keydown', ({ keyCode, repeat }) => {
+        window.addEventListener('keydown', ({ keyCode, repeat }) => {
             if (!repeat && keyCode == 32) {
                 if (this.isPlaying) {
                     this.stop('user');
@@ -45,6 +45,12 @@ class Player {
                     this.play(0);
                 }
                 return false;
+            }
+        });
+
+        window.addEventListener('tileEditorMouseUp', ({ detail: { cellPoint, button } }) => {
+            if (button == 1) {
+                player.play(cellPoint.x);
             }
         });
     }

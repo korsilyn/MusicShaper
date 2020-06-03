@@ -154,7 +154,7 @@ class MusicTrackPattern(models.Model):
 
         return {
             'id': self.id,
-            'project_id': self.project.id,
+            'project_id': self.project_id,
             'name': self.name,
             'duration': self.duration,
             'color': self.color,
@@ -178,6 +178,18 @@ class TrackPatternInstance(models.Model):
     track = models.PositiveIntegerField(
         validators=[MaxValueValidator(4)]
     )
+
+    def to_dict(self):
+        '''
+        Возвращает словарь с данными образца паттерна
+        '''
+
+        return {
+            'id': self.id,
+            'pattern_id': self.pattern_id,
+            'time': self.time,
+            'track': self.track,
+        }
 
 
 class MusicNote(models.Model):

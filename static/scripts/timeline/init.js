@@ -190,3 +190,29 @@ window.addEventListener('stop', ({ detail: { reason } }) => {
 });
 
 //#endregion
+
+//#region load instances
+
+window.addEventListener('tileEditorInit', () => {
+    const instancesData = JSON.parse(document.getElementById('instances').innerText);
+    const groupedByPattern = groupBy(instancesData, 'pattern_id');
+
+    const tileHint = window.getTileHint();
+
+    try {
+        for (const pattern_id in groupedByPattern) {
+            patterns.selectPattern(patterns.getById(pattern_id).name);
+            for (const instanceData of groupedByPattern[pattern_id]) {
+                tileHint.position.set(
+                    instanceData.time * cellSize.width, instanceData.track * cellSize.height,
+                );
+                tileHint.placeTile();
+            }
+        }
+    }
+    catch {
+        alert('Произошла ошибка при загрузке таймлайна. Повторите попытку позже');
+    }
+});
+
+//#endregion

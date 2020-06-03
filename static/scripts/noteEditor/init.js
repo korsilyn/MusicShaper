@@ -111,12 +111,6 @@ window.addEventListener('tileRemoved', () => {
     if (player.isPlaying) stop();
 });
 
-window.addEventListener('tileEditorMouseUp', ({ detail: { cellPoint, button } }) => {
-    if (button == 1) {
-        player.play(cellPoint.x);
-    }
-});
-
 //#endregion
 
 //#region load instruments

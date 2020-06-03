@@ -11,7 +11,7 @@ from django.http import Http404
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.db import transaction
-from ..models import MusicTrackPattern, MusicNote, MusicInstrument
+from ..models import MusicTrackPattern, MusicNote
 from ..forms import TrackPatternForm
 from .project import get_project_or_404
 from .util import get_base_context, ajax_view

@@ -168,10 +168,17 @@ def project_timeline(request, proj_id: int):
     if not project.patterns.exists():
         raise Http404
 
+    patterns = {}
+    instances = []
+    for pat in project.patterns.all():
+        patterns[pat.name] = pat.to_dict()
+        instances += [i.to_dict() for i in pat.instances.all()]
+
     return render(request, 'timeline/editor.html', {
         'project': project,
         'instruments': {i.name: i.to_dict() for i in project.get_used_instruments()},
-        'patterns': {p.name: p.to_dict() for p in project.patterns.all()}
+        'patterns': patterns,
+        'instances': instances,
     })
 
 

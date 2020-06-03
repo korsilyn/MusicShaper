@@ -36,8 +36,13 @@ class TimelinePlayer extends Player {
 
         const baseTime = this.baseTimeSeconds;
 
+        if (from > 0) {
+            const inheadParts = parts.filter(p => p.time < from && p.time + p.duration >= from);;
+            inheadParts.forEach(part => part.start(0, (from - part.time) * baseTime));
+        }
+
         for (let time = from; time < duration; time++) {
-            const toneTime = baseTime * time;
+            const toneTime = baseTime * (time - from);
             Tone.Transport.schedule(sTime => {
                 this.schedulePlayhead(time, sTime);
             }, toneTime);

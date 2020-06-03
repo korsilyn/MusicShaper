@@ -47,6 +47,16 @@ class PatternStorage {
     }
 
     /**
+     * @param {number} id
+     * @returns {Pattern}
+     */
+    getById(id) {
+        for (const p of this.patterns.values()) {
+            if (p.id == id) return p;
+        }
+    }
+
+    /**
      * @param {Pattern} patternData
      * @param {InstrumentStorage} instruments
      * @returns {Pattern & Tone.Part}

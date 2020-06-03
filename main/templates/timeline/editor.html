@@ -25,6 +25,8 @@
             <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
             <div class="seperator"></div>
             <a href="{% url 'new_pattern' proj_id=project.id %}">Новый паттерн</a>
+            <div class="seperator"></div>
+            <a href="{% url 'project_home' proj_id=project.id %}">Главная страница проекта</a>
         </h5>
         <div class="settings inputs">
             <button class="img playBtn">
@@ -105,6 +107,7 @@
 
     {{ instruments|json_script:"instruments" }}
     {{ patterns|json_script:"patternsData" }}
+    {{ instances|json_script:"instances" }}
 
     <script>
         var csrf_token = '{{ csrf_token }}';
