@@ -21,7 +21,6 @@ from main import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('asds1231okasd2i9dsja', views.superuser, name='adminnnnn'),
 
     path('admin/', include([
         path('', views.admin_home, name='admin_home'),
