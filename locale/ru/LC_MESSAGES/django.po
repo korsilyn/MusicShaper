@@ -10,6 +10,16 @@ msgstr "Английский"
 msgid "Russian"
 msgstr "Русский"
 
+# Уровень доступа
+msgid "private"
+msgstr "приватный"
+
+msgid "link"
+msgstr "по ссылке"
+
+msgid "public"
+msgstr "публичный"
+
 # Настройки инструментов
 msgid "main"
 msgstr "главное"

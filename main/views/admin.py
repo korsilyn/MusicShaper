@@ -79,7 +79,7 @@ def claimed_track(request):
     '''
     context = get_base_context(request)
 
-    all_tracks = MusicTrack.objects.all()
+    all_tracks = MusicTrack.objects.filter(settings__access__gt=0).all()
     context["tracks"] = [{"name": t.name, "id": t.id, "count": t.claims.count()}
                          for t in all_tracks]
     context["tracks"].sort(key=lambda i: i["count"], reverse=True)

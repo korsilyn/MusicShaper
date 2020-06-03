@@ -8,7 +8,7 @@ from django.http import JsonResponse, Http404
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.contrib.auth.decorators import login_required
 from .util import get_base_context, ajax_view
-from ..models import MusicTrack, TrackComment, TrackProjectSettings
+from ..models import MusicTrack, TrackComment, TrackSettings
 from ..forms import MusicTrackForm
 from .project import get_project_or_404
 
@@ -21,7 +21,7 @@ def popular_tracks(request):
     :rtype: HttpResponse
     '''
 
-    all_tracks = MusicTrack.objects.all()
+    all_tracks = MusicTrack.objects.filter(settings__access=2).all()
     context = get_base_context(request, {
         'tracks': sorted([{
             'name': tr.name, 'desc': tr.desc, 'id': tr.id,
@@ -41,6 +41,9 @@ def track_view(request, track_id: int):
     '''
 
     track = get_object_or_404(MusicTrack, pk=track_id)
+
+    if request.user != track.author and track.settings.access == 0:
+        raise Http404
 
     if request.is_ajax():
         response = {'success': False}
@@ -95,7 +98,7 @@ def track_view(request, track_id: int):
     return render(request, 'track/view.html', context)
 
 
-@ajax_view
+@ajax_view()
 def upload_track(request, proj_id: int):
     '''
     Ajax-функция для загрузки аудио файла проекта.
@@ -114,7 +117,7 @@ def upload_track(request, proj_id: int):
         creation_date=datetime.now(),
         audio_file=request.FILES['audio'],
     )
-    TrackProjectSettings.objects.create(
+    TrackSettings.objects.create(
         track=track,
         access=0,
         allow_comments=True,
@@ -122,7 +125,7 @@ def upload_track(request, proj_id: int):
         allow_reusing=True,
     )
 
-    return {'success': True}
+    return {'success': True, 'redirectUrl': reverse('manage_track', kwargs={'track_id': track.id})}
 
 
 def manage_track(request, track_id: int):
@@ -134,18 +137,18 @@ def manage_track(request, track_id: int):
     '''
 
     track = get_object_or_404(MusicTrack, id=track_id)
-    if track.author != request.author:
+    if track.author != request.user:
         raise Http404
 
     if request.method == 'POST':
-        form = MusicTrackForm(instance=track)
+        form = MusicTrackForm(instance=track, data=request.POST)
         if form.is_valid():
             form.save()
             add_message(request, SUCCESS, 'Изменения успешно сохранены')
         else:
             add_message(request, ERROR, 'Некорректные данные формы')
     else:
-        form = MusicTrackForm()
+        form = MusicTrackForm(instance=track)
 
     context = get_base_context(request, {
         'form': form,
@@ -167,6 +170,9 @@ def delete_track(request, track_id: int):
 
     track = get_object_or_404(MusicTrack, pk=track_id)
 
+    if not (request.user == track.author or request.user.is_superuser):
+        raise Http404
+
     if request.method == 'POST':
         track.delete()
         add_message(request, SUCCESS, 'Трек успешно удалён')
@@ -183,3 +189,19 @@ def delete_track(request, track_id: int):
     })
 
     return render(request, 'delete.html', context)
+
+
+@ajax_view()
+def listen_track(request, track_id: int):
+    '''
+    Ajax-функция, обновляющая список слушателей трека
+    '''
+
+    response = {'success': True}
+    track = get_object_or_404(MusicTrack, id=track_id)
+
+    if request.user != track.author:
+        track.listeners.add(request.user)
+        response['listenersCount'] = track.listeners.count()
+
+    return response

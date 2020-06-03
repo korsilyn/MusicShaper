@@ -15,17 +15,24 @@
     <form method="POST" style="max-width: 45%;" class="mx-auto margin-top-2">
         {% csrf_token %}
         {% for field in form.visible_fields %}
+            {% if field.field.widget.input_type != 'checkbox' %}
             <div class="form-group">
                 <label>{{ field.label }}: </label>
                 {{ field }}
-            </div>
+                </div>
+            {% else %}
+                <div class="form-check">
+                    {{ field }}
+                    <label>{{ field.label }}</label>
+                </div>
+            {% endif %}
         {% endfor %}
         <div class="text-center">
             <input type="submit" value="Сохранить изменения" class="btn btn-outline-success margin-top-10">
             <div class="margin-top-10"></div>
-            <a href="{% url 'delete_project' proj_id=project.id %}"
+            <a href="{% url 'delete_track' track_id=track.id %}"
                 class="btn btn-outline-danger">
-                Удалить проект
+                Удалить трек
             </a>
         </div>
     </form>
