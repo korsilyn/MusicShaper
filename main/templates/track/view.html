@@ -56,36 +56,34 @@
 
     <br>
     <div class="text-center">
-        <a class="btn btn-danger" href="{% url 'claim_track' track_id=track.id %}">
-            Пожаловаться
-        </a>
-
-    {% if user.is_superuser and track.claims.count >= 3 %}
+        {% if user != track.author and not user.is_superuser %}
+            <a class="btn btn-danger" href="{% url 'claim_track' track_id=track.id %}">
+                Пожаловаться
+            </a>
+        {% endif %}
+        {% if track.author == user or user.is_superuser and track.claims.count >= 3 %}
             <a href="{% url 'delete_track' track_id=track.id %}"
                 class="btn btn-outline-danger">
-                Удалить проект
+                Удалить трек
             </a>
-    {% endif %}
-
-    {% if track.author == user %}
-            <a href="{% url 'delete_track' track_id=track.id %}"
-                class="btn btn-outline-danger">
-                Удалить проект
-            </a>
-    {% endif %}
+        {% endif %}
    </div>
 
     {% if track.claims.exists %}
         {% if user.is_superuser or track.author == user %}
-            <br>
+            <div class="margin-top-5"></div>
             <h3 class="text-center">Жалобы:</h3>
-            <div class="list-group">
+            <div>
                 {% for t in track.claims.all %}
-                    <div class="list-group-item">
-                        <h5>Автор: {{ t.author }}</h5>
-                        <b1 class="list-group-item-danger">{{ t.topic }}</b1> <br>
-                        <i class="list-group-item-info">{{ t.content }}</i> <br>
-                        <small>Дата создания / последнего изменения: {{ t.creation_date|date:"d.m.Y G:i" }}</small>
+                    <div class="card" style="margin-bottom: 10px;">
+                        <div class="card-body">
+                            <h5 class="card-title">Автор: {{ t.author }}</h5>
+                            <p><b>{{ t.topic }}</b></p>
+                            <p><i>{{ t.content }}</i></p>
+                            <small>
+                                Дата создания / последнего изменения: {{ t.creation_date|date:"d.m.Y G:i" }}
+                            </small>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -94,7 +92,7 @@
     {% endif %}
 
     {% if track.settings.allow_comments %}
-        <h3 class="margin-top-10" id="comment_counter">
+        <h3 class="margin-top-5" id="comment_counter">
             Комментарии ({{ track.comments.count }})
             {% if track.comments.count == 0 %}
                 <i class="text-secondary"

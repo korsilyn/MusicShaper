@@ -3,7 +3,7 @@
 '''
 
 from datetime import datetime
-from django.shortcuts import render, redirect, HttpResponse, get_object_or_404, reverse
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.messages import add_message, SUCCESS
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
