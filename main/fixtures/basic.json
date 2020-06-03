@@ -183,8 +183,9 @@
         "json_settings": {
             "volume": -9.0
         },
+        "project": 2,
         "name": "Instrument",
-        "project": 2
+        "notesColor": "#ff0000"
     }
 },
 {
@@ -967,7 +968,8 @@
     "fields": {
         "user": 1,
         "image": "",
-        "status": ""
+        "status": "",
+        "subscribers": []
     }
 },
 {
@@ -976,7 +978,8 @@
     "fields": {
         "user": 2,
         "image": "",
-        "status": ""
+        "status": "",
+        "subscribers": []
     }
 },
 {
@@ -1037,7 +1040,7 @@
         "comments": [
             3
         ],
-        "reports": [],
+        "claims": [],
         "listeners": []
     }
 },
@@ -1054,7 +1057,7 @@
             1
         ],
         "comments": [],
-        "reports": [],
+        "claims": [],
         "listeners": []
     }
 }
