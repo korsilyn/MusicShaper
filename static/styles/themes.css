@@ -37,7 +37,7 @@ body, .theme-transition {
 }
 
 h1, h2, h3, h4, h5, h6, label, small, p, .text-center,
-table, table.table tbody tr:hover, li {
+table, table.table tbody tr:hover, li, span {
     color: var(--text) !important;
 }
 
@@ -45,6 +45,24 @@ table, .card, .list-group-item {
     background-color: var(--bg-secondary);
 }
 
+.dark a:not(.btn) {
+    color: lightskyblue;
+}
+
 .card {
     border-width: 0;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+    background: var(--bg-secondary);
+}
+
+.light ::-webkit-scrollbar-thumb {
+    background:gray;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background-color: #2a2a3b;
 }

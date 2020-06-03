@@ -2,21 +2,23 @@
 Модуль формы создания / редактирования паттерна
 '''
 
-from django.forms import ModelForm, TextInput, NumberInput
-from ..models import MusicTrackPattern
+from django.forms import ModelForm, TextInput, NumberInput, Select
+from django.db.models import F
+from ..models import MusicTrackPattern, MusicNote
 
 
-class MusicPatternForm(ModelForm):
+class TrackPatternForm(ModelForm):
     '''
     Форма создания / редактирования паттерна
     '''
 
     class Meta:
         model = MusicTrackPattern
-        fields = ('name', 'duration')
+        fields = ('name', 'duration', 'color')
         labels = {
             'name': 'Имя',
-            'duration': 'Продолжительность (количество строк)'
+            'duration': 'Продолжительность (количество строк)',
+            'color': 'Цвет в редакторе',
         }
         widgets = {
             'name': TextInput(attrs={
@@ -27,7 +29,11 @@ class MusicPatternForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Продолжительность паттерна',
                 'max': 256
-            })
+            }),
+            'color': Select(attrs={
+                'class': 'form-control',
+                'onchange': 'this.style.borderColor = this.value',
+            }),
         }
 
     def __init__(self, project, *args, **kwargs):
@@ -38,6 +44,9 @@ class MusicPatternForm(ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.project = self.project
-        if commit:
-            instance.save()
+        instance.save()
+        MusicNote.objects\
+            .annotate(end_time=F('time') + F('length'))\
+            .filter(end_time__gt=instance.duration)\
+            .delete()
         return instance

@@ -24,27 +24,47 @@
             Управление проектом
         </a>
     </div>
-    <div class="text-center margin-top-10">
-        {% if not project.instruments %}
+    <div class="text-center margin-top-5">
+        {% if not project.instruments.exists %}
             <p>
-                В проекте ещё нет музыкальных инструментов, <br>
-                а без них сложно будет трек сделать
+                В проекте нет музыкальных инструментов. <br>
+                Без инструментов сложно сделать трек, так что...
             </p>
             <a class="btn btn-outline-primary" href="{% url 'new_instrument' proj_id=project.id %}">
                 Создать первый инструмент
             </a>
+        {% elif not project.patterns.exists %}
+            <div class="card-link-list card-link-list-center">
+                <a href="{% url 'instruments' proj_id=project.id %}">
+                    <div class="card-title">Музыкальные инструменты</div>
+                </a>
+            </div>
+            <p class="margin-top-5">
+                Теперь вы можете приступить к написанию мелодии в паттерне. <br>
+                В свою очередь из паттернов вы сможете составить полноценный трек.
+            </p>
+            <a class="btn btn-outline-primary" href="{% url 'new_pattern' proj_id=project.id %}">
+                Создать первый паттерн
+            </a>
+        {% else %}
+            <div class="card-link-list card-link-list-center">
+                <a href="{% url 'instruments' proj_id=project.id %}">
+                    <div class="card-title">Музыкальные инструменты</div>
+                </a>
+                <a href="{% url 'patterns' proj_id=project.id %}">
+                    <div class="card-title">Паттерны</div>
+                </a>
+            </div>
+            {% if not timeline_edited %}
+                <p class="margin-top-2">
+                    Пришло время расставить паттерны на таймлинии!
+                </p>
+            {% endif %}
+            <div class="card-link-list card-link-list-center">
+                <a href="{% url 'timeline' proj_id=project.id %}">
+                    <div class="card-title">Таймлайн</div>
+                </a>
+            </div>
         {% endif %}
-        <div class="card-link-list card-link-list-center">
-            <a href="{% url 'instruments' proj_id=project.id %}">
-                <div class="card-title">
-                    Музыкальные инструменты
-                </div>
-            </a>
-            <a href="{% url 'patterns' proj_id=project.id %}">
-                <div class="card-title">
-                    Паттерны
-                </div>
-            </a>
-        </div>
     </div>
 {% endblock %}

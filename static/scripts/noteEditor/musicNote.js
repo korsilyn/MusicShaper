@@ -1,35 +1,40 @@
-/** @type {MusicNote[]} */
-var musicNotes = [];
+/// <reference path="../tileEditor/tile.js" />
+/// <reference path="../instruments.js" />
+
+var octaves = 6;
+var octavesFrom = 2;
+
+var noteNotations = [
+    'C', 'C#',
+    'D', 'D#',
+    'E',
+    'F', 'F#',
+    'G', 'G#',
+    'A', 'A#',
+    'B',
+];
+
+var noteNotationsTotalLenght = noteNotations.length * octaves;
 
 class MusicNote {
     /**
-     * @param {Tone.Monophonic & { notesColor: string; name: string; }} instrument
-     * @param {number} pos
-     * @param {number} duration
-     * @param {number} noteId
-     * @param {number} octave
+     * @param {Instrument} instrument
+     * @param {number} time
+     * @param {number | { notation: number; octave: number; }} y
+     * @param {number} length
      */
-    constructor(instrument, pos, duration, noteId, octave) {
+    constructor(instrument, time, y, length) {
+        this.time = time;
+        this.length = length;
         this.instrument = instrument;
-        this.time = pos;
-        this.length = duration;
-        this.note = noteId;
-        this.octave = octave;
-    }
-
-    remove() {
-        const index = musicNotes.findIndex(n => n == this);
-        musicNotes.splice(index, 1);
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    checkIntersections() {
-        const related_notes = musicNotes.filter(
-            n => this.octave == n.octave && this.note == n.note && this.time < n.time
-        );
-        return related_notes.some(n => this.time + this.length > n.time);
+        if (typeof y == 'number') {
+            this.notation = noteNotations.length - y % noteNotations.length;
+            this.octave = octavesFrom + octaves - Math.floor(y / noteNotations.length) - 1;
+        }
+        else {
+            this.notation = y.notation;
+            this.octave = y.octave;
+        }
     }
 
     get instrumentName() {
@@ -40,45 +45,40 @@ class MusicNote {
         return new Tone.Time('16n').toSeconds() * this.length;
     }
 
-    get noteNotation() {
-        return noteNotations[this.note - 1] + this.octave;
+    get letterNotation() {
+        return noteNotations[this.notation - 1] + this.octave;
     }
 
     playPreview(time = undefined) {
         let args;
         if (this.instrument instanceof Tone.PolySynth) {
-            args = [[this.noteNotation], this.duration, time];
+            args = [[this.letterNotation], this.duration, time];
         }
         if (this.instrument instanceof Tone.NoiseSynth) {
             args = [this.duration, time];
         }
         else {
-            args = [this.noteNotation, this.duration, time];
+            args = [this.letterNotation, this.duration, time];
         }
         this.instrument.triggerAttackRelease.apply(this.instrument, args);
     }
 
-    /**
-     * @param {MusicNote} note
-     */
-    static register(note) {
-        musicNotes.push(note);
-        note.playPreview();
-        return note;
+    get json() {
+        return JSON.stringify({
+            time: this.time,
+            length: this.length,
+            octave: this.octave,
+            notation: this.notation,
+            instrument: this.instrument.id,
+        });
     }
 
     /**
-     * @param {paper.Path.Rectangle} path
-     * @param {paper.Size} cellSize
+     * @param {Tile} tile
+     * @param {Instrument} instrument
+     * @returns {MusicNote}
      */
-    static makeNoteFromPath(path, cellSize) {
-        const coordY = Math.floor(path.bounds.top / cellSize.height);
-        return new MusicNote(
-            currentInstrument,
-            Math.floor(path.bounds.left / cellSize.width),
-            Math.floor(path.bounds.width / cellSize.width),
-            noteNotations.length - coordY % noteNotations.length,
-            octavesFrom + octaves - Math.floor(coordY / noteNotations.length) - 1
-        );
+    static fromTile(tile, instrument) {
+        return new MusicNote(instrument, tile.x, tile.y, tile.length);
     }
 }
