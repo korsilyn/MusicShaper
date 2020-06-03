@@ -11,11 +11,10 @@ class Profile(models.Model):
     '''
     Модель профиля
 
-    :param user: имя проекта
-    :param desc: описание
-    :param author: автор
-    :param patterns: список паттернов
-    :param data: файл с данными проекта (настройки, инструменты и т.д.)
+    :param user: имя пользователя
+    :param image: аватар / изображение пользователя
+    :param status: статус пользователя
+    :param subscribers: подписчики пользователя
     '''
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
