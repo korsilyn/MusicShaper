@@ -2,3 +2,4 @@ Django==3.0
 django-debug-toolbar
 sphinx
 sphinx-rtd-theme
+django-jsonfield==1.4.0
