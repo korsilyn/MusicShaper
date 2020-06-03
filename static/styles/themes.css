@@ -41,6 +41,10 @@ table, table.table tbody tr:hover, li, span {
     color: var(--text) !important;
 }
 
+.modal-title {
+    color: black !important;
+}
+
 table, .card, .list-group-item {
     background-color: var(--bg-secondary);
 }

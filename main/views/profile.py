@@ -13,6 +13,7 @@ from PIL import Image
 from .util import get_base_context
 from ..models import Profile, MusicTrack
 
+
 def profile_page(request, username):
     '''
     Страница профиля
@@ -30,7 +31,8 @@ def profile_page(request, username):
 
     context = get_base_context(request, {
         "profile": user.profile,
-        "tracks": MusicTrack.objects.filter(author=user),
+        "tracks": MusicTrack.objects.filter(author=user,\
+            settings__access__gt=-1 if view_my_profile else 1),
         "likes": MusicTrack.objects.filter(likes=user),
     })
 
