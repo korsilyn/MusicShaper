@@ -1,4 +1,5 @@
 /// <reference path="../../libs/@types/Tone.d.ts" />
+/// <reference path="../utils.js" />
 
 document.getElementById('_mainContainer').classList.remove('container');
 
@@ -213,6 +214,47 @@ window.addEventListener('tileEditorInit', () => {
     catch {
         alert('Произошла ошибка при загрузке таймлайна. Повторите попытку позже');
     }
+});
+
+//#endregion
+
+//#region recorder
+
+var recorder = new Recorder('button#recordBtn');
+
+const exportModal = document.querySelector('#audioExportModal');
+
+window.addEventListener('recorded', ({ detail: { blob } }) => {
+    document.querySelector('audio').src = URL.createObjectURL(blob);
+    $(exportModal).modal();
+});
+
+document.querySelector('#publishBtn').addEventListener('click', () => {
+    if (!(recorder.recordingBlob instanceof Blob)) return;
+
+    const formData = new FormData();
+    formData.append('audio', recorder.recordingBlob);
+    formData.append('csrfmiddlewaretoken', window.csrf_token);
+
+    $.ajax({
+        method: 'POST',
+        url: Urls.reverseUrl('upload_track'),
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: data => {
+            if (data.success && typeof data.redirectUrl == 'string') {
+                window.location.href = data.redirectUrl;
+            }
+            else {
+                alert('Произошла ошибка. Повторите попытку позже');
+            }
+        },
+        error: () => {
+            alert('Произошла ошибка. Повторите попытку позже');
+        },
+    });
 });
 
 //#endregion

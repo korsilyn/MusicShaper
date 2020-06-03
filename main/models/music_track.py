@@ -19,7 +19,7 @@ class TrackComment(models.Model):
     :param checked_by_author: просмотрен ли автором трека
     '''
 
-    author = models.ForeignKey(User, models.CASCADE, "comments")
+    author = models.ForeignKey(User, models.CASCADE, 'comments')
     topic = models.CharField(max_length=50)
     content = models.CharField(max_length=400)
     creation_date = models.DateTimeField()
@@ -44,13 +44,15 @@ class MusicTrack(models.Model):
 
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=250)
-    author = models.ForeignKey(User, models.CASCADE, "tracks")
+    author = models.ForeignKey(User, models.CASCADE, 'tracks')
     creation_date = models.DateTimeField()
-    likes = models.ManyToManyField(User, "likes")
-    dislikes = models.ManyToManyField(User, "dislikes")
-    comments = models.ManyToManyField(TrackComment, "comments")
-    claims = models.ManyToManyField(TrackComment, "claims")
-    listeners = models.ManyToManyField(User, "listened_tracks")
+    audio_file = models.FileField(upload_to='music_tracks/', blank=True)
+
+    likes = models.ManyToManyField(User, 'likes')
+    dislikes = models.ManyToManyField(User, 'dislikes')
+    comments = models.ManyToManyField(TrackComment, 'comments')
+    reports = models.ManyToManyField(TrackComment, 'reports')
+    listeners = models.ManyToManyField(User, 'listened_tracks')
 
     def to_dict(self):
         '''
@@ -63,9 +65,6 @@ class MusicTrack(models.Model):
         return model_to_dict(self, fields=(
             'id', 'name', 'desc', 'author', 'creation_date', 'settings'
         ))
-
-    def get_claims_count(self):
-        return self.claims.count()
 
 
 class TrackSettings(models.Model):
@@ -82,6 +81,14 @@ class TrackSettings(models.Model):
         MusicTrack, models.CASCADE,
         primary_key=True, related_name='settings'
     )
+
+    ACCESS_CHOICES = [
+        (0, 'private'),
+        (1, 'link'),
+        (2, 'public'),
+    ]
+
+    access = models.PositiveIntegerField(choices=ACCESS_CHOICES)
 
     allow_comments = models.BooleanField()
     allow_rating = models.BooleanField()

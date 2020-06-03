@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block 'title' %}
-    {{ track.name }} - {{ track.author.username }} &bullet; MusicShaper
+    {{ track.name }} - {{ track.author.username }}
 {% endblock %}
 
 {% block 'head' %}
     <style>
         button {
             margin-top: 15px;
+        }
+
+        #comments {
+            width: 80%;
         }
 
         #sendbtn {
@@ -33,17 +38,18 @@
     <h1 class="margin-top-10 text-center">
         {{ track.name }}
     </h1>
-    <h5 class="text-secondary text-center margin-top-2 quotes">{{ track.desc }}</h5>
+    {% if track.desc %}
+        <h5 class="text-secondary text-center margin-top-2 quotes">{{ track.desc }}</h5>
+    {% endif %}
     <p class="text-center margin-top-2">
         <b>
             Автор:
             <a href="{% url 'profile' username=track.author.username %}">
                 {{ track.author }}
             </a>
-        </b>
-        <br>
-        <b> Дата Создания: </b>
-        {{ track.creation_date|date:"d.m.Y G:i" }}
+        </b> <br>
+        <b> Дата Создания: </b> {{ track.creation_date|date:"d.m.Y G:i" }} <br>
+        Уровень доступа: {% trans track.settings.get_access_display %}
     </p>
     {% if track.settings.allow_rating %}
         <h1 class="text-center margin-top-5" id="rating">
@@ -56,18 +62,34 @@
 
     <br>
     <div class="text-center">
+        {% if user == track.author %}
+            <a class="btn btn-outline-primary" href="{% url 'manage_track' track_id=track.id %}">
+                Управление треком
+            </a>
+        {% endif %}
         {% if user != track.author and not user.is_superuser %}
             <a class="btn btn-danger" href="{% url 'claim_track' track_id=track.id %}">
                 Пожаловаться
             </a>
         {% endif %}
-        {% if track.author == user or user.is_superuser and track.claims.count >= 3 %}
+        {% if user.is_superuser and track.claims.count >= 3 %}
             <a href="{% url 'delete_track' track_id=track.id %}"
                 class="btn btn-outline-danger">
                 Удалить трек
             </a>
         {% endif %}
-   </div>
+    </div>
+
+    {% if track.audio_file %}
+        <div class="text-center margin-top-5">
+            Количество прослушиваний: <span id="listenersCount">{{ track.listeners.count }}</span>
+        </div>
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 10px;">
+            <audio src="{{ track.audio_file.url }}" id="trackAudio" controls
+            {% if not track.settings.allow_reusing %}controlsList="nodownload"{% endif %}>
+            </audio>
+        </div>
+    {% endif %}
 
     {% if track.claims.exists %}
         {% if user.is_superuser or track.author == user %}
@@ -92,25 +114,26 @@
     {% endif %}
 
     {% if track.settings.allow_comments %}
-        <h3 class="margin-top-5" id="comment_counter">
-            Комментарии ({{ track.comments.count }})
-            {% if track.comments.count == 0 %}
-                <i class="text-secondary"
-                   style="font-size: 0.6em; position: relative; bottom: 0.3em;">
-                    &lt;&ndash; Будьте первым!
-                </i>
-            {% endif %}
-        </h3>
-
-        <label>Напишите ваш комментарий</label>
-        <input type="text" id="topic" class="form-control" placeholder="Тема" required>
-        <br>
-        <textarea id="comm" placeholder="Содержание" required
-                  class="form-control" style="min-height: 40px; max-height: 180px;"></textarea>
-        <button onclick="send_comment()" class="btn btn-success" id="sendbtn">
-            Отправить
-        </button>
-        <div class="list-group" id="comments">
+        <div style="width: 80%;" class="mx-auto">
+            <h3 class="margin-top-5" id="comment_counter">
+                Комментарии ({{ track.comments.count }})
+                {% if track.comments.count == 0 %}
+                    <i class="text-secondary"
+                    style="font-size: 0.6em; position: relative; bottom: 0.3em;">
+                        &lt;&ndash; Будьте первым!
+                    </i>
+                {% endif %}
+            </h3>
+            <label>Напишите ваш комментарий</label>
+            <input type="text" id="topic" class="form-control" placeholder="Тема" required>
+            <br>
+            <textarea id="comm" placeholder="Содержание" required
+                      class="form-control" style="min-height: 40px; max-height: 180px;"></textarea>
+            <button onclick="send_comment()" class="btn btn-success" id="sendbtn">
+                Отправить
+            </button>
+        </div>
+        <div class="list-group mx-auto" id="comments">
             {% for comment in track.comments.all %}
                 <div id="comment_{{ comment.id }}"
                      class="list-group-item {% if comment.author == user %}my_comment{% endif %}">
@@ -128,6 +151,23 @@
 
 {% block 'scripts' %}
     <script>
+        let already_listened = false;
+        document.querySelector('#trackAudio').addEventListener('ended', () => {
+            if (already_listened) return;
+            $.ajax({
+                method: 'POST',
+                url: "{% url 'listen_track' track_id=track.id %}",
+                dataType: 'json',
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: (data) => {
+                    if (data.success && data.listenersCount) {
+                        document.querySelector('#listenersCount').innerText = data.listenersCount;
+                        already_listened = true;
+                    }
+                }
+            });
+        });
+
         const comm = document.getElementById('comm');
         const topic = document.getElementById('topic');
         const my_comments = document.querySelectorAll(".my_comment");

@@ -80,6 +80,8 @@ urlpatterns = [
                 path('', views.project_timeline, name='timeline'),
                 path('save/', views.save_timeline, name='save_timeline'),
             ])),
+
+            path('upload', views.upload_track, name='upload_track'),
         ])),
     ])),
 
@@ -87,8 +89,10 @@ urlpatterns = [
         path('', views.popular_tracks, name='popular_tracks'),
         path('<int:track_id>/', include([
             path('', views.track_view, name='track'),
-            path('claim_track/', views.claim_track, name='claim_track'),
-            path('delete_track/', views.delete_track, name='delete_track'),
+            path('listen/', views.listen_track, name='listen_track'),
+            path('manage/', views.manage_track, name='manage_track'),
+            path('claim/', views.claim_track, name='claim_track'),
+            path('delete/', views.delete_track, name='delete_track'),
         ])),
     ])),
 
