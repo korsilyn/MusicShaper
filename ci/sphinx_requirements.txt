@@ -3,3 +3,4 @@ django-debug-toolbar
 sphinx
 sphinx-rtd-theme
 django-jsonfield==1.4.0
+Pillow==7.0.0
