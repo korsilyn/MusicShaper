@@ -1,6 +1,10 @@
-#####
+#######
+DevDocs
+#######
+
+*****
 Views
-#####
+*****
 
    .. automodule:: main.views.admin
       :members:
@@ -21,9 +25,9 @@ Views
    .. automodule:: main.views.util
       :members:
 
-######
+******
 Models
-######
+******
 
    .. automodule:: main.models.music_track
       :members:
@@ -34,9 +38,9 @@ Models
    .. automodule:: main.models.settings
       :members:
 
-#####
+*****
 Forms
-#####
+*****
 
    .. automodule:: main.forms.create_test_track
       :members:
@@ -51,9 +55,9 @@ Forms
    .. automodule:: main.forms.settings
       :members:
       
-#####
+*****
 Tests
-#####
+*****
 
    .. automodule:: main.tests.test_admin
       :members:
