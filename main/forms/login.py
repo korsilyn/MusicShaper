@@ -1,5 +1,7 @@
 '''
+========================
 Модуль формы авторизации
+========================
 '''
 
 from django import forms
@@ -7,7 +9,7 @@ from django import forms
 
 class LoginForm(forms.Form):
     '''
-    Форма авторизации пользователя
+    **Форма авторизации пользователя**
 
     :param username: поле имя пользователя
     :param password: поле пароля

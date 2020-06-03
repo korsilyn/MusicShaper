@@ -1,5 +1,7 @@
 '''
+===============================================
 Модуль view-функций для вкладки `Администрация`
+===============================================
 '''
 
 from datetime import datetime
@@ -18,7 +20,7 @@ superuser_check = lambda u: u.is_superuser
 @user_passes_test(superuser_check)
 def admin_home(request):
     '''
-    Панель администрации
+    **Панель администрации**
 
     :param request: запрос клиента
     :rtype: HttpResponse
@@ -31,7 +33,7 @@ def admin_home(request):
 @user_passes_test(superuser_check)
 def create_test_track(request):
     '''
-    Страница создания пробного трека
+    **Страница создания пробного трека**
 
     :param request: запрос клиента
     :return: страница создания пробного трека

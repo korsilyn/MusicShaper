@@ -1,5 +1,7 @@
 '''
+==========================================
 Модуль view-функций для музыкальных треков
+==========================================
 '''
 
 from datetime import datetime
@@ -11,7 +13,7 @@ from ..models import MusicTrack, TrackComment
 
 def popular_tracks(request):
     '''
-    Страница с популярными треками
+    **Страница с популярными треками**
 
     :param request: запрос клиента
     :return: Популярные треки
@@ -31,7 +33,7 @@ def popular_tracks(request):
 
 def track_view(request, track_id: int):
     '''
-    Страница прослушивания музыкального трека
+    **Страница прослушивания музыкального трека**
 
     :param request: запрос клиента
     :returns: страница трека

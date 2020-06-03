@@ -1,5 +1,7 @@
 '''
+===============================================
 Модуль формы создания / редактирования паттерна
+===============================================
 '''
 
 from django.forms import ModelForm, TextInput, NumberInput
@@ -9,7 +11,7 @@ from ..models import MusicTrackPattern, MusicNote
 
 class TrackPatternForm(ModelForm):
     '''
-    Форма создания / редактирования паттерна
+    **Форма создания / редактирования паттерна**
     '''
 
     class Meta:

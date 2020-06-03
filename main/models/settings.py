@@ -1,5 +1,7 @@
 '''
+===========================================
 Модуль абстрактной модели ModelWithSettings
+===========================================
 
 Модель нужна для эффективного хранения различных настроект
 моделей в базе данных
@@ -15,7 +17,7 @@ from jsonfield import JSONField
 
 class SettingValue(ABC):
     '''
-    Абстрактный класс поля настройки объекта
+    **Абстрактный класс поля настройки объекта**
     '''
 
     def __init__(self, *, _type, initial, **values):
@@ -35,7 +37,7 @@ class SettingValue(ABC):
 
 class FloatSettingValue(SettingValue):
     '''
-    Числовое (float) поле настройки объекта
+    **Числовое (float) поле настройки объекта**
     '''
 
     def __init__(self, *, initial, min_v=-inf, max_v=inf, step=0.1):
@@ -53,7 +55,7 @@ class FloatSettingValue(SettingValue):
 
 class IntSettingValue(SettingValue):
     '''
-    Числовое (int) поле настройки объекта
+    **Числовое (int) поле настройки объекта**
     '''
 
     def __init__(self, *, initial, min_v=None, max_v=None):
@@ -72,7 +74,7 @@ class IntSettingValue(SettingValue):
 
 class ChoiceSettingValue(SettingValue):
     '''
-    Поле настройки объекта с выбором значения
+    **Поле настройки объекта с выбором значения**
     '''
 
     def __init__(self, *, initial, choices):
@@ -90,8 +92,8 @@ class ChoiceSettingValue(SettingValue):
 
 class ModelWithSettings(models.Model):
     '''
-    Абстрактная модель *кхм* модели, у которой
-    есть словарь настроек
+    **Абстрактная модель *кхм* модели, у которой
+    есть словарь настроек**
 
     У класса дочерней модели также появляется метод
     `define`, с помощью которого можно задать стандартные

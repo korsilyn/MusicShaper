@@ -1,5 +1,7 @@
 '''
+==============================
 Модуль view-функций для поиска
+==============================
 '''
 
 from difflib import SequenceMatcher
@@ -13,7 +15,7 @@ from ..models import MusicTrack, user_to_dict
 
 def similar(first, second):
     '''
-    Возвращает число, показывающее на сколько похожи последовательности first и second
+    **Возвращает число, показывающее на сколько похожи последовательности first и second**
 
     :param first: первая последовательность
     :param second: второе последовательность
@@ -25,14 +27,13 @@ def similar(first, second):
 
 def filter_similar(items, comp_value, threshold, key=None):
     '''
-    Фильтрует елементы списка последовательностей по схожести
-    с другой последовательностью
-    Возвращает фильтрующй генератор
+    **Фильтрует елементы списка последовательностей по схожести
+    с другой последовательностью**
     Значение генератора - кортеж (элемент, схожесть)
 
     :param items: список последовательностей
     :param comp_value: последовательность для сравнения
-    :param threashold: граница схожести от 0 до 1
+    :param threshold: граница схожести от 0 до 1
     :param key: функция, возвращающая ключ сортировки елемента в списке
     :return: фильтрующий генератор
     '''
@@ -49,8 +50,8 @@ def filter_similar(items, comp_value, threshold, key=None):
 
 def filter_similar_sorted(*fs_args, reverse=False, **fs_kwargs):
     '''
-    Фильтрует елементы списка функцией filter_similar + сортирует
-    результат по "схожестям"
+    **Фильтрует елементы списка функцией filter_similar + сортирует
+    результат по "схожестям"**
 
     :param fs_args: позиционные аргументы функции filter_similar
     :param fs_kwargs: проименованные аргументы функции filter_similar
@@ -64,7 +65,7 @@ def filter_similar_sorted(*fs_args, reverse=False, **fs_kwargs):
 
 def search_page(request):
     '''
-    Страница поиска пользователей / треков и т.п.
+    **Страница поиска пользователей / треков и т.п.**
 
     :param request: запрос клиента
     :return: страница поиска

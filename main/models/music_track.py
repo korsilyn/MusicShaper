@@ -1,5 +1,7 @@
 '''
+=====================================
 Модуль моделей для музыкальных треков
+=====================================
 '''
 
 from django.db import models
@@ -9,7 +11,7 @@ from django.contrib.auth.models import User
 
 class TrackComment(models.Model):
     '''
-    Модель Комментария / жалобы
+    **Модель Комментария / жалобы**
 
     :param author: автор
     :param topic: тема
@@ -28,7 +30,7 @@ class TrackComment(models.Model):
 
 class MusicTrack(models.Model):
     '''
-    Модель опубликованного проекта
+    **Модель опубликованного проекта**
 
     :param name: имя проекта
     :param desc: описание
@@ -67,7 +69,7 @@ class MusicTrack(models.Model):
 
 class TrackSettings(models.Model):
     '''
-    Настройки публикации проекта
+    **Настройки публикации проекта**
 
     :param track: музыкальный трек
     :param allow_comments: разрешены ли комментарии

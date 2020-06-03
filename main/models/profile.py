@@ -1,5 +1,7 @@
 '''
+==================================
 Модуль модели профиля пользователя
+==================================
 '''
 
 from django.db import models
@@ -9,7 +11,7 @@ from django.db.models.signals import post_save
 
 class Profile(models.Model):
     '''
-    Модель профиля
+    **Модель профиля**
 
     :param user: имя проекта
     :param desc: описание
