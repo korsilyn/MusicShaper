@@ -37,7 +37,7 @@ class MusicTrack(models.Model):
     :param likes: список юзеров, поставивших лайк
     :param dislikes: список юзеров, поставивших дизлайк
     :param comments: список комментариев
-    :param reports: список жалоб
+    :param claims: список жалоб
     :param settings: настройки
     :param listeners: список юзеров, послушавших трек
     '''

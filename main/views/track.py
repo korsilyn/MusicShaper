@@ -3,14 +3,14 @@
 '''
 
 from datetime import datetime
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import JsonResponse, Http404
 from django.contrib.messages import add_message, SUCCESS, ERROR
+from django.contrib.auth.decorators import login_required
 from .util import get_base_context, ajax_view
 from ..models import MusicTrack, TrackComment, TrackProjectSettings
 from ..forms import MusicTrackForm
 from .project import get_project_or_404
-
 
 def popular_tracks(request):
     '''
@@ -153,3 +153,33 @@ def manage_track(request, track_id: int):
     })
 
     return render(request, 'track/manage.html', context)
+
+
+@login_required
+def delete_track(request, track_id: int):
+    '''
+    Страница удаления трека админом
+
+    :param request: запрос клиента
+    :param track_id: id трека в БД
+    :rtype: HttpResponse
+    '''
+
+    track = get_object_or_404(MusicTrack, pk=track_id)
+
+    if request.method == 'POST':
+        track.delete()
+        add_message(request, SUCCESS, 'Трек успешно удалён')
+        return redirect('profile', username=track.author.username)
+
+    context = get_base_context(request, {
+        'title': 'Удаление трека',
+        'item_name': track.name,
+        'confirm_title': 'Удалить трек',
+        'cancel_title': 'Назад к странице трека',
+        'cancel_url': reverse('track', kwargs={
+            'track_id': track.pk
+        })
+    })
+
+    return render(request, 'delete.html', context)

@@ -26,6 +26,7 @@ urlpatterns = [
         path('', views.admin_home, name='admin_home'),
         path('django/', admin.site.urls),
         path('create_test_track', views.create_test_track, name='create_test_track'),
+        path('claimed_track', views.claimed_track, name='claimed_track'),
     ])),
 
     path('register/', views.register_page, name='register'),
@@ -88,7 +89,9 @@ urlpatterns = [
         path('', views.popular_tracks, name='popular_tracks'),
         path('<int:track_id>/', include([
             path('', views.track_view, name='track'),
-            path('', views.manage_track, name='manage_track'),
+            path('manage/', views.manage_track, name='manage_track'),
+            path('claim_track/', views.claim_track, name='claim_track'),
+            path('delete_track/', views.delete_track, name='delete_track'),
         ])),
     ])),
 

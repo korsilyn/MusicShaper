@@ -65,3 +65,24 @@ def create_test_track(request):
     })
 
     return render(request, 'admin/create_test_track.html', context)
+
+
+@login_required
+@user_passes_test(superuser_check)
+def claimed_track(request):
+    '''
+    Страница жалоб
+
+    :param request: запрос клиента
+    :return: страница трека с жалобой
+    :rtype: HttpResponse
+    '''
+    context = get_base_context(request)
+
+    all_tracks = MusicTrack.objects.all()
+    context["tracks"] = [{"name": t.name, "id": t.id, "count": t.claims.count()}
+                         for t in all_tracks]
+    context["tracks"].sort(key=lambda i: i["count"], reverse=True)
+    context["tracks"] = filter(lambda t: t["count"] > 0, context["tracks"])
+
+    return render(request, 'admin/claimed_track.html', context)
