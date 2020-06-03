@@ -6,16 +6,16 @@
 {% endblock %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'styles/noteEditor.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/editor.css' %}">
 {% endblock %}
 
 {% block 'body' %}
     <div class="settingsPanel theme-transition">
         <h5 class="inputs">
-            Редактор паттерна
-            <span style="margin-left: 5px;" class="quotes">{{ pattern.name }}</span>
-            <div class="seperator"></div>
-            <button id="saveBtn" class="btn btn-outline-success">Сохранить</button>
+            <span style="margin-bottom: 0.15em;">
+                Редактор паттерна
+                <span class="quotes">{{ pattern.name }}</span>
+            </span>
             <div class="seperator"></div>
             <a href="{% url 'manage_pattern' proj_id=project.id pat_id=pattern.id %}">
                 Управление паттерном
@@ -23,17 +23,23 @@
             <div class="seperator"></div>
             <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
             <div class="seperator"></div>
+            <a href="{% url 'timeline' proj_id=project.id %}">Таймлайн</a>
+            <div class="seperator"></div>
             <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
         </h5>
         <div class="settings inputs">
-            <button class="img" id="playBtn" onclick="play()">
+            <button class="img playBtn">
                 <img src="{% static 'svg/play.svg' %}">
             </button>
-            <button class="img" id="stopBtn" onclick="stop()">
+            <button class="img stopBtn">
                 <img src="{% static 'svg/stop.svg' %}">
             </button>
-            <button class="img" id="loopBtn">
+            <button class="img loopBtn">
                 <img src="{% static 'svg/loop.svg' %}">
+            </button>
+            <div class="seperator"></div>
+            <button class="img saveBtn">
+                <img src="{% static 'svg/save.svg' %}">
             </button>
             <div class="seperator"></div>
             <label>Инструмент:</label>
@@ -49,18 +55,21 @@
         </div>
     </div>
     <div style="width: inherit; height: calc(100vh - var(--panel-height)); overflow: scroll;">
-        <canvas id="mainCanvas" oncontextmenu="return false">
+        <canvas id="mainCanvas" class="grid-background" oncontextmenu="return false">
             Ваш браузер не поддерживает canvas :/
         </canvas>
     </div>
 {% endblock %}
 
 {% block 'scripts' %}
+    <script src="{% static 'scripts/utils.js' %}"></script>
     <script src="{% static 'libs/Tone.js' %}"></script>
     <script src="{% static 'libs/paper.js' %}"></script>
-    <script src="{% static 'scripts/urls.js' %}"></script>
     <script src="{% static 'scripts/instruments.js' %}"></script>
     <script src="{% static 'scripts/tileEditor/tile.js' %}"></script>
+    <script src="{% static 'scripts/player.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
+    <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
 
     <script>
         var csrf_token = '{{ csrf_token }}';
@@ -70,30 +79,13 @@
             get_instrument: "{% url 'get_instrument' proj_id=project.id %}",
             save_pattern: "{% url 'save_pattern' proj_id=project.id pat_id=pattern.id %}",
         });
-
-        var octaves = 6;
-        var octavesFrom = 2;
-
-        var noteNotations = [
-            'C', 'C#',
-            'D', 'D#',
-            'E',
-            'F', 'F#',
-            'G', 'G#',
-            'A', 'A#',
-            'B',
-        ];
-
-        var noteNotationsTotalLenght = noteNotations.length * octaves;
     </script>
 
     {{ musicNotes|json_script:"musicNotes" }}
     {{ allInstruments|json_script:"allInstrumentNames" }}
     {{ usedInstruments|json_script:"usedInstruments" }}
 
-    <script src="{% static 'scripts/noteEditor/musicNote.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/init.js' %}"></script>
-    <script src="{% static 'scripts/noteEditor/player.js' %}"></script>
     <script src="{% static 'scripts/noteEditor/save.js' %}"></script>
 
     <script src="{% static 'scripts/tileEditor/paper.js' %}"

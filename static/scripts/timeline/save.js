@@ -1,16 +1,21 @@
 function save() {
-    let notes = Tile.tiles.map(tile => tile.note.json);
-    if (notes.length == 0) {
-        notes = [''];
+    let instances = Tile.tiles.map(tile => JSON.stringify({
+        pattern_id: tile.pattern.id,
+        time: tile.x,
+        track: tile.y,
+    }));
+
+    if (instances.length == 0) {
+        instances = [''];
     }
 
     return new Promise((resolve, reject) => $.ajax({
         method: 'POST',
         dataType: 'json',
-        url: Urls.reverseUrl('save_pattern'),
+        url: Urls.reverseUrl('save_timeline'),
         data: {
             csrfmiddlewaretoken: csrf_token,
-            'notes[]': notes,
+            'instances[]': instances,
             'bpm': bpmInput.safeValue,
         },
 

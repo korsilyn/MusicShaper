@@ -2,27 +2,30 @@
     --panel-height: 80px;
     --cell-width: 40px;
     --cell-height: 25px;
-    --grid-color: rgba(0, 0, 0, 0.3);
+    --grid-hor-color: rgba(0, 0, 0, 0.3);
+    --grid-ver-color: rgba(0, 0, 0, 0.3);
+    --ruler-cells-count: 12;
 }
 
 body {
     overflow: hidden;
 }
 
-canvas#mainCanvas {
+.grid-background {
     background-size:
         var(--cell-width) var(--cell-height),
-        var(--cell-width) calc(var(--cell-height) * 12);
+        var(--cell-width) calc(var(--cell-height) * var(--ruler-cells-count));
     background-image:
-        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-ver-color) 1px, transparent 1px),
         linear-gradient(to bottom, grey 2px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+        linear-gradient(to bottom, var(--grid-hor-color) 1px, transparent 1px);
 }
 
 .settingsPanel {
     height: var(--panel-height);
     background-color: var(--bg-secondary);
-    padding: 8px;
+    padding-top: 6px;
+    padding-left: 8px;
     box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.3);
     z-index: 10;
     position: relative;
@@ -32,26 +35,27 @@ canvas#mainCanvas {
     margin-bottom: 4px;
 }
 
-select, input, button {
+.settingsPanel select, .settingsPanel input, .settingsPanel button {
     border-radius: 3px;
     height: 30px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     width: 100px;
 }
 
-button {
+.settingsPanel button {
     width: 80px;
     text-align: center;
 }
 
-button.img {
+.settingsPanel button.img {
     width: 30px;
     height: 30px;
-    --margin: 5px;
+    --img-margin: 5px;
 }
 
-button.img img {
-    margin: var(--margin);
+.settingsPanel button.img img {
+    margin: var(--img-margin);
+    pointer-events: none;
 }
 
 button:disabled {
@@ -59,24 +63,20 @@ button:disabled {
     filter: saturate(0.5);
 }
 
-.btn, button.img {
+.settingsPanel .btn, .settingsPanel button.img {
     padding: 0;
 }
 
-a {
+.settingsPanel a {
     font-size: 0.7em;
     margin-bottom: 0.3em;
 }
 
-button#saveBtn {
-    width: 100px;
-}
-
-button:active:hover:not(:disabled) {
+.settingsPanel button:active:hover:not(:disabled) {
     filter: brightness(90%);
 }
 
-button:focus {
+.settingsPanel button:focus {
     outline: 0;
 }
 
@@ -91,7 +91,7 @@ button:focus {
 .settingsPanel .inputs {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .settingsPanel .seperator {
@@ -100,22 +100,37 @@ button:focus {
     opacity: 0.2;
     border-radius: 2px;
     height: 25px;
-    width: 1px;
+    width: 0.5px;
     --margin: 10px;
     margin-left: var(--margin);
     margin-right: var(--margin);
 }
 
-#playBtn {
+.playBtn {
     background-color: rgb(40, 230, 33);
 }
 
-#stopBtn {
+.stopBtn {
     background-color: rgb(255, 13, 59);
-    color: white;
 }
 
-#loopBtn {
+.loopBtn {
     background-color: rgb(71, 113, 230);
-    --margin: 3px;
+}
+
+button.img.loopBtn {
+    --img-margin: 3px;
+}
+
+.saveBtn {
+    background-color: rgb(167, 38, 226);
+    transition: background-color 0.1s ease-in;
+}
+
+button.img.saveBtn {
+    --img-margin: 2px;
+}
+
+.saveBtn:disabled {
+    cursor: progress;
 }

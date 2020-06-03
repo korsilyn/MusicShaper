@@ -11,7 +11,7 @@ from django.http import Http404
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.db import transaction
-from ..models import MusicTrackPattern, MusicNote, MusicInstrument
+from ..models import MusicTrackPattern, MusicNote
 from ..forms import TrackPatternForm
 from .project import get_project_or_404
 from .util import get_base_context, ajax_view
@@ -71,17 +71,7 @@ def new_pattern(request, proj_id: int):
     return render(request, 'pattern/new.html', context)
 
 
-def make_instrument_dict(instruments):
-    '''
-    Вспомогательная функция. Возвращает словарь
-    музыкальных инструментов (генератор)
-    '''
-
-    for instr in instruments:
-        yield instr.name, instr.to_dict()
-
-
-def parse_json_note(json, instruments):
+def parse_json_note(json):
     '''
     Вспомогательная функция. Возвращает словарь
     музыкальной ноты из json строки
@@ -92,29 +82,24 @@ def parse_json_note(json, instruments):
     except (ValueError, TypeError):
         return None
     note = {key: int(value) for key, value in note.items()}
-    instr_id = note['instrument']
-    note['instrument'] = next((i for i in instruments if i.id == instr_id), None)
-    if note['instrument'] is None:
-        note['instrument'] = MusicInstrument.objects.get(pk=instr_id)
-        instruments.append(note['instrument'])
+    note['instrument_id'] = note.pop('instrument')
     return note
 
 
-def handle_json_note(json_note, model_note, pattern, instruments):
+def handle_json_note(json_note, model_note, pat_id):
     '''
     Вспомогательная функция. Обрабатывает модель
     ноты по json данным из запроса клиента
     '''
 
-    note = parse_json_note(json_note, instruments)
+    note = parse_json_note(json_note)
     if note is None:
-        model_note.delete()
+        if model_note is not None and model_note.pattern_id == pat_id:
+            model_note.delete()
     elif model_note is None:
-        MusicNote.objects.create(pattern=pattern, **note)
+        MusicNote.objects.create(pattern_id=pat_id, **note)
     else:
-        for key, value in note.items():
-            setattr(model_note, key, value)
-        model_note.save()
+        MusicNote.objects.filter(id=model_note.id, pattern__id=pat_id).update(**note)
 
 
 @login_required
@@ -140,7 +125,7 @@ def pattern_editor(request, proj_id: int, pat_id: int):
     return render(request, 'pattern/editor.html', {
         'project': project,
         'pattern': pattern,
-        'usedInstruments': dict(make_instrument_dict(instruments)),
+        'usedInstruments': {i.name: i.to_dict() for i in instruments},
         'allInstruments': list(project.instruments.values_list('name', flat=True)),
         'musicNotes': list(map(model_to_dict, music_notes)),
     })
@@ -160,13 +145,15 @@ def save_pattern(request, proj_id: int, pat_id: int):
 
     pattern = get_object_or_404(MusicTrackPattern, pk=pat_id, project=project)
 
-    instruments = list(pattern.get_instruments())
     music_notes = MusicNote.objects.filter(pattern=pattern)
     notes = request.POST.getlist('notes[]', [])
 
-    with transaction.atomic():
-        for json_note, model_note in zip_longest(notes, music_notes):
-            handle_json_note(json_note, model_note, pattern, instruments)
+    if len(notes) == 1 and notes[0] == '':
+        MusicNote.objects.filter(pattern=pattern).delete()
+    else:
+        with transaction.atomic():
+            for json_note, model_note in zip_longest(notes, music_notes):
+                handle_json_note(json_note, model_note, pat_id)
 
     return {'success': True}
 

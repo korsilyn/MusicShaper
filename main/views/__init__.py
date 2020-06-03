@@ -10,7 +10,7 @@ from .profile import profile_page, profile_edit_page, delete_avatar,\
 from .search import search_page
 from .track import track_view, popular_tracks
 from .project import new_project, project_home, manage_project, delete_project, projects_list,\
-    project_timeline
+    project_timeline, save_timeline
 from .instrument import instruments, new_instrument, edit_instrument,\
     manage_instrument, delete_instrument, get_instrument_ajax
 from .pattern import patterns_list, new_pattern, pattern_editor, manage_pattern, delete_pattern,\

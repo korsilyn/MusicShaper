@@ -32,9 +32,6 @@ var cellSize;
     );
 })();
 
-const docStyle = getComputedStyle(document.body);
-const getPxVar = name => Number(docStyle.getPropertyValue(name).replace('px', ''));
-
 //#endregion
 
 //#region bpm
@@ -105,19 +102,13 @@ window.addEventListener('instrumentSelected', () => {
 window.addEventListener('tilePlaced', ({ detail: { tile } }) => {
     tile.note = MusicNote.fromTile(tile, instruments.current);
     if (!window.loadingNotes) {
-        if (isPlaying) stop();
+        if (player.isPlaying) stop();
         tile.note.playPreview();
     }
 });
 
 window.addEventListener('tileRemoved', () => {
-    if (isPlaying) stop();
-});
-
-window.addEventListener('tileEditorMouseUp', ({ detail: { cellPoint, button } }) => {
-    if (button == 1) {
-        play(cellPoint.x);
-    }
+    if (player.isPlaying) stop();
 });
 
 //#endregion
@@ -136,12 +127,15 @@ instrSelect.onchange = function () {
 
 //#endregion
 
+//#region player
+
+var player = new NotePlayer(instruments, 'button.playBtn', 'button.stopBtn', 'button.loopBtn');
+
+//#endregion
+
 //#region load notes
 
-
 window.addEventListener('tileEditorInit', async () => {
-    window.loadingNotes = true;
-
     const initialNotes = JSON.parse(document.getElementById('musicNotes').innerText)
         .map(data => new MusicNote(
             instruments.getById(data.instrument),
@@ -149,6 +143,12 @@ window.addEventListener('tileEditorInit', async () => {
             (octaves + octavesFrom - data.octave) * noteNotations.length - data.notation,
             data.length,
         ));
+
+    if (initialNotes.length == 0) {
+        return;
+    }
+
+    window.loadingNotes = true;
 
     const initialNotesGrouped = groupBy(initialNotes, 'instrumentName');
     const tileHint = window.getTileHint();
@@ -166,7 +166,7 @@ window.addEventListener('tileEditorInit', async () => {
         }
     }
 
-    delete window.loadingNotes;
+    window.loadingNotes = false;
     instrSelect.onchange();
 });
 

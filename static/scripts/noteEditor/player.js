@@ -1,136 +1,69 @@
-function groupBy(xs, key) {
-    return xs.reduce(function(rv, x) {
-        (rv[x[key]] = rv[x[key]] || []).push(x);
-        return rv;
-    }, {});
-};
+class NotePlayer extends Player {
+    /**
+     * @param {InstrumentStorage} instruments
+     * @param {string} playBtnQuery
+     * @param {string} stopBtnQuery
+     * @param {string} loopBtnQuery
+     */
+    constructor(instruments, playBtnQuery, stopBtnQuery, loopBtnQuery) {
+        super(playBtnQuery, stopBtnQuery, loopBtnQuery);
 
-var isPlaying = false;
-var isLoop = false;
+        this.instruments = instruments;
 
-/** @type {HTMLInputElement} */
-const loopToggleBtn = document.querySelector('#loopBtn');
-
-loopToggleBtn.onclick = function () {
-    isLoop = !isLoop;
-    this.style.setProperty('--margin', (isLoop ? 5 : 3) + 'px');
-}
-
-function stop() {
-    if (isPlaying) {
-        window.dispatchEvent(new Event('stop'));
-    }
-}
-
-function play(from = 0) {
-    stop();
-
-    /** @type {MusicNote[]} */
-    const musicNotes = Tile.tiles.map(tile => tile.note);
-
-    if (musicNotes.length == 0) {
-        return;
-    }
-
-    function scheduleDraw(timeX, sTime) {
-        Tone.Draw.schedule(() => {
-            movePlayheadTo(timeX);
-        }, sTime);
-    }
-
-    const sixteenthSec = new Tone.Time('16n').toSeconds();
-
-    const timedNotes = groupBy(musicNotes, 'time');
-    const lastTime = Math.max(...musicNotes.map(n => n.time + n.length));
-
-    if (from >= lastTime) {
-        return;
-    }
-
-    for (let time = 0; time < lastTime; time++) {
-        if (time < from) continue;
-
-        const toneTime = sixteenthSec * (time - from);
-        const notes = timedNotes[time];
-        if (!notes) {
-            Tone.Transport.schedule(sTime => {
-                scheduleDraw(time, sTime);
-            }, toneTime);
-            continue;
-        }
-
-        const groupedByInstr = groupBy(notes, 'instrumentName');
-        const processed = [];
-
-        for (const instrName in groupedByInstr) {
-            if (processed.includes(instrName)) continue;
-            processed.push(instrName);
-            const instr = instruments.getByName(instrName);
-            if (instr instanceof Tone.PolySynth) {
-                Tone.Transport.schedule(sTime => {
-                    instr.triggerAttackRelease(
-                        groupedByInstr[instrName].map(n => n.letterNotation),
-                        groupedByInstr[instrName].map(n => n.duration),
-                        sTime
-                    );
-                    scheduleDraw(time, sTime);
-                }, toneTime);
+        window.addEventListener('stop', () => {
+            for (const i of this.instruments.instruments.values()) {
+                if (i instanceof Tone.PolySynth) i.releaseAll(0);
+                else i.triggerRelease(0);
             }
-            else {
+        });
+    }
+
+    scheduleEvents(from) {
+        /** @type {MusicNote[]} */
+        const musicNotes = Tile.tiles.map(tile => tile.note);
+
+        if (musicNotes.length == 0) return;
+
+        const sixteenthSec = this.baseTimeSeconds;
+
+        const timedNotes = groupBy(musicNotes, 'time');
+        const endTime = Math.max(...musicNotes.map(n => n.time + n.length));
+
+        if (from >= endTime) return;
+
+        for (let time = from; time < endTime; time++) {
+            const toneTime = sixteenthSec * (time - from);
+            const notes = timedNotes[time];
+            if (!notes) {
                 Tone.Transport.schedule(sTime => {
-                    groupedByInstr[instrName].forEach(n => n.playPreview(sTime));
-                    scheduleDraw(time, sTime);
+                    this.schedulePlayhead(time, sTime);
                 }, toneTime);
+                continue;
+            }
+
+            const groupedByInstr = groupBy(notes, 'instrumentName');
+
+            for (const instrName in groupedByInstr) {
+                const instr = this.instruments.getByName(instrName);
+                if (instr instanceof Tone.PolySynth) {
+                    Tone.Transport.schedule(sTime => {
+                        instr.triggerAttackRelease(
+                            groupedByInstr[instrName].map(n => n.letterNotation),
+                            groupedByInstr[instrName].map(n => n.duration),
+                            sTime
+                        );
+                        this.schedulePlayhead(time, sTime);
+                    }, toneTime);
+                }
+                else {
+                    Tone.Transport.schedule(sTime => {
+                        groupedByInstr[instrName].forEach(n => n.playPreview(sTime));
+                        this.schedulePlayhead(time, sTime);
+                    }, toneTime);
+                }
             }
         }
-    }
 
-    Tone.Transport.schedule(() => {
-        if (!Tone.Transport.loop) {
-            stop();
-        }
-    }, sixteenthSec * (lastTime + 1 - from));
-
-    Tone.Transport.schedule(() => {
-        movePlayheadTo(from);
-        showPlayhead();
-        isPlaying = true;
-    }, 0);
-
-    Tone.Transport.start('+0.1');
-
-    Tone.Transport.loop = isLoop;
-    if (Tone.Transport.loop) {
-        Tone.Transport.loopEnd = sixteenthSec * (lastTime + 1 - from);
-    }
-
-    loopToggleBtn.disabled = true;
-}
-
-document.onkeydown = function ({ keyCode, repeat }) {
-    if (!repeat && keyCode == 32) {
-        if (isPlaying) {
-            stop();
-        }
-        else {
-            play(0);
-        }
-        return false;
+        return endTime;
     }
 }
-
-window.addEventListener('stop', () => {
-    hidePlayhead();
-    isPlaying = false;
-    loopToggleBtn.disabled = false;
-    Tone.Transport.stop();
-    Tone.Transport.cancel(0);
-    for (const i of instruments.instruments.values()) {
-        if (i instanceof Tone.PolySynth) {
-            i.releaseAll(0);
-        }
-        else if (i instanceof Tone.Monophonic) {
-            i.triggerRelease(0);
-        }
-    }
-});
