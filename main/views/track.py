@@ -4,9 +4,12 @@
 
 from datetime import datetime
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .util import get_base_context
-from ..models import MusicTrack, TrackComment
+from django.http import JsonResponse, Http404
+from django.contrib.messages import add_message, SUCCESS, ERROR
+from .util import get_base_context, ajax_view
+from ..models import MusicTrack, TrackComment, TrackProjectSettings
+from ..forms import MusicTrackForm
+from .project import get_project_or_404
 
 
 def popular_tracks(request):
@@ -90,3 +93,63 @@ def track_view(request, track_id: int):
     })
 
     return render(request, 'track/view.html', context)
+
+
+@ajax_view
+def upload_track(request, proj_id: int):
+    '''
+    Ajax-функция для загрузки аудио файла проекта.
+    Возвращает клиенту url адрес формы публикации трека
+    '''
+
+    if 'audio' not in request.FILES:
+        raise Http404
+
+    project = get_project_or_404(request, proj_id)
+
+    track = MusicTrack.objects.create(
+        name=project.name,
+        desc=project.desc,
+        author=request.user,
+        creation_date=datetime.now(),
+        audio_file=request.FILES['audio'],
+    )
+    TrackProjectSettings.objects.create(
+        track=track,
+        access=0,
+        allow_comments=True,
+        allow_rating=True,
+        allow_reusing=True,
+    )
+
+    return {'success': True}
+
+
+def manage_track(request, track_id: int):
+    '''
+    Страница управления треком
+
+    :param request: запрос клиента
+    :param track_id: id трека в БД
+    '''
+
+    track = get_object_or_404(MusicTrack, id=track_id)
+    if track.author != request.author:
+        raise Http404
+
+    if request.method == 'POST':
+        form = MusicTrackForm(instance=track)
+        if form.is_valid():
+            form.save()
+            add_message(request, SUCCESS, 'Изменения успешно сохранены')
+        else:
+            add_message(request, ERROR, 'Некорректные данные формы')
+    else:
+        form = MusicTrackForm()
+
+    context = get_base_context(request, {
+        'form': form,
+        'track': track,
+    })
+
+    return render(request, 'track/manage.html', context)

@@ -89,6 +89,33 @@
                 <button class="btn btn-outline-danger" id="recordBtn">
                     Начать запись
                 </button>
+                <br>
+                <small>Нажмите стоп для остановки записи</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="audioExportModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Экспорт проекта</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Проект записан в аудиофайл:
+                    <audio controls style="margin-top: 10px;"></audio>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">
+                        Закрыть меню
+                    </button>
+                    <button class="btn btn-success" id="publishBtn">
+                        Опубликовать
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -104,6 +131,7 @@
     <script src="{% static 'scripts/patterns.js' %}"></script>
     <script src="{% static 'scripts/player.js' %}"></script>
     <script src="{% static 'scripts/timeline/player.js' %}"></script>
+    <script src="{% static 'scripts/timeline/record.js' %}"></script>
 
     {{ instruments|json_script:"instruments" }}
     {{ patterns|json_script:"patternsData" }}
@@ -113,7 +141,8 @@
         var csrf_token = '{{ csrf_token }}';
 
         Urls.registerUrls({
-            save_timeline: "{% url 'save_timeline' proj_id=project.id %}"
+            save_timeline: "{% url 'save_timeline' proj_id=project.id %}",
+            upload_track: "{% url 'upload_track' proj_id=project.id %}",
         });
     </script>
 

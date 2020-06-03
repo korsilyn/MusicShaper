@@ -8,7 +8,7 @@ from .auth import register_page, login_page, logout_page
 from .profile import profile_page, profile_edit_page, delete_avatar,\
     change_password, subscribe, unsubscribe, subscriptions_page
 from .search import search_page
-from .track import track_view, popular_tracks
+from .track import track_view, popular_tracks, upload_track, manage_track
 from .project import new_project, project_home, manage_project, delete_project, projects_list,\
     project_timeline, save_timeline
 from .instrument import instruments, new_instrument, edit_instrument,\

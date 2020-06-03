@@ -41,21 +41,18 @@ def create_test_track(request):
     if request.method == 'POST':
         form = CreateTestTrack(request.POST)
         if form.is_valid():
-            name = form.data['name']
-            desc = form.data['desc']
-            allow_rating = form.data.get('allow_rating', 'off') == 'on'
-            allow_reusing = form.data.get('allow_reusing', 'off') == 'on'
-            allow_comments = form.data.get('allow_comments', 'off') == 'on'
             track = MusicTrack.objects.create(
-                name=name, desc=desc,
+                name=form.data['name'],
+                desc=form.data['desc'],
                 author=request.user,
                 creation_date=datetime.now(),
             )
             TrackSettings.objects.create(
                 track=track,
-                allow_rating=allow_rating,
-                allow_reusing=allow_reusing,
-                allow_comments=allow_comments,
+                access=2,
+                allow_rating=form.data.get('allow_rating', 'off') == 'on',
+                allow_reusing=form.data.get('allow_reusing', 'off') == 'on',
+                allow_comments=form.data.get('allow_comments', 'off') == 'on',
             )
             add_message(request, SUCCESS, 'Трек успешно создан')
             return redirect('track', track_id=track.id)
