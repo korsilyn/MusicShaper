@@ -1,12 +1,17 @@
 function save() {
+    let notes = Tile.tiles.map(tile => tile.note.json);
+    if (notes.length == 0) {
+        notes = [''];
+    }
+
     return new Promise((resolve, reject) => $.ajax({
         method: 'POST',
         dataType: 'json',
-        url: window.location.href,
+        url: Urls.reverseUrl('save_pattern'),
         data: {
             csrfmiddlewaretoken: csrf_token,
-            operation: 'save',
-            'notes[]': musicNotes.map(note => note.json),
+            'notes[]': notes,
+            'bpm': bpmInput.safeValue,
         },
 
         success: data => {
@@ -24,7 +29,7 @@ function save() {
     }))
 }
 
-document.getElementById('saveBtn').onclick = function () {
+document.querySelector('button.saveBtn').onclick = function () {
     this.classList.add('btn-outline-dark');
     this.disabled = true;
     save()

@@ -2,7 +2,7 @@
 Модуль формы создания / редактирования паттерна
 '''
 
-from django.forms import ModelForm, TextInput, NumberInput
+from django.forms import ModelForm, TextInput, NumberInput, Select
 from django.db.models import F
 from ..models import MusicTrackPattern, MusicNote
 
@@ -14,10 +14,11 @@ class TrackPatternForm(ModelForm):
 
     class Meta:
         model = MusicTrackPattern
-        fields = ('name', 'duration')
+        fields = ('name', 'duration', 'color')
         labels = {
             'name': 'Имя',
-            'duration': 'Продолжительность (количество строк)'
+            'duration': 'Продолжительность (количество строк)',
+            'color': 'Цвет в редакторе',
         }
         widgets = {
             'name': TextInput(attrs={
@@ -28,7 +29,11 @@ class TrackPatternForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Продолжительность паттерна',
                 'max': 256
-            })
+            }),
+            'color': Select(attrs={
+                'class': 'form-control',
+                'onchange': 'this.style.borderColor = this.value',
+            }),
         }
 
     def __init__(self, project, *args, **kwargs):

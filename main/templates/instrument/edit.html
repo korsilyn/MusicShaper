@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load string_tags list_tags %}
 
 {% block 'title' %}
     Настройки инструмента
@@ -55,7 +56,9 @@
                 <div class="card-body">
                     <h6 class="card-title">
                         {% if group != '.' %}
-                            {% trans group|capfirst %}
+                            {% with group_name=group|split:'.'|index:-1 %}
+                                {% trans group_name|capfirst %}
+                            {% endwith %}
                         {% else %}
                             {% trans 'main'|capfirst %}
                         {% endif %}
