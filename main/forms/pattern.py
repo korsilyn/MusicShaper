@@ -45,7 +45,7 @@ class TrackPatternForm(ModelForm):
         instance = super().save(commit=False)
         instance.project = self.project
         instance.save()
-        MusicNote.objects\
+        MusicNote.objects.filter(pattern=instance)\
             .annotate(end_time=F('time') + F('length'))\
             .filter(end_time__gt=instance.duration)\
             .delete()
