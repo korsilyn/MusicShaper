@@ -21,6 +21,7 @@ class Profile(models.Model):
     image = models.ImageField(default='', upload_to='profile_pics')
     status = models.CharField(max_length=100, default='')
     subscribers = models.ManyToManyField("Profile", symmetrical=False, related_name="subscriptions")
+    oauth = models.CharField(max_length=300, default='')
 
     def to_dict(self):
         '''

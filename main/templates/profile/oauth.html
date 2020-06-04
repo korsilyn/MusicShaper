@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Oauth{% endblock %}
+
+{% block 'body' %}
+    <h1 class="text-center">OAUTH</h1><br>
+
+    <form method="POST">
+        {% csrf_token %}
+        <a href={{ url }}>Yandex</a>
+        <p>Ваш oauth токен: {{ oauth }}</p>
+        <p>Вам нужно перейти по ссылке, разрешить доступ и вбить в нижнее поле данные, выведенные по центру экрана. Это не какие то секретные данные, мы вас не взломаем, это нужно для доступа к сохранению треков на Yandex.Disk</p>
+        <div class="form-group">
+            <label>oauth token</label> 
+            <input name='oauth' type="text" class="form-control">
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </div>
+    </form>
+{% endblock %}

@@ -35,6 +35,7 @@ urlpatterns = [
 
     path('profile/', include([
         path('', views.profile_page, {'username': None}, name='profile'),
+        path('oauth/', views.oauth_token, name='oauth'),
         path('edit/', views.profile_edit_page, name='profile_edit'),
         path('delete_avatar/', views.delete_avatar, name='delete_avatar'),
         path('change_password/', views.change_password, name='change_password'),
