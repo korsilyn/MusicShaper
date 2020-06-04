@@ -51,7 +51,7 @@ class MusicTrack(models.Model):
     likes = models.ManyToManyField(User, 'likes')
     dislikes = models.ManyToManyField(User, 'dislikes')
     comments = models.ManyToManyField(TrackComment, 'comments')
-    reports = models.ManyToManyField(TrackComment, 'reports')
+    claims = models.ManyToManyField(TrackComment, 'claims')
     listeners = models.ManyToManyField(User, 'listened_tracks')
 
     def to_dict(self):

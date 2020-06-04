@@ -69,7 +69,7 @@ def create_test_track(request):
 
 @login_required
 @user_passes_test(superuser_check)
-def claimed_track(request):
+def claimed_tracks(request):
     '''
     Страница жалоб
 
@@ -85,4 +85,4 @@ def claimed_track(request):
     context["tracks"].sort(key=lambda i: i["count"], reverse=True)
     context["tracks"] = filter(lambda t: t["count"] > 0, context["tracks"])
 
-    return render(request, 'admin/claimed_track.html', context)
+    return render(request, 'admin/claimed_tracks.html', context)
