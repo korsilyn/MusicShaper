@@ -72,6 +72,7 @@ class TrackSettings(models.Model):
     Настройки публикации проекта
 
     :param track: музыкальный трек
+    :param access: уровень доступа к треку
     :param allow_comments: разрешены ли комментарии
     :param allow_rating: разрешены ли лайки / дизлайки
     :param allow_reusing: разрешено ли свободное использование
