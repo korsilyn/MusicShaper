@@ -204,21 +204,3 @@ def subscriptions_page(request):
     is_sub = user.profile.subscribers.filter(pk=request.user.profile.pk).exists()
     context['is_sub'] = is_sub
     return render(request, 'profile/subscriptions.html', context)
-
-
-@login_required
-def oauth_token(request):
-    '''
-    **Функция вноса OAuth ключа в БД**
-    '''
-    
-    profile = request.user.profile
-    if request.method == 'POST':
-        oauth = request.POST.get('oauth', None)
-        if oauth:
-            profile.oauth = oauth
-            profile.save()
-    
-    url = "https://oauth.yandex.ru/authorize?response_type=token&client_id=88199facd2d846e9be1b56ffe22c8faa"
-    context = get_base_context(request, {'url': url, 'oauth': profile.oauth})
-    return render(request, 'profile/oauth.html', context)
