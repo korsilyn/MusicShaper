@@ -38,9 +38,6 @@
             <a class="btn btn-primary" href="{% url 'profile_edit' %}">
                 Редактировать Профиль
             </a>
-            <a class="btn btn-primary" href="{% url 'oauth' %}">
-                Подключить oauth
-            </a>
         {% elif user.is_authenticated %}
             {% if is_sub %}
                 <a href="{% url 'unsubscribe' username=profile.user.username %}"
