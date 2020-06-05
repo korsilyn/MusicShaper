@@ -8,3 +8,5 @@ from .test_admin import AdminTestCase
 from .test_project import ProjectTestCase
 from .test_instrument import InstrumentTestCase
 from .test_pattern import PatternTestCase
+from .test_tracks import TrackTestCase
+from .test_popular_tracks import PopularTrackTestCase
