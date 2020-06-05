@@ -1,0 +1,1835 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DevDocs &mdash; MusicShaper  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> MusicShaper
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">DevDocs</a><ul>
+<li><a class="reference internal" href="#views">Views</a></li>
+<li><a class="reference internal" href="#models">Models</a></li>
+<li><a class="reference internal" href="#forms">Forms</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">MusicShaper</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>DevDocs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="devdocs">
+<h1>DevDocs<a class="headerlink" href="#devdocs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="views">
+<h2>Views<a class="headerlink" href="#views" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><span class="target" id="module-main.views.admin"></span><div class="section" id="view">
+<h3>Модуль view-функций для вкладки <cite>Администрация</cite><a class="headerlink" href="#view" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.admin.admin_home">
+<code class="sig-prename descclassname">main.views.admin.</code><code class="sig-name descname">admin_home</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.admin.admin_home" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Панель администрации</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.admin.claimed_track">
+<code class="sig-prename descclassname">main.views.admin.</code><code class="sig-name descname">claimed_track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.admin.claimed_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Страница жалоб</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница трека с жалобой</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.admin.create_test_track">
+<code class="sig-prename descclassname">main.views.admin.</code><code class="sig-name descname">create_test_track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.admin.create_test_track" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница создания пробного трека</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница создания пробного трека</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.auth"></span><div class="section" id="id1">
+<h3>Модуль view-функций для регистрации и авторизации<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.auth.login_page">
+<code class="sig-prename descclassname">main.views.auth.</code><code class="sig-name descname">login_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.auth.login_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница авторизации</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница авторизации</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.auth.logout_page">
+<code class="sig-prename descclassname">main.views.auth.</code><code class="sig-name descname">logout_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.auth.logout_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница выхода из профиля</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>редирект на стартовую страницу</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.auth.register_page">
+<code class="sig-prename descclassname">main.views.auth.</code><code class="sig-name descname">register_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.auth.register_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница регистрации</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница регистрации</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.instrument"></span><div class="section" id="id2">
+<h3>Модуль view-функций для музыкальных инструментов<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.instrument.delete_instrument">
+<code class="sig-prename descclassname">main.views.instrument.</code><code class="sig-name descname">delete_instrument</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">instr_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.instrument.delete_instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница удаления инструмента</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+<li><p><strong>instr_id</strong> – id инстуремнта в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.instrument.edit_instrument">
+<code class="sig-prename descclassname">main.views.instrument.</code><code class="sig-name descname">edit_instrument</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">instr_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.instrument.edit_instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница редактирования настроек инструмента</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+<li><p><strong>instr_id</strong> – id инстуремнта в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.instrument.instruments">
+<code class="sig-prename descclassname">main.views.instrument.</code><code class="sig-name descname">instruments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.instrument.instruments" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница со списком всех музыкальных инструментов
+в проекте</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в базе данных</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>список инструментов</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.instrument.manage_instrument">
+<code class="sig-prename descclassname">main.views.instrument.</code><code class="sig-name descname">manage_instrument</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">instr_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.instrument.manage_instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница управления инструментом</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+<li><p><strong>instr_id</strong> – id инстуремнта в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.instrument.new_instrument">
+<code class="sig-prename descclassname">main.views.instrument.</code><code class="sig-name descname">new_instrument</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.instrument.new_instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница создания музыкального инструмента</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в базе данных</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница создания инструмента</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.pattern"></span><div class="section" id="id3">
+<h3>Модуль view-функций для паттернов<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.pattern.delete_pattern">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">delete_pattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pat_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.delete_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница удаления паттерна</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос пользователя</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+<li><p><strong>pat_id</strong> – id паттерна в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.pattern.handle_json_note">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">handle_json_note</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_note</span></em>, <em class="sig-param"><span class="n">model_note</span></em>, <em class="sig-param"><span class="n">pat_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.handle_json_note" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Вспомогательная функция. Обрабатывает модель
+ноты по json данным из запроса клиента</strong></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.pattern.manage_pattern">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">manage_pattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pat_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.manage_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница управления паттерном</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос пользователя</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+<li><p><strong>pat_id</strong> – id паттерна в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.pattern.new_pattern">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">new_pattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.new_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница создания паттерна</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.pattern.parse_json_note">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">parse_json_note</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.parse_json_note" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Вспомогательная функция. Возвращает словарь
+музыкальной ноты из json строки</strong></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.pattern.pattern_editor">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">pattern_editor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">pat_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.pattern_editor" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Редактор паттерна</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+<li><p><strong>pat_id</strong> – id паттерна в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.pattern.patterns_list">
+<code class="sig-prename descclassname">main.views.pattern.</code><code class="sig-name descname">patterns_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.pattern.patterns_list" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница со списком паттернов в проекте</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.profile"></span><div class="section" id="id4">
+<h3>Модуль view-функций для профиля пользователя<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.profile.change_password">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">change_password</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.change_password" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница смены пароля</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница смены пароля</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.profile.delete_avatar">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">delete_avatar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.delete_avatar" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница удаления аватара</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница удаления аватара</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.profile.profile_edit_page">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">profile_edit_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.profile_edit_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница редактирования профиля</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница редактирования профиля</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.profile.profile_page">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">profile_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.profile_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница профиля</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница профиля</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.profile.subscribe">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">subscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.subscribe" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Функция для добавления пользователя в подписки</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>username</strong> – юзернейм другого пользователя</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.profile.subscriptions_page">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">subscriptions_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.subscriptions_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Функция для отображения полного списка подписок</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.profile.unsubscribe">
+<code class="sig-prename descclassname">main.views.profile.</code><code class="sig-name descname">unsubscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.profile.unsubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Функция для удаления пользователя из подпискок</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>username</strong> – юзернейм другого пользователя</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.project"></span><div class="section" id="id5">
+<h3>Модуль view-функций для проектов<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.project.delete_project">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">delete_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.delete_project" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница удаления проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.get_project_or_404">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">get_project_or_404</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.get_project_or_404" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Возвращает проект с нужным id + проверка на автора</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проека в базе данных</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#main.models.project.MusicTrackProject" title="main.models.project.MusicTrackProject">MusicTrackProject</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.handle_json_pattern_instance">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">handle_json_pattern_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_instance</span></em>, <em class="sig-param"><span class="n">model_instance</span></em>, <em class="sig-param"><span class="n">proj_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.handle_json_pattern_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Вспомогательная функция. Обрабатывает модель образца
+паттерна по json данным из заспроса клиента</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.manage_project">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">manage_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.manage_project" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница управления проектом</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.new_project">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">new_project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.new_project" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница создания проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница создания проекта</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.parse_json_pattern_instance">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">parse_json_pattern_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.parse_json_pattern_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Вспомогательная функция. Возвращает словарь образца паттерна</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.project_home">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">project_home</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.project_home" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Главная страница проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в базе данных</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>главная страница проекта</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.project_timeline">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">project_timeline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">proj_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.project_timeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Страница таймайна проекта</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>proj_id</strong> – id проекта в БД</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.project.projects_list">
+<code class="sig-prename descclassname">main.views.project.</code><code class="sig-name descname">projects_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.project.projects_list" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница со списком проектов пользователя</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>список проектов</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.search"></span><div class="section" id="id6">
+<h3>Модуль view-функций для поиска<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.search.filter_similar">
+<code class="sig-prename descclassname">main.views.search.</code><code class="sig-name descname">filter_similar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span></em>, <em class="sig-param"><span class="n">comp_value</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">key</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.search.filter_similar" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Фильтрует елементы списка последовательностей по схожести
+с другой последовательностью</strong>
+Значение генератора - кортеж (элемент, схожесть)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> – список последовательностей</p></li>
+<li><p><strong>comp_value</strong> – последовательность для сравнения</p></li>
+<li><p><strong>threshold</strong> – граница схожести от 0 до 1</p></li>
+<li><p><strong>key</strong> – функция, возвращающая ключ сортировки елемента в списке</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>фильтрующий генератор</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.search.filter_similar_sorted">
+<code class="sig-prename descclassname">main.views.search.</code><code class="sig-name descname">filter_similar_sorted</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">fs_args</span></em>, <em class="sig-param"><span class="n">reverse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">fs_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.search.filter_similar_sorted" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Фильтрует елементы списка функцией filter_similar + сортирует
+результат по “схожестям”</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fs_args</strong> – позиционные аргументы функции filter_similar</p></li>
+<li><p><strong>fs_kwargs</strong> – проименованные аргументы функции filter_similar</p></li>
+<li><p><strong>reverse</strong> – аналогичен аргументу reverse в функции sorted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>фильтрующий генератор</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.search.search_page">
+<code class="sig-prename descclassname">main.views.search.</code><code class="sig-name descname">search_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.search.search_page" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница поиска пользователей / треков и т.п.</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница поиска</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.search.similar">
+<code class="sig-prename descclassname">main.views.search.</code><code class="sig-name descname">similar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">first</span></em>, <em class="sig-param"><span class="n">second</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.search.similar" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Возвращает число, показывающее на сколько похожи последовательности first и second</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> – первая последовательность</p></li>
+<li><p><strong>second</strong> – второе последовательность</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>число от 0 до 1</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.track"></span><div class="section" id="id7">
+<h3>Модуль view-функций для музыкальных треков<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.track.delete_track">
+<code class="sig-prename descclassname">main.views.track.</code><code class="sig-name descname">delete_track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">track_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.track.delete_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Страница удаления трека админом</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – запрос клиента</p></li>
+<li><p><strong>track_id</strong> – id трека в БД</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.track.popular_tracks">
+<code class="sig-prename descclassname">main.views.track.</code><code class="sig-name descname">popular_tracks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.track.popular_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница с популярными треками</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Популярные треки</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HttpResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.track.track_view">
+<code class="sig-prename descclassname">main.views.track.</code><code class="sig-name descname">track_view</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">track_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.track.track_view" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Страница прослушивания музыкального трека</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>страница трека</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.views.util"></span><div class="section" id="id8">
+<h3>Вспомогательный модуль для view-модулей<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="main.views.util.ajax_view">
+<code class="sig-prename descclassname">main.views.util.</code><code class="sig-name descname">ajax_view</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'POST'</span></em>, <em class="sig-param"><span class="n">required_args</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.util.ajax_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Декоратор для ajax-url’ов</p>
+<p>Итоговая view-функция автоматически проверяет
+<cite>request.is_ajax()</cite> и <cite>request.method</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.views.util.get_base_context">
+<code class="sig-prename descclassname">main.views.util.</code><code class="sig-name descname">get_base_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">update</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.views.util.get_base_context" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Возвращает базовый контекст для всех страниц сайта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – запрос клиента</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>словарь контекста</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><span class="target" id="module-main.models.music_track"></span><div class="section" id="id9">
+<h3>Модуль моделей для музыкальных треков<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.models.music_track.MusicTrack">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.music_track.</code><code class="sig-name descname">MusicTrack</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.music_track.MusicTrack" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель опубликованного проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – имя проекта</p></li>
+<li><p><strong>desc</strong> – описание</p></li>
+<li><p><strong>author</strong> – автор</p></li>
+<li><p><strong>creation_date</strong> – дата публикации</p></li>
+<li><p><strong>likes</strong> – список юзеров, поставивших лайк</p></li>
+<li><p><strong>dislikes</strong> – список юзеров, поставивших дизлайк</p></li>
+<li><p><strong>comments</strong> – список комментариев</p></li>
+<li><p><strong>claims</strong> – список жалоб</p></li>
+<li><p><strong>settings</strong> – настройки</p></li>
+<li><p><strong>listeners</strong> – список юзеров, послушавших трек</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.music_track.MusicTrack.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.music_track.MusicTrack.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.music_track.MusicTrack.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.music_track.MusicTrack.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="main.models.music_track.MusicTrack.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.music_track.MusicTrack.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Переводит модель трека в словарь
+(ManyToMany поля недоступны, ForeignKey заменены на id)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.music_track.TrackComment">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.music_track.</code><code class="sig-name descname">TrackComment</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.music_track.TrackComment" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель Комментария / жалобы</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author</strong> – автор</p></li>
+<li><p><strong>topic</strong> – тема</p></li>
+<li><p><strong>content</strong> – содержание</p></li>
+<li><p><strong>creation_date</strong> – дата создания</p></li>
+<li><p><strong>edit_date</strong> – дата редактирования</p></li>
+<li><p><strong>checked_by_author</strong> – просмотрен ли автором трека</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.music_track.TrackComment.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.music_track.TrackComment.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.music_track.TrackComment.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.music_track.TrackComment.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.music_track.TrackSettings">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.music_track.</code><code class="sig-name descname">TrackSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.music_track.TrackSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Настройки публикации проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track</strong> – музыкальный трек</p></li>
+<li><p><strong>allow_comments</strong> – разрешены ли комментарии</p></li>
+<li><p><strong>allow_rating</strong> – разрешены ли лайки / дизлайки</p></li>
+<li><p><strong>allow_reusing</strong> – разрешено ли свободное использование</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.music_track.TrackSettings.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.music_track.TrackSettings.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.music_track.TrackSettings.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.music_track.TrackSettings.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.models.profile"></span><div class="section" id="id10">
+<h3>Модуль модели профиля пользователя<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.models.profile.Profile">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.profile.</code><code class="sig-name descname">Profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.profile.Profile" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель профиля</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – имя проекта</p></li>
+<li><p><strong>desc</strong> – описание</p></li>
+<li><p><strong>author</strong> – автор</p></li>
+<li><p><strong>patterns</strong> – список паттернов</p></li>
+<li><p><strong>data</strong> – файл с данными проекта (настройки, инструменты и т.д.)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.profile.Profile.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.profile.Profile.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.profile.Profile.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.profile.Profile.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="main.models.profile.Profile.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.profile.Profile.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Переводит модель профиля в словарь
+(поле image считается за url файла)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.models.profile.create_profile">
+<code class="sig-prename descclassname">main.models.profile.</code><code class="sig-name descname">create_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sender</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.profile.create_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Обработчик сигнала, который срабатывает при создании
+модели User (нужно для автоматической связи User и Profile)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="main.models.profile.user_to_dict">
+<code class="sig-prename descclassname">main.models.profile.</code><code class="sig-name descname">user_to_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user</span><span class="p">:</span> <span class="n">django.contrib.auth.models.User</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.profile.user_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Переводит модель пользователя в словарь</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>user</strong> – модель пользователя</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.models.project"></span><div class="section" id="id11">
+<h3>Модуль моделей для проектов<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.models.project.MusicInstrument">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">MusicInstrument</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicInstrument" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель музыкального инстурмента</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – имя инструмента в редакторе</p></li>
+<li><p><strong>project</strong> – проект</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.MusicInstrument.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.MusicInstrument.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.MusicInstrument.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.MusicInstrument.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="main.models.project.MusicInstrument.define">
+<em class="property">classmethod </em><code class="sig-name descname">define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">definition_name</span></em>, <em class="sig-param"><span class="n">default_settings</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicInstrument.define" title="Permalink to this definition">¶</a></dt>
+<dd><p>Объявляет новый тип инструмента (его стандартные настройки)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>definition_name</strong> – тип инструмента (из библиотеки Tone.js)</p></li>
+<li><p><strong>default_settings</strong> – словарь со стандартными настройками, где значения настроек - это объекты класса <cite>SettingValue</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.project.MusicInstrument.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicInstrument.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает словарь с данными и настройками
+музыкального инструмента</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.project.MusicInstrumentEffect">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">MusicInstrumentEffect</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicInstrumentEffect" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель эффекта музыкального инструмента</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – тип эффекта (из библиотеки Tone.js)</p></li>
+<li><p><strong>instrument</strong> – инструмент</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.MusicInstrumentEffect.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.MusicInstrumentEffect.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.MusicInstrumentEffect.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.MusicInstrumentEffect.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.project.MusicNote">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">MusicNote</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicNote" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель музыкальной ноты в паттерне</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pattern</strong> – паттерн</p></li>
+<li><p><strong>time</strong> – момент времени, в который должна начать играть нота</p></li>
+<li><p><strong>length</strong> – длительность ноты</p></li>
+<li><p><strong>notation</strong> – буквенная нотация ноты</p></li>
+<li><p><strong>octave</strong> – октава</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.MusicNote.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.MusicNote.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.MusicNote.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.MusicNote.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.project.MusicTrackPattern">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">MusicTrackPattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicTrackPattern" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель паттерна проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – имя паттерна</p></li>
+<li><p><strong>color</strong> – цвет паттерна в редакторе</p></li>
+<li><p><strong>duration</strong> – продолжительность</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.MusicTrackPattern.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.MusicTrackPattern.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.MusicTrackPattern.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.MusicTrackPattern.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="main.models.project.MusicTrackPattern.get_instruments">
+<code class="sig-name descname">get_instruments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicTrackPattern.get_instruments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает инструменты, использующиеся в паттерне (генератор)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.project.MusicTrackPattern.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicTrackPattern.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает словарь с данными паттерна</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.project.MusicTrackProject">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">MusicTrackProject</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicTrackProject" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – имя проекта</p></li>
+<li><p><strong>desc</strong> – описание</p></li>
+<li><p><strong>author</strong> – автор</p></li>
+<li><p><strong>creation_date</strong> – дата создания</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.MusicTrackProject.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.MusicTrackProject.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.MusicTrackProject.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.MusicTrackProject.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="main.models.project.MusicTrackProject.get_used_instruments">
+<code class="sig-name descname">get_used_instruments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.MusicTrackProject.get_used_instruments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает список инструментов, использующихся
+в паттернах проекта</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.project.TrackPatternInstance">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">TrackPatternInstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.TrackPatternInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель образца паттерна, который находиться на звуковой дорожке</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pattern</strong> – паттерн</p></li>
+<li><p><strong>time</strong> – момент времени, в который должен начать играть паттерн</p></li>
+<li><p><strong>track</strong> – индекс звуковой дорожки на таймлайне</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.TrackPatternInstance.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.TrackPatternInstance.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.TrackPatternInstance.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.TrackPatternInstance.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="main.models.project.TrackPatternInstance.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.TrackPatternInstance.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает словарь с данными образца паттерна</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.project.TrackProjectSettings">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.project.</code><code class="sig-name descname">TrackProjectSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.project.TrackProjectSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Модель настроек проекта</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project</strong> – проект</p></li>
+<li><p><strong>bpm</strong> – темп итогового трека</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="main.models.project.TrackProjectSettings.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#main.models.project.TrackProjectSettings.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt id="main.models.project.TrackProjectSettings.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#main.models.project.TrackProjectSettings.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.models.settings"></span><div class="section" id="modelwithsettings">
+<h3>Модуль абстрактной модели ModelWithSettings<a class="headerlink" href="#modelwithsettings" title="Permalink to this headline">¶</a></h3>
+<p>Модель нужна для эффективного хранения различных настроект
+моделей в базе данных</p>
+<p>От этой модели наследуются музыкальные инструменты и эффекты</p>
+<dl class="py class">
+<dt id="main.models.settings.ChoiceSettingValue">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.settings.</code><code class="sig-name descname">ChoiceSettingValue</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="n">choices</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ChoiceSettingValue" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Поле настройки объекта с выбором значения</strong></p>
+<dl class="py method">
+<dt id="main.models.settings.ChoiceSettingValue.validate_value">
+<code class="sig-name descname">validate_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ChoiceSettingValue.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Абстрактный метод, проверяющий значение <cite>value</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – значение для проверки</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.settings.FloatSettingValue">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.settings.</code><code class="sig-name descname">FloatSettingValue</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="n">min_v</span><span class="o">=</span><span class="default_value">- inf</span></em>, <em class="sig-param"><span class="n">max_v</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.FloatSettingValue" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Числовое (float) поле настройки объекта</strong></p>
+<dl class="py method">
+<dt id="main.models.settings.FloatSettingValue.validate_value">
+<code class="sig-name descname">validate_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.FloatSettingValue.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Абстрактный метод, проверяющий значение <cite>value</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – значение для проверки</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.settings.IntSettingValue">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.settings.</code><code class="sig-name descname">IntSettingValue</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="n">min_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.IntSettingValue" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Числовое (int) поле настройки объекта</strong></p>
+<dl class="py method">
+<dt id="main.models.settings.IntSettingValue.validate_value">
+<code class="sig-name descname">validate_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.IntSettingValue.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Абстрактный метод, проверяющий значение <cite>value</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – значение для проверки</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.settings.ModelWithSettings">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.settings.</code><code class="sig-name descname">ModelWithSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Абстрактная модель *кхм* модели, у которой
+есть словарь настроек</strong></p>
+<p>У класса дочерней модели также появляется метод
+<cite>define</cite>, с помощью которого можно задать стандартные
+настройки для определённого ‘типа’ объекта модели</p>
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.assert_type">
+<code class="sig-name descname">assert_type</code><span class="sig-paren">(</span><em class="sig-param">error_class=&lt;class 'TypeError'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings.assert_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Кидает error_class в случае, если тип инструмента
+объявлен некорректно</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error_class</strong> – класс ошибки</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.define">
+<em class="property">classmethod </em><code class="sig-name descname">define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">definition_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default_settings</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings.define" title="Permalink to this definition">¶</a></dt>
+<dd><p>Объявляет новый тип модели со стандартными настройками</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>definition_name</strong> – имя нового типа</p></li>
+<li><p><strong>default_settings</strong> – словарь со стандартными настройками</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.definition">
+<em class="property">property </em><code class="sig-name descname">definition</code><a class="headerlink" href="#main.models.settings.ModelWithSettings.definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Сокращение для быстрого доступа к текущему
+объявлению настроек объекта</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.get_settings">
+<code class="sig-name descname">get_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings.get_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает текущие настройки объекта</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.get_settings_generator">
+<code class="sig-name descname">get_settings_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings.get_settings_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает текущие настройки объекта (генератор)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.get_settings_recursive">
+<code class="sig-name descname">get_settings_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">definition</span></em>, <em class="sig-param"><span class="n">json_settings</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings.get_settings_recursive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Рекурсивно возвращает словарь настроек</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>definition</strong> – текущий словарь объявления</p></li>
+<li><p><strong>json_settings</strong> – текущий словарь с настройками</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.models.settings.ModelWithSettings.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.ModelWithSettings.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Сбрасывает все текущие настройки инструмента</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="main.models.settings.SettingValue">
+<em class="property">class </em><code class="sig-prename descclassname">main.models.settings.</code><code class="sig-name descname">SettingValue</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">_type</span></em>, <em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.models.settings.SettingValue" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Абстрактный класс поля настройки объекта</strong></p>
+<dl class="py method">
+<dt id="main.models.settings.SettingValue.validate_value">
+<em class="property">abstract </em><code class="sig-name descname">validate_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#main.models.settings.SettingValue.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Абстрактный метод, проверяющий значение <cite>value</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – значение для проверки</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="forms">
+<h2>Forms<a class="headerlink" href="#forms" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><span class="target" id="module-main.forms.create_test_track"></span><div class="section" id="createtesttrack">
+<h3>Модуль формы <cite>CreateTestTrack</cite><a class="headerlink" href="#createtesttrack" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.forms.create_test_track.CreateTestTrack">
+<em class="property">class </em><code class="sig-prename descclassname">main.forms.create_test_track.</code><code class="sig-name descname">CreateTestTrack</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">files=None</em>, <em class="sig-param">auto_id='id_%s'</em>, <em class="sig-param">prefix=None</em>, <em class="sig-param">initial=None</em>, <em class="sig-param">error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em class="sig-param">label_suffix=None</em>, <em class="sig-param">empty_permitted=False</em>, <em class="sig-param">field_order=None</em>, <em class="sig-param">use_required_attribute=None</em>, <em class="sig-param">renderer=None</em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.create_test_track.CreateTestTrack" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Форма создания пробного трека</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – поле имени трека</p></li>
+<li><p><strong>desc</strong> – поле описания трека</p></li>
+<li><p><strong>allow_comments</strong> – разрешены ли комментарии</p></li>
+<li><p><strong>allow_rating</strong> – разрешены ли лайки / дизлайки</p></li>
+<li><p><strong>allow_reusing</strong> – разрешено ли свободное использование</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.forms.instrument"></span><div class="section" id="id12">
+<h3>Модуль форм для музыкальных инструментов<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.forms.instrument.MusicInstrumentForm">
+<em class="property">class </em><code class="sig-prename descclassname">main.forms.instrument.</code><code class="sig-name descname">MusicInstrumentForm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.instrument.MusicInstrumentForm" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Форма создания / редактирования музыкального инструмента</strong></p>
+<dl class="py method">
+<dt id="main.forms.instrument.MusicInstrumentForm.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">commit</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.instrument.MusicInstrumentForm.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this form’s self.instance object if commit=True. Otherwise, add
+a save_m2m() method to the form which can be called after the instance
+is saved manually at a later time. Return the model instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.forms.login"></span><div class="section" id="id13">
+<h3>Модуль формы авторизации<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.forms.login.LoginForm">
+<em class="property">class </em><code class="sig-prename descclassname">main.forms.login.</code><code class="sig-name descname">LoginForm</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">files=None</em>, <em class="sig-param">auto_id='id_%s'</em>, <em class="sig-param">prefix=None</em>, <em class="sig-param">initial=None</em>, <em class="sig-param">error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em class="sig-param">label_suffix=None</em>, <em class="sig-param">empty_permitted=False</em>, <em class="sig-param">field_order=None</em>, <em class="sig-param">use_required_attribute=None</em>, <em class="sig-param">renderer=None</em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.login.LoginForm" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Форма авторизации пользователя</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> – поле имя пользователя</p></li>
+<li><p><strong>password</strong> – поле пароля</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.forms.pattern"></span><div class="section" id="id14">
+<h3>Модуль формы создания / редактирования паттерна<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.forms.pattern.TrackPatternForm">
+<em class="property">class </em><code class="sig-prename descclassname">main.forms.pattern.</code><code class="sig-name descname">TrackPatternForm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.pattern.TrackPatternForm" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Форма создания / редактирования паттерна</strong></p>
+<dl class="py method">
+<dt id="main.forms.pattern.TrackPatternForm.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">commit</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.pattern.TrackPatternForm.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this form’s self.instance object if commit=True. Otherwise, add
+a save_m2m() method to the form which can be called after the instance
+is saved manually at a later time. Return the model instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.forms.project"></span><div class="section" id="id15">
+<h3>Модуль формы редактирования проекта (имя, описание)<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.forms.project.ProjectForm">
+<em class="property">class </em><code class="sig-prename descclassname">main.forms.project.</code><code class="sig-name descname">ProjectForm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.project.ProjectForm" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Форма создания проекта</strong></p>
+<dl class="py method">
+<dt id="main.forms.project.ProjectForm.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">commit</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.project.ProjectForm.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this form’s self.instance object if commit=True. Otherwise, add
+a save_m2m() method to the form which can be called after the instance
+is saved manually at a later time. Return the model instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.forms.settings"></span><div class="section" id="id16">
+<h3>Модуль формы для модели <cite>ModelWithSettings</cite><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<p>Это динамическая форма, генерирующая свои поля основываясь
+на объявлении настроек объекта (<cite>&lt;model&gt;.definition</cite>)</p>
+<dl class="py class">
+<dt id="main.forms.settings.SettingsModelForm">
+<em class="property">class </em><code class="sig-prename descclassname">main.forms.settings.</code><code class="sig-name descname">SettingsModelForm</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Форма редактирования настроек модели `ModelWithSettings`</strong></p>
+<dl class="py method">
+<dt id="main.forms.settings.SettingsModelForm.generate_fields">
+<code class="sig-name descname">generate_fields</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">definition</span></em>, <em class="sig-param"><span class="n">settings</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm.generate_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Рекурсивно генерирует поля формы</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>definition</strong> – текущий словарь объявления настроек</p></li>
+<li><p><strong>settings</strong> – текущий словрь с настройками</p></li>
+<li><p><strong>path</strong> – ‘путь’ до настройки (нужно для аттрибута name в html)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.forms.settings.SettingsModelForm.grouped_fields">
+<code class="sig-name descname">grouped_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm.grouped_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает словарь полей, в котором все поля
+объеденены по свойству <cite>group</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.forms.settings.SettingsModelForm.make_choice_field">
+<em class="property">static </em><code class="sig-name descname">make_choice_field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sname</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#main.models.settings.ChoiceSettingValue" title="main.models.settings.ChoiceSettingValue">main.models.settings.ChoiceSettingValue</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm.make_choice_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает ChoiceField основываясь на <cite>ChoiceSettingValue</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.forms.settings.SettingsModelForm.make_float_field">
+<em class="property">static </em><code class="sig-name descname">make_float_field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sname</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#main.models.settings.FloatSettingValue" title="main.models.settings.FloatSettingValue">main.models.settings.FloatSettingValue</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm.make_float_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает FloatField основываясь на <cite>FloatSettingValue</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.forms.settings.SettingsModelForm.make_int_field">
+<em class="property">static </em><code class="sig-name descname">make_int_field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sname</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#main.models.settings.IntSettingValue" title="main.models.settings.IntSettingValue">main.models.settings.IntSettingValue</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm.make_int_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Возвращает IntegerField основываясь на <cite>IntSettingValue</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.forms.settings.SettingsModelForm.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">commit</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.forms.settings.SettingsModelForm.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this form’s self.instance object if commit=True. Otherwise, add
+a save_m2m() method to the form which can be called after the instance
+is saved manually at a later time. Return the model instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><span class="target" id="module-main.tests.test_admin"></span><div class="section" id="id17">
+<h3>Модуль тестирования <em>безопасности</em> сайта<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.tests.test_admin.AdminTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">main.tests.test_admin.</code><code class="sig-name descname">AdminTestCase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_admin.AdminTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Класс, тестирующий отсутствие доступа обычного
+пользователя к функциям админов</strong></p>
+<dl class="py method">
+<dt id="main.tests.test_admin.AdminTestCase.login">
+<code class="sig-name descname">login</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_admin.AdminTestCase.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Впомогательная функция для авторизации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_admin.AdminTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_admin.AdminTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_admin.AdminTestCase.test_admin_home">
+<code class="sig-name descname">test_admin_home</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_admin.AdminTestCase.test_admin_home" title="Permalink to this definition">¶</a></dt>
+<dd><p>Тест пропуска админа</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_admin.AdminTestCase.test_normal_user_home">
+<code class="sig-name descname">test_normal_user_home</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_admin.AdminTestCase.test_normal_user_home" title="Permalink to this definition">¶</a></dt>
+<dd><p>Тест редиректа обычного пользователя со страницы <cite>admin_home</cite></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.tests.test_auth"></span><div class="section" id="id18">
+<h3>Модуль тестирования авторизации<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.tests.test_auth.AuthTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">main.tests.test_auth.</code><code class="sig-name descname">AuthTestCase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_auth.AuthTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Класс, тестирующий авторизацию на сайте</strong></p>
+<dl class="py method">
+<dt id="main.tests.test_auth.AuthTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_auth.AuthTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_auth.AuthTestCase.test_login">
+<code class="sig-name descname">test_login</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_auth.AuthTestCase.test_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Тест авторизации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_auth.AuthTestCase.test_logout">
+<code class="sig-name descname">test_logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_auth.AuthTestCase.test_logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Тест деавторизации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_auth.AuthTestCase.test_profile_creation">
+<code class="sig-name descname">test_profile_creation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_auth.AuthTestCase.test_profile_creation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Тест создания профиля для нового пользователя
+(через django signals)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_auth.AuthTestCase.test_register">
+<code class="sig-name descname">test_register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_auth.AuthTestCase.test_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Тест регистрации</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-main.tests.test_load"></span><div class="section" id="unittest">
+<h3>Модуль тестирования (unittest) сайта<a class="headerlink" href="#unittest" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="main.tests.test_load.LoginTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">main.tests.test_load.</code><code class="sig-name descname">LoginTestCase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Класс, тестирующий загрузку основгых страниц и проверку login_required</strong></p>
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.check_if_loads">
+<code class="sig-name descname">check_if_loads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">get_args</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.check_if_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Вспомогательная функция, проверяющая загрузка страницы с авторизацией</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.check_login_required">
+<code class="sig-name descname">check_login_required</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">should_error</span></em>, <em class="sig-param"><span class="n">get_args</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">code</span><span class="o">=</span><span class="default_value">302</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.check_login_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Вспомогательная функция, проверяющая загрузка страницы без авторизации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_admin_create_tests_loads">
+<code class="sig-name descname">test_admin_create_tests_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_admin_create_tests_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы создания тестового трека</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_admin_loads">
+<code class="sig-name descname">test_admin_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_admin_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы администрации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_change_password_loads">
+<code class="sig-name descname">test_change_password_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_change_password_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы изменения пароля</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_delete_avatar_loads">
+<code class="sig-name descname">test_delete_avatar_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_delete_avatar_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы удаления аватара</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_delete_instrument_loads">
+<code class="sig-name descname">test_delete_instrument_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_delete_instrument_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы удаления инструмента</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_delete_project_loads">
+<code class="sig-name descname">test_delete_project_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_delete_project_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы удлаения проекта</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_edit_instrument_loads">
+<code class="sig-name descname">test_edit_instrument_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_edit_instrument_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы редактирования настроек инструмента</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_index_loads">
+<code class="sig-name descname">test_index_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_index_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки стартовой страницы</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_instruments_loads">
+<code class="sig-name descname">test_instruments_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_instruments_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы списка инструментов</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_login_loads">
+<code class="sig-name descname">test_login_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_login_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы авторизации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_logout_loads">
+<code class="sig-name descname">test_logout_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_logout_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы деавторизации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_manage_instrument_loads">
+<code class="sig-name descname">test_manage_instrument_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_manage_instrument_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы управления инструментом</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_manage_project_loads">
+<code class="sig-name descname">test_manage_project_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_manage_project_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы управления проектом</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_new_instruments_loads">
+<code class="sig-name descname">test_new_instruments_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_new_instruments_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы создания инструмента</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_new_project_loads">
+<code class="sig-name descname">test_new_project_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_new_project_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы создания проекта</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_others_profile_loads">
+<code class="sig-name descname">test_others_profile_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_others_profile_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы профиля другого пользователя</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_populartracks_loads">
+<code class="sig-name descname">test_populartracks_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_populartracks_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы популярных треков</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_profile_edit_loads">
+<code class="sig-name descname">test_profile_edit_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_profile_edit_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы режактирования профиля</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_profile_loads">
+<code class="sig-name descname">test_profile_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_profile_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы профиля текущего пользователя</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_project_home_loads">
+<code class="sig-name descname">test_project_home_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_project_home_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы проекта</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_projects_load">
+<code class="sig-name descname">test_projects_load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_projects_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы списка проектов</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_register_loads">
+<code class="sig-name descname">test_register_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_register_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы регистрации</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_search_loads">
+<code class="sig-name descname">test_search_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_search_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы поиска</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="main.tests.test_load.LoginTestCase.test_track_loads">
+<code class="sig-name descname">test_track_loads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.tests.test_load.LoginTestCase.test_track_loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Проверка загрузки страницы трека</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Picalines KrakeN000 marussyyaa unicorn-deadinside Tintie
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
