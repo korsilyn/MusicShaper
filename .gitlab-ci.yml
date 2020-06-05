@@ -72,11 +72,8 @@ pylint:
 pages:
   stage: deploy
   before_script:
-  - pip install -r ci/sphinx_requirements.txt
   script:
   - echo 'Publish pages data'
-  - sphinx-build -b html . public
-  - cp public/* static/docs/*
   artifacts:
     paths:
     - public
