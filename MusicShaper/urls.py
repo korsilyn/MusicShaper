@@ -26,7 +26,7 @@ urlpatterns = [
         path('', views.admin_home, name='admin_home'),
         path('django/', admin.site.urls),
         path('create_test_track', views.create_test_track, name='create_test_track'),
-        path('claimed_track', views.claimed_track, name='claimed_track'),
+        path('claimed_tracks', views.claimed_tracks, name='claimed_tracks'),
     ])),
 
     path('register/', views.register_page, name='register'),

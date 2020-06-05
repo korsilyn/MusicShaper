@@ -17,7 +17,7 @@ from .instrument import instruments, new_instrument, edit_instrument,\
     manage_instrument, delete_instrument, get_instrument_ajax
 from .pattern import patterns_list, new_pattern, pattern_editor, manage_pattern, delete_pattern,\
     save_pattern
-from .admin import admin_home, create_test_track, claimed_track
+from .admin import admin_home, create_test_track, claimed_tracks
 
 from .util import get_base_context
 
