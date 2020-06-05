@@ -34,3 +34,19 @@
 .quotes::after {
     content: "”";
 }
+
+.tooltip {
+    top: 0;
+}
+
+.help-sign {
+    --size: 30px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    font-size: calc(var(--size) * 0.7);
+    color: white;
+    line-height: var(--size);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+}

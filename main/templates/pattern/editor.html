@@ -28,6 +28,13 @@
             <a href="{% url 'timeline' proj_id=project.id %}">Таймлайн</a>
             <div class="seperator"></div>
             <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
+            <div style="margin-left: auto;"></div>
+            <div class="help-sign" style="margin-right: 5px;" data-toggle="tooltip" data-html="true"
+            title="Управление:<br>
+                &bull; Пробел - играть / стоп<br>
+                &bull; S - сохранить<br>
+                &bull; Колёсико мыши - играть с определённого момента<br>
+            ">?</div>
         </h5>
         <div class="settings inputs">
             <button class="img playBtn">

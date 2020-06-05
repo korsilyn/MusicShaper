@@ -4,6 +4,7 @@
 
 from django.forms import ModelForm, BooleanField, IntegerField,\
     TextInput, Textarea, CheckboxInput, Select
+from django.utils.translation import gettext
 from ..models import MusicTrack, TrackSettings
 
 
@@ -73,6 +74,9 @@ class MusicTrackForm(ModelForm):
 
     def __init__(self, *, instance=None, **kwargs):
         super().__init__(instance=instance, **kwargs)
+        access_chocies = self.fields['access'].widget.choices
+        self.fields['access'].widget.choices = \
+            list(map(lambda choice: (choice[0], gettext(choice[1])), access_chocies))
         if instance is not None:
             self.initial['access'] = instance.settings.access
             self.initial['allow_rating'] = instance.settings.allow_rating
