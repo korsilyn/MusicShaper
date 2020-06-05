@@ -52,12 +52,20 @@
         Уровень доступа: {% trans track.settings.get_access_display %}
     </p>
     {% if track.settings.allow_rating %}
-        <h1 class="text-center margin-top-5" id="rating">
-            <button id="like" onclick="like()">👍</button>
-            : <b id="likes_counter">{{ track.likes.count }}   </b>
-            <button id="dislike" onclick="dislike()">👎</button>
-            : <b id="dislikes_counter">{{ track.dislikes.count }}</b>
-        </h1>
+        {% if user != track.author %}
+            <h1 class="text-center margin-top-5" id="rating">
+                <button id="like" onclick="like()">👍</button>
+                : <b id="likes_counter">{{ track.likes.count }}   </b>
+                <button id="dislike" onclick="dislike()">👎</button>
+                : <b id="dislikes_counter">{{ track.dislikes.count }}</b>
+            </h1>
+        {% else %}
+            <div class="text-center margin-top-5">И помните - себя мы не оцениваем!</div>
+            <h1 class="text-center margin-top-5">
+                <b>👍 : {{ track.likes.count }}</b>
+                <b>👎 : {{ track.dislikes.count }}</b>
+            </h1>
+        {% endif %}
     {% endif %}
 
     <br>
