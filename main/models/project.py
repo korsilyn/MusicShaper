@@ -80,7 +80,7 @@ class MusicInstrument(ModelWithSettings):
     def define(cls, definition_name, default_settings):
         '''
         Объявляет новый тип инструмента (его стандартные настройки)
-        
+
         :param definition_name: тип инструмента (из библиотеки Tone.js)
         :param default_settings: словарь со стандартными настройками, где значения настроек - это объекты класса `SettingValue`
         '''
