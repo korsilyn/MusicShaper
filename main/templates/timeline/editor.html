@@ -27,6 +27,13 @@
             <a href="{% url 'new_pattern' proj_id=project.id %}">Новый паттерн</a>
             <div class="seperator"></div>
             <a href="{% url 'project_home' proj_id=project.id %}">Главная страница проекта</a>
+            <div style="margin-left: auto;"></div>
+            <div class="help-sign" style="margin-right: 5px;" data-toggle="tooltip" data-html="true"
+            title="Управление:<br>
+                &bull; Пробел - играть / стоп<br>
+                &bull; S - сохранить<br>
+                &bull; Колёсико мыши - играть с определённого момента<br>
+            ">?</div>
         </h5>
         <div class="settings inputs">
             <button class="img playBtn">
@@ -86,11 +93,12 @@
             <div class="seperator"></div>
             <div class="section">
                 <h5>Экспорт</h5>
-                <button class="btn btn-outline-danger" id="recordBtn">
+                <button class="btn btn-outline-danger" id="recordBtn" data-placement="right"
+                data-toggle="tooltip" data-html="true"
+                title="&bull; Нажмите стоп для остановки записи <br>
+                &bull; После окончания записи вы получите аудиофайл трека, а также сможете его опубликовать">
                     Начать запись
                 </button>
-                <br>
-                <small>Нажмите стоп для остановки записи</small>
             </div>
         </div>
     </div>

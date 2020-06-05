@@ -54,7 +54,7 @@ Forms
       :members:
    .. automodule:: main.forms.settings
       :members:
-      
+
 *****
 Tests
 *****
