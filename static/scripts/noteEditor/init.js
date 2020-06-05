@@ -111,13 +111,30 @@ window.addEventListener('tileRemoved', () => {
     if (player.isPlaying) stop();
 });
 
+const notationText = document.querySelector('#notationText');
+const noteText = document.querySelector('#noteText');
+const timeText = document.querySelector('#timeText');
+
+const sixteenthNote = new Tone.TransportTime('16n');
+
+function updateTimeText(x) {
+    noteText.innerHTML = String(x + 1).padStart(3, '0');
+    timeText.innerHTML = String(sixteenthNote.toSeconds() * (x + 1)).toHHMMSS();
+}
+
+window.addEventListener('tileHintMoved', ({ detail: { tile } }) => {
+    const noteCoords = MusicNote.noteCoordsFromY(tile.y);
+    notationText.innerHTML = MusicNote.letterNotationFromCoords(noteCoords);
+    updateTimeText(tile.x);
+});
+
 //#endregion
 
 //#region load instruments
 
 var instruments = new InstrumentStorage(
-    JSON.parse(document.getElementById('usedInstruments').innerText),
-    JSON.parse(document.getElementById('allInstrumentNames').innerText),
+    JSON.parse(document.getElementById('usedInstruments').innerHTML),
+    JSON.parse(document.getElementById('allInstrumentNames').innerHTML),
 );
 
 const instrSelect = document.querySelector('#instrumentSelect');
@@ -133,10 +150,21 @@ var player = new NotePlayer(instruments, 'button.playBtn', 'button.stopBtn', 'bu
 
 //#endregion
 
+//#region save key
+
+window.addEventListener('keydown', (event) => {
+    if (event.repeat) return;
+    if (event.key == 's' && !event.ctrlKey) {
+        document.querySelector('button.saveBtn').click();
+    }
+});
+
+//#endregion
+
 //#region load notes
 
 window.addEventListener('tileEditorInit', async () => {
-    const initialNotes = JSON.parse(document.getElementById('musicNotes').innerText)
+    const initialNotes = JSON.parse(document.getElementById('musicNotes').innerHTML)
         .map(data => new MusicNote(
             instruments.getById(data.instrument),
             data.time,
