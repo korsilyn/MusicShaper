@@ -1,5 +1,7 @@
 '''
+=================================
 Модуль view-функций для паттернов
+=================================
 '''
 
 from itertools import zip_longest
@@ -20,7 +22,7 @@ from .util import get_base_context, ajax_view
 @login_required
 def patterns_list(request, proj_id: int):
     '''
-    Страница со списком паттернов в проекте
+    **Страница со списком паттернов в проекте**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -42,7 +44,7 @@ def patterns_list(request, proj_id: int):
 @login_required
 def new_pattern(request, proj_id: int):
     '''
-    Страница создания паттерна
+    **Страница создания паттерна**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -73,8 +75,8 @@ def new_pattern(request, proj_id: int):
 
 def parse_json_note(json):
     '''
-    Вспомогательная функция. Возвращает словарь
-    музыкальной ноты из json строки
+    **Вспомогательная функция. Возвращает словарь
+    музыкальной ноты из json строки**
     '''
 
     try:
@@ -88,8 +90,8 @@ def parse_json_note(json):
 
 def handle_json_note(json_note, model_note, pat_id):
     '''
-    Вспомогательная функция. Обрабатывает модель
-    ноты по json данным из запроса клиента
+    **Вспомогательная функция. Обрабатывает модель
+    ноты по json данным из запроса клиента**
     '''
 
     note = parse_json_note(json_note)
@@ -105,7 +107,7 @@ def handle_json_note(json_note, model_note, pat_id):
 @login_required
 def pattern_editor(request, proj_id: int, pat_id: int):
     '''
-    Редактор паттерна
+    **Редактор паттерна**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -161,7 +163,7 @@ def save_pattern(request, proj_id: int, pat_id: int):
 @login_required
 def manage_pattern(request, proj_id: int, pat_id: int):
     '''
-    Страница управления паттерном
+    **Страница управления паттерном**
 
     :param request: запрос пользователя
     :param proj_id: id проекта в БД
@@ -193,7 +195,7 @@ def manage_pattern(request, proj_id: int, pat_id: int):
 @login_required
 def delete_pattern(request, proj_id: int, pat_id: int):
     '''
-    Страница удаления паттенра
+    **Страница удаления паттерна**
 
     :param request: запрос пользователя
     :param proj_id: id проекта в БД

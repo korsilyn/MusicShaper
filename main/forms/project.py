@@ -1,5 +1,7 @@
 '''
+===================================================
 Модуль формы редактирования проекта (имя, описание)
+===================================================
 '''
 
 from datetime import datetime
@@ -9,7 +11,7 @@ from ..models import MusicTrackProject, TrackProjectSettings
 
 class ProjectForm(ModelForm):
     '''
-    Форма создания проекта
+    **Форма создания проекта**
     '''
 
     class Meta:

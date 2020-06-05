@@ -1,5 +1,7 @@
 '''
+===============================
 Модуль тестирования авторизации
+===============================
 '''
 
 from django.contrib.auth.models import User
@@ -10,7 +12,7 @@ from ..models import Profile
 
 class AuthTestCase(TestCase):
     '''
-    Класс, тестирующий авторизацию на сайте
+    **Класс, тестирующий авторизацию на сайте**
     '''
 
     fixtures = ['basic.json']

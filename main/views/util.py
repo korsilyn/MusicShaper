@@ -1,5 +1,7 @@
 '''
+=======================================
 Вспомогательный модуль для view-модулей
+=======================================
 '''
 
 from django.http import Http404, JsonResponse
@@ -7,7 +9,7 @@ from django.http import Http404, JsonResponse
 
 def get_base_context(request, update=None):
     '''
-    Возвращает базовый контекст для всех страниц сайта
+    **Возвращает базовый контекст для всех страниц сайта**
 
     :param request: запрос клиента
     :return: словарь контекста

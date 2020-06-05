@@ -1,5 +1,7 @@
 '''
+===========================
 Модуль моделей для проектов
+===========================
 '''
 
 from django.db import models
@@ -21,7 +23,7 @@ COLOR_CHOICES = [
 
 class MusicTrackProject(models.Model):
     '''
-    Модель проекта
+    **Модель проекта**
 
     :param name: имя проекта
     :param desc: описание
@@ -45,7 +47,7 @@ class MusicTrackProject(models.Model):
 
 class TrackProjectSettings(models.Model):
     '''
-    Модель настроек проекта
+    **Модель настроек проекта**
 
     :param project: проект
     :param bpm: темп итогового трека
@@ -60,7 +62,7 @@ class TrackProjectSettings(models.Model):
 
 class MusicInstrument(ModelWithSettings):
     '''
-    Модель музыкального инстурмента
+    **Модель музыкального инстурмента**
 
     :param name: имя инструмента в редакторе
     :param project: проект
@@ -78,10 +80,9 @@ class MusicInstrument(ModelWithSettings):
     def define(cls, definition_name, default_settings):
         '''
         Объявляет новый тип инструмента (его стандартные настройки)
-
+        
         :param definition_name: тип инструмента (из библиотеки Tone.js)
-        :param default_settings: словарь со стандартными настройками,
-        где значения настроек - это объекты класса `SettingValue`
+        :param default_settings: словарь со стандартными настройками, где значения настроек - это объекты класса `SettingValue`
         '''
 
         if 'volume' not in default_settings:
@@ -107,7 +108,7 @@ class MusicInstrument(ModelWithSettings):
 
 class MusicInstrumentEffect(ModelWithSettings):
     '''
-    Модель эффекта музыкального инструмента
+    **Модель эффекта музыкального инструмента**
 
     :param type: тип эффекта (из библиотеки Tone.js)
     :param instrument: инструмент
@@ -118,7 +119,7 @@ class MusicInstrumentEffect(ModelWithSettings):
 
 class MusicTrackPattern(models.Model):
     '''
-    Модель паттерна проекта
+    **Модель паттерна проекта**
 
     :param name: имя паттерна
     :param color: цвет паттерна в редакторе
@@ -166,7 +167,7 @@ class MusicTrackPattern(models.Model):
 
 class TrackPatternInstance(models.Model):
     '''
-    Модель образца паттерна, который находиться на звуковой дорожке
+    **Модель образца паттерна, который находиться на звуковой дорожке**
 
     :param pattern: паттерн
     :param time: момент времени, в который должен начать играть паттерн
@@ -194,7 +195,7 @@ class TrackPatternInstance(models.Model):
 
 class MusicNote(models.Model):
     '''
-    Модель музыкальной ноты в паттерне
+    **Модель музыкальной ноты в паттерне**
 
     :param pattern: паттерн
     :param time: момент времени, в который должна начать играть нота

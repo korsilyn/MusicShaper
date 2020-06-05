@@ -1,5 +1,7 @@
 '''
+============================================
 Модуль view-функций для профиля пользователя
+============================================
 '''
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -16,7 +18,7 @@ from ..models import Profile, MusicTrack
 
 def profile_page(request, username):
     '''
-    Страница профиля
+    **Страница профиля**
 
     :param request: запрос клиента
     :return: страница профиля
@@ -46,10 +48,10 @@ def profile_page(request, username):
 @login_required
 def profile_edit_page(request):
     '''
-    Страница редактирования профиля
+    **Страница редактирования профиля**
 
     :param request: запрос клиента
-    :return: страница редактировния профиля
+    :return: страница редактирования профиля
     :rtype: HttpResponse
     '''
 
@@ -90,7 +92,7 @@ def profile_edit_page(request):
 @login_required
 def change_password(request):
     '''
-    Страница смены пароля
+    **Страница смены пароля**
 
     :param request: запрос клиента
     :return: страница смены пароля
@@ -118,7 +120,7 @@ def change_password(request):
 @login_required
 def delete_avatar(request):
     '''
-    Страница удаления аватара
+    **Страница удаления аватара**
 
     :param request: запрос клиента
     :return: страница удаления аватара
@@ -145,7 +147,7 @@ def delete_avatar(request):
 @login_required
 def subscribe(request, username):
     '''
-    Функция для добавления пользователя в подписки
+    **Функция для добавления пользователя в подписки**
 
     :param request: запрос клиента
     :param username: юзернейм другого пользователя
@@ -169,7 +171,7 @@ def subscribe(request, username):
 @login_required
 def unsubscribe(request, username):
     '''
-    Функция для удаления пользователя из подпискок
+    **Функция для удаления пользователя из подпискок**
 
     :param request: запрос клиента
     :param username: юзернейм другого пользователя
@@ -193,7 +195,7 @@ def unsubscribe(request, username):
 @login_required
 def subscriptions_page(request):
     '''
-    Функция для отображения полного списка подписок
+    **Функция для отображения полного списка подписок**
 
     :param request: запрос клиента
     :rtype: HttpResponse

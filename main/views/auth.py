@@ -1,5 +1,7 @@
 '''
+=================================================
 Модуль view-функций для регистрации и авторизации
+=================================================
 '''
 
 from django.shortcuts import render, redirect
@@ -13,7 +15,7 @@ from ..forms import LoginForm
 
 def login_page(request):
     '''
-    Страница авторизации
+    **Страница авторизации**
 
     :param request: запрос клиента
     :return: страница авторизации
@@ -43,7 +45,7 @@ def login_page(request):
 
 def register_page(request):
     '''
-    Страница регистрации
+    **Страница регистрации**
 
     :param request: запрос клиента
     :return: страница регистрации
@@ -75,7 +77,7 @@ def register_page(request):
 @login_required
 def logout_page(request):
     '''
-    Страница выхода из профиля
+    **Страница выхода из профиля**
 
     :param request: запрос клиента
     :return: редирект на стартовую страницу

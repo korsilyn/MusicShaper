@@ -1,5 +1,7 @@
 '''
+====================================
 Модуль тестирования (unittest) сайта
+====================================
 '''
 
 from django.contrib.auth.models import User
@@ -9,7 +11,7 @@ from django.urls import reverse
 
 class LoginTestCase(TestCase):
     '''
-    Класс, тестирующий загрузку основгых страниц и проверку login_required
+    **Класс, тестирующий загрузку основгых страниц и проверку login_required**
     '''
 
     fixtures = ['basic.json']
