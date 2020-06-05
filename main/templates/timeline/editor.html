@@ -22,11 +22,11 @@
             <div class="seperator"></div>
             <a href="{% url 'manage_project' proj_id=project.id %}">Управление проектом</a>
             <div class="seperator"></div>
-            <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
+            <a href="{% url 'patterns' proj_id=project.id %}">Паттерны</a>
             <div class="seperator"></div>
             <a href="{% url 'new_pattern' proj_id=project.id %}">Новый паттерн</a>
             <div class="seperator"></div>
-            <a href="{% url 'project_home' proj_id=project.id %}">Главная страница проекта</a>
+            <a href="{% url 'project_home' proj_id=project.id %}">Назад к проекту</a>
             <div style="margin-left: auto;"></div>
             <div class="help-sign" style="margin-right: 5px;" data-toggle="tooltip" data-html="true"
             title="Управление:<br>
@@ -50,11 +50,15 @@
                 <img src="{% static 'svg/save.svg' %}">
             </button>
             <div class="seperator"></div>
-            <a id="backToStartLink" href="#">Вернуться к началу</a>
-            <div class="seperator"></div>
             <label>Темп:</label>
             <input id="projBpm" type="number" min="32" max="999"
             value="{{ project.settings.bpm }}">
+            <div class="seperator"></div>
+            <span>
+                Время: <span id="timeText">00:00:00</span> / <span id="noteText">0</span>
+            </span>
+            <div class="seperator"></div>
+            <a id="backToStartLink" href="#">Вернуться к началу</a>
         </div>
     </div>
     <div id="menu">

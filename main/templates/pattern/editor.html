@@ -21,7 +21,9 @@
                 Управление паттерном
             </a>
             <div class="seperator"></div>
-            <a href="{% url 'patterns' proj_id=project.id %}">Список паттернов</a>
+            <a href="{% url 'patterns' proj_id=project.id %}">Паттерны</a>
+            <div class="seperator"></div>
+            <a href="{% url 'instruments' proj_id=project.id %}">Инструменты</a>
             <div class="seperator"></div>
             <a href="{% url 'timeline' proj_id=project.id %}">Таймлайн</a>
             <div class="seperator"></div>
@@ -59,6 +61,14 @@
             <label>Темп:</label>
             <input id="projBpm" type="number" min="32" max="999"
             value="{{ project.settings.bpm }}">
+            <div class="seperator"></div>
+            <span>
+                Время: <span id="timeText">00:00:00</span> / <span id="noteText">000</span>
+            </span>
+            <div class="seperator"></div>
+            <span>
+                Нота: <span id="notationText">B7</span>
+            </span>
         </div>
     </div>
     <div style="width: inherit; height: calc(100vh - var(--panel-height)); overflow: scroll;">
