@@ -1,8 +1,10 @@
 '''
+===================================================
 Модуль формы для модели `ModelWithSettings`
+===================================================
 
 Это динамическая форма, генерирующая свои поля основываясь
-на объявлени настроек объекта (`<model>.definition`)
+на объявлении настроек объекта (`<model>.definition`)
 '''
 
 from django.forms import ModelForm, FloatField, IntegerField, NumberInput, ChoiceField, Select
@@ -12,7 +14,7 @@ from ..models.settings import ModelWithSettings, SettingValue,\
 
 class SettingsModelForm(ModelForm):
     '''
-    Форма редактирования настроект модели `ModelWithSettings`
+    **Форма редактирования настроек модели `ModelWithSettings`**
     '''
 
     class Meta:

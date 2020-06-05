@@ -28,12 +28,23 @@ class MusicNote {
         this.length = length;
         this.instrument = instrument;
         if (typeof y == 'number') {
-            this.notation = noteNotations.length - y % noteNotations.length;
-            this.octave = octavesFrom + octaves - Math.floor(y / noteNotations.length) - 1;
+            const coords = MusicNote.noteCoordsFromY(y);
+            this.notation = coords.notation;
+            this.octave = coords.octave;
         }
         else {
             this.notation = y.notation;
             this.octave = y.octave;
+        }
+    }
+
+    /**
+     * @param {number} y
+     */
+    static noteCoordsFromY(y) {
+        return {
+            notation: noteNotations.length - y % noteNotations.length,
+            octave: octavesFrom + octaves - Math.floor(y / noteNotations.length) - 1
         }
     }
 
@@ -45,8 +56,12 @@ class MusicNote {
         return new Tone.Time('16n').toSeconds() * this.length;
     }
 
+    static letterNotationFromCoords({ notation, octave }) {
+        return noteNotations[notation - 1] + octave;
+    }
+
     get letterNotation() {
-        return noteNotations[this.notation - 1] + this.octave;
+        return MusicNote.letterNotationFromCoords(this);
     }
 
     playPreview(time = undefined) {

@@ -1,5 +1,7 @@
 '''
+================================================
 Модуль view-функций для музыкальных инструментов
+================================================
 '''
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -14,8 +16,8 @@ from ..models import MusicInstrument
 @login_required
 def instruments(request, proj_id: int):
     '''
-    Страница со списком всех музыкальных инструментов
-    в проекте
+    **Страница со списком всех музыкальных инструментов
+    в проекте**
 
     :param request: запрос клиента
     :param proj_id: id проекта в базе данных
@@ -36,7 +38,7 @@ def instruments(request, proj_id: int):
 @login_required
 def new_instrument(request, proj_id: int):
     '''
-    Страница создания музыкального инструмента
+    **Страница создания музыкального инструмента**
 
     :param request: запрос клиента
     :param proj_id: id проекта в базе данных
@@ -82,7 +84,7 @@ def new_instrument(request, proj_id: int):
 @login_required
 def edit_instrument(request, proj_id: int, instr_id: int):
     '''
-    Страница редактирования настроек инструмента
+    **Страница редактирования настроек инструмента**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -114,7 +116,7 @@ def edit_instrument(request, proj_id: int, instr_id: int):
 @login_required
 def manage_instrument(request, proj_id: int, instr_id: int):
     '''
-    Страница управления инструментом
+    **Страница управления инструментом**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -146,7 +148,7 @@ def manage_instrument(request, proj_id: int, instr_id: int):
 @login_required
 def delete_instrument(request, proj_id: int, instr_id: int):
     '''
-    Страница удаления инструмента
+    **Страница удаления инструмента**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД

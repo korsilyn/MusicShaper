@@ -36,7 +36,8 @@ class Player {
             this.stop('user');
         });
 
-        window.addEventListener('keydown', ({ keyCode, repeat }) => {
+        window.addEventListener('keydown', (event) => {
+            const { repeat, keyCode } = event;
             if (!repeat && keyCode == 32) {
                 if (this.isPlaying) {
                     this.stop('user');
@@ -44,6 +45,7 @@ class Player {
                 else {
                     this.play(0);
                 }
+                event.preventDefault();
                 return false;
             }
         });

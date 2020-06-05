@@ -1,5 +1,7 @@
 '''
+================================
 Модуль view-функций для проектов
+================================
 '''
 
 from itertools import zip_longest
@@ -16,7 +18,7 @@ from ..forms import ProjectForm
 
 def get_project_or_404(request, proj_id: int):
     '''
-    Возвращает проект с нужным id + проверка на автора
+    **Возвращает проект с нужным id + проверка на автора**
 
     :param request: запрос клиента
     :param proj_id: id проека в базе данных
@@ -33,7 +35,7 @@ def get_project_or_404(request, proj_id: int):
 @login_required
 def new_project(request):
     '''
-    Страница создания проекта
+    **Страница создания проекта**
 
     :param request: запрос клиента
     :return: страница создания проекта
@@ -60,7 +62,7 @@ def new_project(request):
 @login_required
 def projects_list(request):
     '''
-    Страница со списком проектов пользователя
+    **Страница со списком проектов пользователя**
 
     :param request: запрос клиента
     :return: список проектов
@@ -77,7 +79,7 @@ def projects_list(request):
 @login_required
 def project_home(request, proj_id: int):
     '''
-    Главная страница проекта
+    **Главная страница проекта**
 
     :param request: запрос клиента
     :param proj_id: id проекта в базе данных
@@ -96,7 +98,7 @@ def project_home(request, proj_id: int):
 @login_required
 def manage_project(request, proj_id: int):
     '''
-    Страница управления проектом
+    **Страница управления проектом**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД
@@ -126,7 +128,7 @@ def manage_project(request, proj_id: int):
 @login_required
 def delete_project(request, proj_id: int):
     '''
-    Страница удаления проекта
+    **Страница удаления проекта**
 
     :param request: запрос клиента
     :param proj_id: id проекта в БД

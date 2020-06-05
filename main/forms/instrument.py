@@ -1,5 +1,7 @@
 '''
+========================================
 Модуль форм для музыкальных инструментов
+========================================
 '''
 
 from django.forms import ModelForm, TextInput, Select
@@ -8,7 +10,7 @@ from ..models import MusicInstrument
 
 class MusicInstrumentForm(ModelForm):
     '''
-    Форма создания / редактирования музыкального инструмента
+    **Форма создания / редактирования музыкального инструмента**
     '''
 
     class Meta:

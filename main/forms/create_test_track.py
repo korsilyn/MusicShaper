@@ -1,5 +1,7 @@
 '''
+==============================
 Модуль формы `CreateTestTrack`
+==============================
 '''
 
 from django import forms
@@ -7,9 +9,9 @@ from django import forms
 
 class CreateTestTrack(forms.Form):
     '''
-    Форма создания пробного трека
+    **Форма создания пробного трека**
 
-    :param name: поле имяни трека
+    :param name: поле имени трека
     :param desc: поле описания трека
     :param allow_comments: разрешены ли комментарии
     :param allow_rating: разрешены ли лайки / дизлайки
