@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from .auth import register_page, login_page, logout_page
 from .profile import profile_page, profile_edit_page, delete_avatar,\
-    change_password, subscribe, unsubscribe, subscriptions_page, oauth_token
+    change_password, subscribe, unsubscribe, subscriptions_page
 from .search import search_page
 from .track import track_view, popular_tracks, upload_track, delete_track, manage_track,\
     listen_track
