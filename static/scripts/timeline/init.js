@@ -101,15 +101,41 @@ function calculateDuration() {
 const durationTime = document.querySelector('#durationTime');
 const durationNotes = document.querySelector('#durationNotes');
 
+const sixteenthNote = new Tone.TransportTime('16n');
+
 function updateDurationInfo() {
     const duration = calculateDuration();
     durationNotes.innerText = duration;
-    let time = (player.baseTimeSeconds) * duration;
+    let time = sixteenthNote.toSeconds() * duration;
     durationTime.innerText = String(time).toHHMMSS();
 }
 
 window.addEventListener('tilePlaced', updateDurationInfo);
 window.addEventListener('tileRemoved', updateDurationInfo);
+
+const noteText = document.querySelector('#noteText');
+const timeText = document.querySelector('#timeText');
+
+window.addEventListener('tileHintMoved', ({ detail: { tile } }) => {
+    noteText.innerHTML = tile.x + 1;
+    timeText.innerHTML = String(sixteenthNote.toSeconds() * (tile.x + 1)).toHHMMSS();
+});
+
+window.addEventListener('timelineScrollStart', () => {
+    noteText.innerHTML = 0;
+    timeText.innerHTML = '00:00:00';
+});
+
+//#endregion
+
+//#region save key
+
+window.addEventListener('keydown', (event) => {
+    if (event.repeat) return;
+    if (event.key == 's' && !event.ctrlKey) {
+        document.querySelector('button.saveBtn').click();
+    }
+});
 
 //#endregion
 

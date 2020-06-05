@@ -48,14 +48,14 @@ function initTileEditor(options) {
     window.setTileEditorSize(realSize.width, realSize.height);
 
     playhead = new paper.Path.Rectangle({
-        fillColor: 'rgba(54, 255, 47, 0.4)',
+        fillColor: 'rgba(54, 255, 47, 0.35)',
         width: cellSize.width,
         height: gridRealSize.height,
         visible: false,
     });
 
     playhead.pivot = playhead.bounds.topLeft;
-    tilePlaceLayer.addChild(playhead);
+    playheadLayer.addChild(playhead);
 
     tileHint = new paper.Path.Rectangle({
         size: cellSize,
@@ -138,7 +138,7 @@ function resetHint() {
 }
 
 paper.Item.prototype.makeTile = function () {
-    if (!this.tile || this.id == tileHint.id) {
+    if (this.id == tileHint.id || !this.tile) {
         this.tile = Tile.fromPath(this, cellSize);
     }
     return this.tile;
@@ -214,7 +214,11 @@ project.view.onMouseMove = function (event) {
                 hit.item.onClick({ event: { button: 2 } });
             }
         }
+        var oldPos = tileHint.position;
         resetHint();
+        if (oldPos.x != tileHint.position.x || oldPos.y != tileHint.position.y) {
+            tileHint.dispatchWindowTileEvent('tileHintMoved');
+        }
     }
 }
 
@@ -239,11 +243,9 @@ tilePlaceLayer.onMouseEnter = function () {
     tileHint.opacity = 0.5;
 }
 
-tilePlaceLayer.onMouseLeave = function (event) {
-    if (event.event.srcElement != project.view.element && !placing) {
-        tileHint.opacity = 0;
-    }
-}
+project.view.element.addEventListener('mouseleave', function () {
+    tileHint.opacity = 0;
+});
 
 //#endregion
 
@@ -251,6 +253,10 @@ tilePlaceLayer.onMouseLeave = function (event) {
 
 /** @type {paper.Path.Rectangle} */
 var playhead;
+
+var playheadLayer = new paper.Layer({
+    name: 'playhead'
+});
 
 window.showPlayhead = function () {
     playhead.visible = true;
