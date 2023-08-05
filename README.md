@@ -56,5 +56,5 @@ python manage.py runserver
 * **Петр Костенко** - *Тимлид* - [Picalines](https://github.com/Picalines)
 * **Мария Давыдова** - *Менеджер Проекта* - [marussyyaa](https://gitlab.informatics.ru/marussyyaa)
 * **Илья Сасин** - *Кодер* - [unicorn-deadinside](https://gitlab.informatics.ru/unicorn-deadinside)
-* **Евгений Гладков** - *Кодер* - [KrakeN000](https://github.com/korsilyn)
+* **Евгений Гладков** - *Кодер* - [korsilyn](https://github.com/korsilyn)
 * **Даниил Гиль** - *Дизайнер* - [Tintie](https://gitlab.informatics.ru/Tintie)
